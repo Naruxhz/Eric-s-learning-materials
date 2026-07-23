@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hematologi — Atlas Belajar Interaktif</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F1EFE9;
+  --bg-panel:#FFFFFF;
+  --ink:#1C1B19;
+  --muted:#6E6A62;
+  --line:#DEDACE;
+  --red:#9E2A3D;
+  --red-deep:#7A1E30;
+  --red-tint:#F6E4E6;
+  --teal:#1E5B5E;
+  --teal-tint:#E3EFEC;
+  --amber:#B9832E;
+  --amber-tint:#F8ECD8;
+  --shadow: 0 1px 2px rgba(28,27,25,0.06), 0 8px 24px rgba(28,27,25,0.05);
+  --radius: 10px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'IBM Plex Sans', sans-serif;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.5;
+}
+h1,h2,h3,h4{
+  font-family:'Fraunces', serif;
+  font-weight:600;
+  margin:0;
+  letter-spacing:-0.01em;
+}
+.mono{font-family:'IBM Plex Mono', monospace;}
+::selection{background:var(--red-tint); color:var(--red-deep);}
+a{color:inherit;}
+button{font-family:inherit;}
+
+/* ---------- App shell ---------- */
+#app{display:flex; min-height:100vh;}
+
+/* Sidebar */
+#sidebar{
+  width:290px;
+  flex-shrink:0;
+  background:var(--bg-panel);
+  border-right:1px solid var(--line);
+  height:100vh;
+  position:sticky;
+  top:0;
+  overflow-y:auto;
+  padding:20px 14px 40px;
+}
+.sb-brand{
+  display:flex; align-items:center; gap:10px;
+  padding:6px 8px 18px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:14px;
+  transition:opacity .15s ease;
+}
+.sb-brand:hover{opacity:0.7;}
+.sb-brand .cell{
+  width:34px;height:34px;border-radius:50%;
+  background:radial-gradient(circle at 32% 30%, #d24a5f, var(--red-deep) 70%);
+  box-shadow: inset 0 -3px 6px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.15);
+  flex-shrink:0;
+}
+.sb-brand .t1{font-size:17px; line-height:1.1;}
+.sb-brand .t2{font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-top:2px;}
+.watermark{
+  font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--muted); opacity:0.55;
+  text-align:right; margin:-8px 4px 14px 0; letter-spacing:0.02em;
+}
+
+.search-box{
+  display:flex; align-items:center; gap:8px;
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:8px 10px;
+  margin-bottom:16px;
+}
+.search-box input{
+  border:none; background:transparent; outline:none;
+  font-size:13.5px; width:100%; color:var(--ink); font-family:inherit;
+}
+.search-box svg{flex-shrink:0; opacity:0.5;}
+
+.mode-toggle{
+  display:flex; background:var(--bg); border:1px solid var(--line);
+  border-radius:8px; padding:3px; margin-bottom:18px; gap:3px;
+}
+.mode-toggle button{
+  flex:1; border:none; background:transparent; padding:8px 6px;
+  border-radius:6px; font-size:12.5px; font-weight:600; color:var(--muted);
+  cursor:pointer; transition:all .15s ease;
+}
+.mode-toggle button.active{background:var(--red); color:#fff; box-shadow:var(--shadow);}
+
+.nav-cat{margin-bottom:4px;}
+.nav-cat-head{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:9px 8px; cursor:pointer; border-radius:7px;
+  font-size:13px; font-weight:600;
+  user-select:none;
+}
+.nav-cat-head:hover{background:var(--bg);}
+.nav-cat-head .chev{transition:transform .18s ease; opacity:0.5;}
+.nav-cat-head .badge-count{
+  font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted);
+  background:var(--bg); border:1px solid var(--line); border-radius:20px;
+  padding:1px 7px; margin-left:6px;
+}
+.nav-cat.open .chev{transform:rotate(90deg);}
+.nav-list{max-height:0; overflow:hidden; transition:max-height .25s ease;}
+.nav-cat.open .nav-list{max-height:1200px;}
+.nav-item{
+  display:flex; align-items:center; gap:8px;
+  padding:7px 8px 7px 22px; font-size:13px; cursor:pointer;
+  border-radius:7px; color:var(--muted); position:relative;
+}
+.nav-item:hover{background:var(--bg); color:var(--ink);}
+.nav-item.active{background:var(--red-tint); color:var(--red-deep); font-weight:600;}
+.nav-item .dot{width:5px;height:5px;border-radius:50%; background:currentColor; opacity:0.5; flex-shrink:0;}
+.nav-item .check{
+  margin-left:auto; width:14px; height:14px; border-radius:50%;
+  border:1.5px solid var(--line); flex-shrink:0;
+}
+.nav-item .check.done{background:var(--teal); border-color:var(--teal);}
+
+.sb-progress{
+  margin-top:20px; padding:12px; background:var(--bg); border-radius:8px; border:1px solid var(--line);
+}
+.sb-progress .lbl{font-size:11px; color:var(--muted); display:flex; justify-content:space-between; margin-bottom:6px;}
+.sb-progress .bar{height:6px; background:var(--line); border-radius:4px; overflow:hidden;}
+.sb-progress .fill{height:100%; background:linear-gradient(90deg, var(--teal), #2a7a7d); border-radius:4px; transition:width .3s ease;}
+.sb-progress-foot{
+  display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:10px;
+}
+.sb-progress-foot span{font-size:10px; color:var(--muted); opacity:0.8;}
+.sb-progress-foot button{
+  border:none; background:transparent; color:var(--muted); font-size:10.5px; font-weight:600;
+  cursor:pointer; text-decoration:underline; padding:0; flex-shrink:0;
+}
+.sb-progress-foot button:hover{color:var(--red);}
+
+/* Main */
+#main{flex:1; min-width:0;}
+.topbar{
+  position:sticky; top:0; z-index:5;
+  background:rgba(241,239,233,0.88); backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+  padding:14px 40px; display:none; align-items:center; gap:10px;
+}
+.hamburger{display:none; border:1px solid var(--line); background:#fff; border-radius:8px; width:36px; height:36px; align-items:center; justify-content:center; cursor:pointer;}
+
+.content-wrap{max-width:880px; margin:0 auto; padding:56px 40px 120px;}
+</style>
+</head>
+<body>
+<style>
+/* ---------- Hero (home view) ---------- */
+.hero{padding-bottom:12px;}
+.hero .eyebrow{
+  font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.12em;
+  text-transform:uppercase; color:var(--red); display:flex; align-items:center; gap:8px; margin-bottom:14px;
+}
+.hero .eyebrow::before{content:""; width:20px; height:1px; background:var(--red);}
+.hero h1{font-size:clamp(34px,5vw,52px); line-height:1.02;}
+.hero h1 em{font-style:italic; color:var(--red);}
+.hero p.lede{font-size:16.5px; color:var(--muted); max-width:560px; margin-top:16px;}
+.hero-stats{display:flex; gap:28px; margin-top:30px; flex-wrap:wrap;}
+.hero-stats .stat b{font-family:'Fraunces',serif; font-size:28px; display:block;}
+.hero-stats .stat span{font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em;}
+
+/* Signature: MCV algorithm widget */
+.algo-widget{
+  margin-top:40px; background:var(--bg-panel); border:1px solid var(--line); border-radius:14px;
+  padding:28px 28px 24px; box-shadow:var(--shadow);
+}
+.algo-widget h3{font-size:16px; margin-bottom:4px;}
+.algo-widget .sub{font-size:12.5px; color:var(--muted); margin-bottom:20px;}
+.algo-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;}
+.algo-btn{
+  flex:1; min-width:150px; text-align:left; border:1.5px solid var(--line); background:var(--bg);
+  border-radius:9px; padding:12px 14px; cursor:pointer; transition:all .15s ease;
+}
+.algo-btn b{display:block; font-size:13.5px; font-family:'IBM Plex Mono',monospace;}
+.algo-btn span{font-size:11.5px; color:var(--muted);}
+.algo-btn:hover{border-color:var(--red); background:var(--red-tint);}
+.algo-btn.picked{border-color:var(--red); background:var(--red-tint); box-shadow:inset 0 0 0 1px var(--red);}
+.algo-result{
+  margin-top:16px; padding:16px 18px; border-radius:10px; background:var(--teal-tint);
+  border:1px solid #c8ddd9; font-size:13.5px; min-height:20px;
+}
+.algo-result .rlabel{font-size:10.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--teal); font-weight:600; margin-bottom:6px;}
+.algo-result .chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;}
+.chip{
+  background:#fff; border:1px solid var(--line); padding:5px 11px; border-radius:20px; font-size:12.5px;
+  font-family:'IBM Plex Mono', monospace; cursor:pointer;
+}
+.chip:hover{border-color:var(--teal); color:var(--teal);}
+
+.home-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:14px; margin-top:44px;}
+.home-card{
+  background:var(--bg-panel); border:1px solid var(--line); border-radius:12px; padding:18px;
+  cursor:pointer; transition:all .15s ease;
+}
+.home-card:hover{transform:translateY(-2px); box-shadow:var(--shadow); border-color:#cfc9ba;}
+.home-card .n{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--red); margin-bottom:8px;}
+.home-card h4{font-size:15.5px;}
+.home-card p{font-size:12.5px; color:var(--muted); margin-top:6px;}
+
+/* ---------- Topic page ---------- */
+.crumbs{font-size:12px; color:var(--muted); margin-bottom:14px; display:flex; align-items:center; gap:6px;}
+.crumbs .sep{opacity:0.5;}
+.topic-head{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:6px;}
+.topic-head h1{font-size:clamp(28px,4vw,40px);}
+.badge-level{
+  font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; color:#fff;
+  background:var(--red); border-radius:6px; padding:4px 9px; flex-shrink:0; margin-top:6px;
+  white-space:nowrap;
+}
+.topic-sub{color:var(--muted); font-size:14.5px; margin-bottom:8px;}
+.mark-btn{
+  display:inline-flex; align-items:center; gap:7px; border:1.5px solid var(--line); background:#fff;
+  padding:8px 14px; border-radius:8px; font-size:12.5px; font-weight:600; cursor:pointer; margin:18px 0 8px;
+  color:var(--muted);
+}
+.mark-btn.done{border-color:var(--teal); background:var(--teal-tint); color:var(--teal);}
+.mark-btn .dotc{width:9px;height:9px;border-radius:50%; border:1.5px solid currentColor;}
+.mark-btn.done .dotc{background:var(--teal);}
+
+.section-block{margin-top:30px;}
+.section-block h2{
+  font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--red);
+  font-family:'IBM Plex Mono', monospace; font-weight:600;
+  display:flex; align-items:center; gap:10px; margin-bottom:14px;
+}
+.section-block h2::after{content:""; flex:1; height:1px; background:var(--line);}
+.section-block ul{margin:0; padding-left:20px;}
+.section-block li{margin-bottom:7px; font-size:14.5px;}
+.section-block p{font-size:14.5px; margin:0 0 10px;}
+.section-block .sub-h{font-weight:600; font-size:14px; margin-top:14px; margin-bottom:6px; font-family:'Fraunces',serif;}
+
+.extra-wrap{margin-top:34px; border-top:2px dashed var(--line); padding-top:26px;}
+.extra-wrap-head{display:flex; align-items:center; gap:8px; margin-bottom:4px;}
+.extra-wrap-head .tag{
+  font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:700; letter-spacing:0.06em;
+  color:#fff; background:var(--teal); padding:3px 9px; border-radius:20px; text-transform:uppercase;
+}
+.extra-wrap-head b{font-family:'Fraunces',serif; font-size:16px;}
+.extra-wrap-note{font-size:12px; color:var(--muted); margin-bottom:18px;}
+.extra-block{margin-top:22px;}
+.extra-block h3{
+  font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--teal);
+  font-family:'IBM Plex Mono', monospace; font-weight:600; display:flex; align-items:center; gap:10px; margin-bottom:10px;
+}
+.extra-block h3::after{content:""; flex:1; height:1px; background:var(--line);}
+.extra-block ul{margin:0; padding-left:20px;}
+.extra-block li{margin-bottom:7px; font-size:14px;}
+
+.topic-images{display:flex; gap:14px; flex-wrap:wrap; margin:18px 0;}
+.topic-image-card{
+  background:var(--bg-panel); border:1px solid var(--line); border-radius:12px;
+  overflow:hidden; width:200px; flex-shrink:0; box-shadow:var(--shadow);
+}
+.topic-image-card img{display:block; width:100%; height:auto;}
+.topic-image-card .cap{padding:9px 11px; font-size:11.5px; color:var(--muted); line-height:1.4;}
+@media (max-width:640px){ .topic-image-card{width:100%;} }
+
+.callout{
+  border-radius:10px; padding:16px 18px; margin:14px 0; font-size:13.5px; border:1px solid;
+}
+.callout.mnemonic{background:var(--amber-tint); border-color:#e3caa0;}
+.callout.mnemonic .clabel{font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--amber); font-weight:700; margin-bottom:6px;}
+.callout.key{background:var(--red-tint); border-color:#e0b7bd;}
+.callout.key .clabel{font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--red-deep); font-weight:700; margin-bottom:6px;}
+
+table.data-tbl{width:100%; border-collapse:collapse; margin:14px 0; font-size:13px;}
+table.data-tbl th, table.data-tbl td{border:1px solid var(--line); padding:9px 11px; text-align:left; vertical-align:top;}
+table.data-tbl th{background:var(--bg); font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.04em; color:var(--muted);}
+table.data-tbl tr:nth-child(even) td{background:#fbfaf7;}
+
+.topic-nav{display:flex; justify-content:space-between; margin-top:56px; padding-top:22px; border-top:1px solid var(--line); gap:14px;}
+.tn-btn{flex:1; border:1px solid var(--line); background:#fff; border-radius:10px; padding:14px 16px; cursor:pointer; max-width:48%;}
+.tn-btn .lbl{font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em;}
+.tn-btn .ttl{font-family:'Fraunces',serif; font-size:15px; margin-top:3px;}
+.tn-btn.next{text-align:right; margin-left:auto;}
+
+/* ---------- Quiz ---------- */
+.quiz-shell{max-width:680px; margin:0 auto; padding:56px 40px 100px;}
+.quiz-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:26px;}
+.quiz-progress-track{height:6px; background:var(--line); border-radius:4px; flex:1; margin:0 16px; overflow:hidden;}
+.quiz-progress-fill{height:100%; background:var(--red); border-radius:4px; transition:width .3s ease;}
+.quiz-count{font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--muted); white-space:nowrap;}
+.qcard{background:var(--bg-panel); border:1px solid var(--line); border-radius:14px; padding:28px; box-shadow:var(--shadow);}
+.qcard .vignette{font-size:15px; line-height:1.65; margin-bottom:20px;}
+.qcard .question{font-weight:600; font-size:15px; margin-bottom:18px; font-family:'Fraunces',serif;}
+.opt{
+  display:flex; gap:12px; align-items:flex-start; padding:13px 14px; border:1.5px solid var(--line);
+  border-radius:9px; margin-bottom:10px; cursor:pointer; font-size:14px; transition:all .12s ease;
+}
+.opt:hover{border-color:#c9a; background:var(--red-tint);}
+.opt .lt{
+  width:24px;height:24px; border-radius:50%; border:1.5px solid var(--line); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600;
+  font-family:'IBM Plex Mono',monospace;
+}
+.opt.correct{border-color:var(--teal); background:var(--teal-tint);}
+.opt.correct .lt{background:var(--teal); border-color:var(--teal); color:#fff;}
+.opt.wrong{border-color:var(--red); background:var(--red-tint);}
+.opt.wrong .lt{background:var(--red); border-color:var(--red); color:#fff;}
+.opt.disabled{cursor:default;}
+.opt.disabled:hover{background:none;}
+.opt.dim{opacity:0.55;}
+
+.qexplain{margin-top:16px; padding:15px 16px; background:var(--bg); border-radius:9px; font-size:13.5px; border-left:3px solid var(--teal); display:none;}
+.qexplain.show{display:block;}
+.qexplain b{color:var(--teal);}
+.qnext-row{display:flex; justify-content:flex-end; margin-top:18px;}
+.btn-primary{
+  background:var(--red); color:#fff; border:none; padding:11px 22px; border-radius:8px;
+  font-weight:600; font-size:13.5px; cursor:pointer;
+}
+.btn-primary:disabled{opacity:0.35; cursor:not-allowed;}
+.btn-ghost{background:transparent; border:1.5px solid var(--line); padding:11px 22px; border-radius:8px; font-weight:600; font-size:13.5px; cursor:pointer;}
+.btn-ghost:disabled{opacity:0.35; cursor:not-allowed;}
+
+.quiz-result{text-align:center; padding:40px 20px;}
+.quiz-result .score{font-family:'Fraunces',serif; font-size:64px; margin:14px 0;}
+.quiz-result .score span{font-size:28px; color:var(--muted);}
+
+/* ---------- Flow / algorithm diagrams (from PPT schemes) ---------- */
+.flowcard{
+  background:var(--bg-panel); border:1px solid var(--line); border-radius:12px;
+  padding:22px 22px 20px; margin-top:14px;
+}
+.flowcard .fnote{font-size:12px; color:var(--muted); margin-bottom:16px;}
+.fstep{
+  display:flex; align-items:center; gap:12px; margin-bottom:10px;
+}
+.fstep .fbox{
+  background:var(--bg); border:1.5px solid var(--line); border-radius:9px; padding:10px 14px;
+  font-size:13px; font-weight:600; flex-shrink:0;
+}
+.fstep .farrow{color:var(--muted); font-size:15px; flex-shrink:0;}
+.fstep .fresult{font-size:13px; color:var(--muted);}
+.fsplit{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:10px 0 4px;}
+.fsplit.three{grid-template-columns:1fr 1fr 1fr;}
+.fbranch{
+  border:1.5px solid var(--line); border-radius:10px; padding:14px 15px; background:var(--bg);
+}
+.fbranch.red{border-color:#dfb3ba; background:var(--red-tint);}
+.fbranch.teal{border-color:#b7d4cf; background:var(--teal-tint);}
+.fbranch.amber{border-color:#e3caa0; background:var(--amber-tint);}
+.fbranch .flabel{
+  font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em;
+  color:var(--muted); margin-bottom:6px; font-weight:600;
+}
+.fbranch.red .flabel{color:var(--red-deep);}
+.fbranch.teal .flabel{color:var(--teal);}
+.fbranch.amber .flabel{color:var(--amber);}
+.fbranch .fhead{font-family:'Fraunces',serif; font-size:15px; margin-bottom:6px;}
+.fbranch ul{margin:0; padding-left:16px;}
+.fbranch li{font-size:12.5px; margin-bottom:4px;}
+.fbranch p{font-size:12.5px; margin:0;}
+.fdivider{
+  display:flex; align-items:center; gap:8px; margin:16px 0 10px; font-size:11px;
+  color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; font-family:'IBM Plex Mono',monospace;
+}
+.fdivider::before, .fdivider::after{content:""; flex:1; height:1px; background:var(--line);}
+.fseq{counter-reset:fseq; margin-top:6px;}
+.fseq-item{
+  counter-increment:fseq; display:flex; gap:14px; padding:12px 0; border-top:1px solid var(--line);
+}
+.fseq-item:first-child{border-top:none;}
+.fseq-item .fnum{
+  width:26px; height:26px; border-radius:50%; background:var(--red); color:#fff; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
+}
+.fseq-item .fbody b{display:block; font-size:13.5px; margin-bottom:3px;}
+.fseq-item .fbody span{font-size:12.5px; color:var(--muted);}
+@media (max-width:640px){
+  .fsplit, .fsplit.three{grid-template-columns:1fr;}
+}
+
+/* ---------- Scroll reveal ---------- */
+.reveal{opacity:0; transform:translateY(10px); animation:rise .5s ease forwards;}
+@keyframes rise{to{opacity:1; transform:none;}}
+
+@media (max-width:880px){
+  #sidebar{position:fixed; left:0; top:0; z-index:50; transform:translateX(-100%); transition:transform .25s ease; box-shadow:0 0 40px rgba(0,0,0,0.25); width:280px;}
+  #sidebar.open{transform:translateX(0);}
+  .sb-overlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:40;}
+  .sb-overlay.show{display:block;}
+  .topbar{display:flex;}
+  .hamburger{display:flex;}
+  .content-wrap, .quiz-shell{padding:32px 20px 90px;}
+  .algo-row{flex-direction:column;}
+  .topic-nav{flex-direction:column;}
+  .tn-btn{max-width:100%;}
+}
+@media (prefers-reduced-motion: reduce){
+  .reveal{animation:none; opacity:1; transform:none;}
+}
+</style>
+<div class="sb-overlay" id="sbOverlay"></div>
+<div id="app">
+  <aside id="sidebar">
+    <div class="sb-brand" id="sbBrandHome" style="cursor:pointer;">
+      <div class="cell"></div>
+      <div>
+        <div class="t1">Hematologi</div>
+        <div class="t2">Atlas Belajar · UKMPPD</div>
+      </div>
+    </div>
+    <div class="watermark">by Naruxhz</div>
+    <div class="search-box">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="searchInput" placeholder="Cari topik, gejala, tatalaksana…" autocomplete="off">
+    </div>
+    <div class="mode-toggle">
+      <button id="btnModeBelajar" class="active">Belajar</button>
+      <button id="btnModeQuiz">Kuis (<span id="quizCountLabel">28</span>)</button>
+    </div>
+    <nav id="navTree"></nav>
+    <div class="sb-progress">
+      <div class="lbl"><span>Progres belajar</span><span id="progressLabel">0 / 24</span></div>
+      <div class="bar"><div class="fill" id="progressFill" style="width:0%"></div></div>
+      <div class="sb-progress-foot">
+        <span>Tersimpan otomatis di browser ini</span>
+        <button id="resetProgressBtn" type="button">Reset</button>
+      </div>
+    </div>
+  </aside>
+
+  <main id="main">
+    <div class="topbar">
+      <button class="hamburger" id="hamburgerBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <b style="font-family:'Fraunces',serif;">Hematologi</b>
+    </div>
+    <div id="viewRoot"></div>
+  </main>
+</div>
+<script>
+/* =========================================================
+   DATA — bersumber dari Complete Class Materi Hematologi,
+   dr. Sutan Kahfi (Batch Februari 2025)
+   ========================================================= */
+const CATEGORIES = [
+  {id:'anemia-mikro', label:'Anemia Hipokrom Mikrositer', group:'Anemia'},
+  {id:'anemia-normo', label:'Anemia Normokrom Normositer', group:'Anemia'},
+  {id:'anemia-makro', label:'Anemia Makrositer', group:'Anemia'},
+  {id:'hemostasis', label:'Gangguan Hemostasis', group:null},
+  {id:'limfoma', label:'Limfoma', group:null},
+  {id:'limfadenitis', label:'Limfadenitis', group:null},
+  {id:'leukemia', label:'Leukemia', group:null},
+  {id:'lainnya', label:'Polisitemia, Myeloma & Lainnya', group:null},
+  {id:'imunologi', label:'Reaksi Imunologi', group:null},
+  {id:'transfusi', label:'Transfusi Darah', group:null},
+];
+
+const TOPICS = [
+// ---------------- ANEMIA HIPOKROM MIKROSITER ----------------
+{
+  id:'adb', cat:'anemia-mikro', level:'4A', title:'Anemia Defisiensi Besi',
+  sub:'Kegagalan pembentukan Hb akibat kekurangan besi — penyebab anemia mikrositik tersering.',
+  sections:[
+    {h:'Definisi', list:['Anemia defisiensi besi terjadi ketika cadangan besi tubuh habis sehingga sintesis heme (komponen inti hemoglobin) terganggu. Karena besi adalah bahan baku wajib pembentukan heme, sel darah merah yang dihasilkan menjadi lebih kecil (mikrositik) dan pucat (hipokrom) dibanding normal — tubuh "terpaksa" membuat eritrosit seadanya dari besi yang tersisa.','Ini adalah jenis anemia tersering di dunia, dan pada dasarnya selalu merupakan gejala dari suatu penyebab yang mendasari (misalnya perdarahan kronik) — bukan penyakit primer itu sendiri, sehingga mencari sumber kehilangan besinya sama pentingnya dengan mengoreksi anemianya.']},
+    {h:'Manifestasi Klinis', list:['Atrofi papil lidah & glositis — permukaan lidah tampak licin/halus karena papil lidah mengalami atrofi akibat turnover sel epitel yang tinggi namun kekurangan besi untuk regenerasi jaringan.','Angular cheilitis — retak dan peradangan di sudut mulut, juga akibat gangguan regenerasi epitel mukosa yang cepat membelah.','Pica — keinginan mengonsumsi bahan bukan makanan seperti tanah, es batu, atau kapur; mekanismenya belum sepenuhnya jelas namun diduga terkait perubahan neurotransmiter akibat defisiensi besi di otak.','Koilonikia (spoon nail) — kuku menjadi cekung seperti sendok, biasanya baru muncul pada defisiensi besi yang sudah berlangsung lama dan berat.']},
+    {h:'Darah Tepi', list:['Teardrop cell — eritrosit berbentuk seperti tetesan air mata, terbentuk saat sel yang kaku dan abnormal "diperas" melewati sinusoid limpa yang sempit.','Pencil cell / cigar cell — eritrosit memanjang menyerupai pensil/cerutu, mencerminkan sintesis hemoglobin yang tidak adekuat sehingga bentuk sel gagal mempertahankan bikonkavitas normalnya.','Poikilositosis (variasi bentuk) dan anisositosis (variasi ukuran) — mencerminkan populasi eritrosit yang diproduksi dalam kondisi kekurangan bahan baku, sehingga ukuran dan bentuknya tidak seragam.']},
+    {h:'Pemeriksaan Penunjang', list:['Profil besi menunjukkan pola yang saling berkaitan secara logis: Ferritin ↓↓ (cadangan besi tubuh benar-benar habis) — Serum Besi ↓↓ (besi yang beredar di darah juga rendah) — Saturasi Transferin ↓↓ (transferin, protein pengangkut besi, sebagian besar kosong tidak terisi besi) — TIBC ↑↑ (tubuh mengkompensasi dengan memproduksi lebih banyak transferin agar bisa "menangkap" besi sekecil apapun yang tersedia).','Serum feritin adalah pemeriksaan paling sensitif untuk ADB karena secara langsung mencerminkan cadangan besi di jaringan (terutama hati dan sumsum tulang) — namun perlu diingat feritin juga reaktan fase akut, sehingga bisa naik palsu saat ada inflamasi/infeksi bersamaan.','TIBC (Total Iron Binding Capacity) lebih sering dipakai secara klinis dibanding pemeriksaan transferin langsung karena lebih murah dan luas tersedia, walau secara konsep keduanya mengukur hal yang serupa.']},
+    {h:'Tatalaksana', sub:[
+      {t:'Tanpa gejala klinis', list:['Tingkatkan asupan besi dari makanan — daging merah dan hati ayam dipilih karena mengandung besi heme yang jauh lebih mudah diserap usus dibanding besi non-heme dari sumber nabati.','Hindari teh, kopi, PPI, dan antasida di sekitar waktu makan karena zat-zat ini menghambat absorpsi besi — tanin dalam teh/kopi mengikat besi menjadi kompleks yang sulit diserap, sementara obat penekan asam lambung mengurangi kelarutan besi yang dibutuhkan untuk penyerapan optimal di duodenum.']},
+      {t:'Dengan gejala klinis — lini pertama (besi elemental 150–200 mg)', list:['Ferro Sulfat (20% besi elemental) — sediaan 325 mg (65 mg besi elemental) 3×1, merupakan pilihan tersering karena murah dan efektif.','Ferro Fumarat (33% besi elemental) — sediaan 325 mg (107 mg besi elemental) 2×1, kandungan besi elementalnya paling tinggi per tablet sehingga frekuensi minumnya bisa lebih jarang.','Ferro Glukonat (12% besi elemental) — sediaan 325 mg (39 mg besi elemental) 4×1, sering dipilih bila pasien tidak tahan efek samping GI sediaan lain karena iritasi lambungnya relatif lebih ringan.','Target terapi: Hb naik 1 g/dL dalam 2–3 minggu sebagai tanda respons awal yang baik, mencapai Hb 11 g/dL dalam 3 bulan, kemudian terapi tetap dilanjutkan hingga 6–12 bulan dengan dosis rumatan 60 mg besi elemental/hari — bukan dihentikan begitu Hb normal, karena cadangan besi jaringan (feritin) butuh waktu lebih lama untuk terisi kembali dibanding Hb itu sendiri.']},
+      {t:'Lini kedua', list:['Besi parenteral dipertimbangkan bila ada malabsorpsi (misalnya penyakit celiac, riwayat bedah bariatrik) atau intoleransi berat terhadap sediaan oral, karena rute IV melewati proses absorpsi usus yang bermasalah tersebut.']},
+      {t:'Suportif', list:['Vitamin C (asam askorbat) diberikan bersamaan karena mengubah besi feri (Fe³⁺) menjadi bentuk fero (Fe²⁺) yang jauh lebih mudah diserap oleh enterosit duodenum.']},
+      {t:'Transfusi', list:['PRC dipertimbangkan bila Hb <7 g/dL atau ada gangguan hemodinamik (misalnya takikardia berat, hipotensi) — bukan untuk mengoreksi anemia secara rutin, karena tatalaksana definitif ADB tetaplah suplementasi besi, bukan transfusi.']},
+    ]},
+    {h:'Respon & Monitoring Terapi', list:['Retikulosit mulai naik pada minggu pertama terapi (sumsum tulang merespons cepat begitu bahan baku besi tersedia), mencapai puncak sekitar hari ke-10, lalu perlahan kembali ke nilai normal setelah hari ke-14 seiring Hb yang mulai membaik.','Hb secara rata-rata naik sekitar 0,15 g/dL per hari, atau kira-kira 2 g/dL setelah 3–4 minggu terapi adekuat — kecepatan ini menjadi patokan untuk menilai apakah terapi berjalan efektif atau perlu dievaluasi ulang (misalnya kepatuhan minum obat atau sumber perdarahan yang belum teratasi).','Hb biasanya kembali normal setelah 4–10 minggu terapi, meski terapi tetap dilanjutkan lebih lama lagi untuk mengisi ulang cadangan besi jaringan.']},
+  ],
+  mnemonic:{label:'Profil Besi pada ADB', text:'Ferritin ↓↓ · Serum Besi ↓↓ · Saturasi Transferin ↓↓ · TIBC ↑↑ — kebalikan dari Anemia Penyakit Kronis.'},
+  table:{title:'Perbandingan Profil Besi Anemia Mikrositer', head:['Kondisi','Serum Besi','Ferritin','TIBC','Sat. Transferin'],
+    rows:[['ADB','↓↓','↓↓','↑↑','↓↓'],['Anemia Penyakit Kronis','↓','N / ↑','↓↓','N / ↓'],['Thalassemia','N / ↑','N / ↑','N','N / ↑'],['Sideroblastik','↑','↑','N / ↓','↑']]}
+},
+{
+  id:'apk', cat:'anemia-mikro', level:'4A', title:'Anemia Penyakit Kronis (ACD)',
+  sub:'Anemia yang menyertai kondisi inflamasi atau penyakit kronis yang mendasari.',
+  sections:[
+    {h:'Patofisiologi Singkat', list:['Saat tubuh mengalami inflamasi kronik (infeksi lama, autoimun, keganasan), hati melepaskan hepcidin dalam jumlah besar sebagai bagian respons imun. Hepcidin ini "mengunci" besi di dalam sel penyimpan (makrofag dan hepatosit) sehingga besi tidak bisa dilepas ke sirkulasi untuk dipakai eritropoiesis — bukan karena tubuh kekurangan besi, tapi karena besinya "disembunyikan" sebagai strategi pertahanan tubuh (membatasi besi yang bisa dipakai kuman patogen untuk berkembang biak).','Selain itu, sitokin inflamasi juga menekan produksi eritropoietin dan memperpendek usia eritrosit, sehingga produksi sel darah merah semakin tertekan dari beberapa sisi sekaligus.']},
+    {h:'Gejala', list:['5L: Lesu, Lelah, Letih, Lemah, Lalai — gejala umum anemia yang tidak spesifik, muncul karena berkurangnya kapasitas darah membawa oksigen ke jaringan.','Selalu terdapat riwayat penyakit kronis yang mendasari (misalnya rheumatoid arthritis, tuberkulosis, gagal ginjal kronik, atau keganasan) — mencari dan menatalaksana penyakit dasarnya menjadi kunci utama, bukan sekadar mengoreksi anemianya.']},
+    {h:'Pemeriksaan Penunjang', list:['Gambaran khasnya adalah normositik normokrom, karena derajat gangguannya biasanya masih ringan-sedang.','Baru menjadi mikrositik hipokrom pada kasus yang sudah sangat kronis dan berat, saat gangguan pemanfaatan besinya makin parah.','Pola profil besi: Serum besi ↓ (karena "dikunci" hepcidin), Ferritin normal/↑ (karena cadangan besi sebenarnya cukup — bahkan feritin bisa naik sebagai reaktan fase akut), TIBC ↓↓ (berkebalikan dengan ADB — tubuh tidak sedang "kelaparan" besi sehingga tidak perlu memproduksi banyak transferin), saturasi transferin normal/↓.']},
+    {h:'Tatalaksana', list:['Tatalaksana utama adalah mengobati penyakit kronis/inflamasi yang mendasari — begitu inflamasi terkontrol, produksi hepcidin akan turun dan eritropoiesis kembali membaik dengan sendirinya.','Suplementasi besi umumnya tidak banyak membantu (karena masalahnya bukan kekurangan besi absolut) kecuali terbukti ada defisiensi besi yang menyertai.','Transfusi PRC dipertimbangkan bila Hb <7 g/dL atau bergejala berat, sebagai tindakan suportif sambil menunggu penyakit dasarnya terkontrol.']},
+  ],
+  mnemonic:{label:'"Fe Tal Cidera Kronis"', text:'Alur pikir cepat membedakan 4 anemia mikrositik lewat TIBC & feritin: TIBC↓↓ + feritin N/↑ + besi sumsum tulang (+) → Anemia Penyakit Kronis. TIBC↑↑ + feritin↓↓ + besi sumsum tulang (–) → Anemia Defisiensi Besi.'}
+},
+{
+  id:'thalassemia', cat:'anemia-mikro', level:'2', title:'Thalassemia',
+  sub:'Penyakit genetik autosomal resesif akibat defek sintesis rantai globin.',
+  sections:[
+    {h:'Patofisiologi Singkat', list:['Hemoglobin normal tersusun dari 2 rantai alfa dan 2 rantai beta globin. Pada thalassemia, terjadi mutasi/delesi gen yang membuat salah satu rantai globin (alfa atau beta) diproduksi berkurang atau tidak sama sekali.','Rantai globin yang produksinya normal jadi berlebih relatif dan mengendap di dalam sel, merusak membran eritrosit dari dalam serta memicu eritrosit dihancurkan lebih dini di limpa (hemolisis) maupun bahkan sebelum sempat matang di sumsum tulang (eritropoiesis inefektif) — inilah sebabnya thalassemia menimbulkan anemia yang jauh lebih berat daripada sekadar "kurang bahan baku" seperti pada ADB.']},
+    {h:'Klinis', list:['Anemia dan ikterus — ikterus muncul akibat pemecahan eritrosit berlebihan (hemolisis) yang melepaskan bilirubin dalam jumlah besar.','Hepatosplenomegali — terjadi karena dua hal sekaligus: limpa dan hati bekerja keras menghancurkan eritrosit abnormal (ekstramedular hemolisis), dan keduanya juga menjadi tempat eritropoiesis ekstrameduler sebagai usaha kompensasi tubuh saat sumsum tulang tidak mencukupi.','Facies cooley / rodent face — wajah khas dengan dahi menonjol, tulang pipi melebar, dan jembatan hidung tenggelam; ini terjadi karena sumsum tulang yang terus-menerus "dipaksa kerja lembur" untuk kompensasi anemia sampai meluas ke tulang wajah dan tengkorak, sehingga tulang menebal dan berubah bentuk.','Hiperpigmentasi kulit — akibat penumpukan besi (dari hemolisis kronis maupun transfusi berulang) yang terdeposit di kulit.','Riwayat keluarga thalassemia & riwayat transfusi berulang penting ditanyakan karena penyakit ini diturunkan secara autosomal resesif — kedua orang tua biasanya carrier tanpa gejala.']},
+    {h:'Klasifikasi', sub:[
+      {t:'Berdasarkan Fenotip', list:['Mayor — transfusion dependent, gejala berat muncul sejak usia dini karena hampir tidak ada rantai globin fungsional yang diproduksi.','Minor (trait) — asimtomatik atau anemia ringan saja, karena hanya satu alel yang bermutasi sehingga produksi rantai globin masih cukup untuk mencegah gejala berat.']},
+      {t:'Thalassemia Alfa (delesi kromosom 16)', list:['Minor: α-thal 2 (silent carrier, kehilangan 1 dari 4 gen alfa) & α-thal 1 (carrier, kehilangan 2 gen) — keduanya asimtomatik atau hanya anemia ringan karena masih ada cukup gen alfa yang berfungsi.','HbH Disease (kehilangan 3 dari 4 gen alfa): rantai beta yang berlebih membentuk tetramer HbH (4 rantai beta), yang tidak stabil dan mudah rusak, sehingga menimbulkan anemia hemolitik kronik dan splenomegali.','Hb Bart\'s (kehilangan seluruh 4 gen alfa): rantai gamma janin yang berlebih membentuk tetramer Hb Bart\'s yang punya afinitas oksigen sangat tinggi sehingga sulit melepaskan oksigen ke jaringan janin — kondisi ini fatal dan menyebabkan hidrops fetalis serta kematian janin dalam kandungan (IUFD).']},
+      {t:'Thalassemia Beta (mutasi kromosom 11, mayoritas di Indonesia)', list:['Minor: asimtomatik, umumnya baru terdeteksi insidental saat skrining MDT (mean corpuscular volume rendah pada pemeriksaan rutin) — penting dikenali terutama untuk konseling pranikah karena berisiko menurunkan thalassemia mayor bila menikah dengan sesama carrier.','Mayor: karena rantai beta hampir tidak diproduksi sama sekali, gejala baru muncul setelah usia 6 bulan (saat produksi HbF janin yang tadinya melindungi mulai digantikan HbA dewasa yang butuh rantai beta) — anemia berat, transfusi seumur hidup, dan splenomegali progresif.']},
+    ]},
+    {h:'Pemeriksaan Penunjang', list:['Darah tepi: mikrositik hipokrom, anisositosis dan poikilositosis (variasi ukuran & bentuk akibat produksi eritrosit yang tidak sempurna), sel target (target cell — eritrosit dengan area pucat di tengah dikelilingi cincin merah, akibat rasio membran-terhadap-hemoglobin yang tidak proporsional), dan Howell-Jolly body (sisa fragmen nukleus yang biasanya dibersihkan oleh limpa yang sehat — munculnya menandakan fungsi limpa mulai terganggu).','Elektroforesis Hb adalah gold standard karena secara langsung mengukur proporsi tiap jenis hemoglobin: pada thalassemia alfa akan tampak HbH & Hb Bart\'s; pada thalassemia beta akan tampak HbA1 menurun (karena rantai beta kurang) dengan HbA2 dan HbF meningkat sebagai kompensasi (tubuh "beralih" memproduksi jenis Hb yang tidak membutuhkan rantai beta normal).']},
+    {h:'Tatalaksana', list:['Transfusi darah pertama diberikan bila Hb <7 g/dL (dipastikan dengan 2× pemeriksaan dalam 2 minggu untuk menyingkirkan variasi sesaat) atau Hb >7 namun sudah bergejala klinis (facies cooley, gangguan tumbuh kembang) — prinsipnya adalah menjaga Hb cukup tinggi agar sumsum tulang tidak terus-menerus "dipaksa kerja lembur" yang justru memperparah deformitas tulang.','Transfusi rutin berikutnya dipertahankan bila Hb <8 g/dL, untuk menjaga Hb pra-transfusi tetap di ambang aman.','Asam folat 2×1 mg/hari serta vitamin E & C diberikan sebagai suportif — asam folat karena eritropoiesis yang sangat aktif membutuhkan folat ekstra, sementara vitamin E & C berperan sebagai antioksidan melindungi membran eritrosit yang rapuh.','Splenektomi dipertimbangkan bila splenomegali sudah masif (menyebabkan hipersplenisme yang memperparah anemia) atau kebutuhan PRC sudah >200–220 mL/kgBB/tahun — tanda bahwa limpa terlalu agresif menghancurkan eritrosit maupun sel transfusi.']},
+    {h:'Komplikasi', list:['Hemolisis kronis dan terutama transfusi berulang menyebabkan penumpukan besi berlebih (overload besi) di berbagai organ — jantung, hati, dan kelenjar endokrin — yang disebut hemosiderosis, dan bisa berujung pada gagal jantung, sirosis hati, hingga gangguan pertumbuhan/pubertas bila tidak dicegah.','Tatalaksana pencegahan/koreksi overload besi adalah Iron Chelating Agent (deferoxamine, deferiprone, atau deferasirox) yang bekerja mengikat kelebihan besi agar bisa dikeluarkan tubuh melalui urin/feses, biasanya dimulai setelah pasien menerima sekitar 10–20 kali transfusi atau feritin serum sudah cukup tinggi.']},
+  ],
+},
+{
+  id:'sideroblastik', cat:'anemia-mikro', level:'2', title:'Anemia Sideroblastik',
+  sub:'Defek eritropoiesis pada jalur porfirin — besi masuk mitokondria namun gagal terikat pada heme.',
+  sections:[
+    {h:'Patofisiologi Singkat', list:['Sintesis heme normalnya terjadi melalui serangkaian reaksi enzimatik dalam mitokondria eritroblas, di mana besi akhirnya digabungkan dengan protoporfirin membentuk heme. Pada anemia sideroblastik, ada gangguan pada enzim di jalur ini (paling sering ALA-synthase) sehingga besi yang sudah masuk ke mitokondria gagal diikat menjadi heme.','Akibatnya besi yang tidak terpakai menumpuk mengelilingi nukleus eritroblas membentuk gambaran cincin (ring sideroblast) — sementara di sisi lain tubuh justru "mengira" kekurangan besi sehingga terus menyerap dan mengedarkan besi lebih banyak, menjelaskan mengapa profil besinya berlawanan dengan ADB (serum besi dan feritin justru meningkat).']},
+    {h:'Etiologi', sub:[
+      {t:'Kongenital', list:['X-linked recessive — paling sering akibat mutasi gen ALAS2, mengenai laki-laki dengan pola pewarisan terkait kromosom X.','Autosomal recessive — bentuk yang lebih jarang, terkait mutasi gen lain dalam jalur sintesis heme.']},
+      {t:'Acquired', list:['Klonal/neoplastik — akibat mutasi somatik pada sel prekursor eritroid.','Myelodysplastic syndrome with ring sideroblast (MDS-RS) — salah satu subtipe sindrom mielodisplastik yang secara spesifik ditandai dominasi ring sideroblast di sumsum tulang.']},
+      {t:'Metabolik/reversibel', list:['Alkohol — bersifat toksik langsung terhadap mitokondria eritroblas dan mengganggu metabolisme vitamin B6 (piridoksin, kofaktor penting ALA-synthase).','Obat: isoniazid, chloramphenicol, dan linezolid — ketiganya diketahui mengganggu fungsi mitokondria atau menghambat kerja piridoksin sebagai kofaktor enzim sintesis heme.','Toksisitas zink — zink berlebih dapat mengganggu absorpsi tembaga, yang juga dibutuhkan sebagai kofaktor enzim dalam jalur sintesis heme.']},
+    ]},
+    {h:'Diagnosis', list:['Diagnosis ditegakkan melalui pemeriksaan sumsum tulang dengan pewarnaan Prussian blue, yang akan menunjukkan gambaran ring sideroblastik — endapan besi yang mengelilingi nukleus eritroblas membentuk cincin, sebagai bukti langsung bahwa besi gagal diintegrasikan ke dalam heme meski sudah tersedia dalam jumlah cukup bahkan berlebih.']},
+  ],
+},
+// ---------------- ANEMIA NORMOKROM NORMOSITER ----------------
+{
+  id:'anemia-normo-overview', cat:'anemia-normo', level:'1', title:'Alur Diagnosis Anemia Normokrom Normositer',
+  sub:'Retikulosit, jaundice, dan Coombs test sebagai kunci penelusuran etiologi.',
+  sections:[
+    {h:'Cara Berpikir', list:['Mulai dari hitung retikulosit — meningkat (>1,5%) menunjukkan sumsum tulang masih responsif (kompensasi hemolisis/perdarahan); rendah/normal menunjukkan kegagalan produksi.']},
+  ],
+  diagram:{title:'Algoritma Anemia Normositik Normokromik', note:'Skema penelusuran etiologi anemia dengan MCV normal.', html:`
+    <div class="fstep"><div class="fbox">Anemia Normositik Normokromik</div></div>
+    <div class="fdivider">Nilai Hitung Retikulosit</div>
+    <div class="fsplit">
+      <div class="fbranch red">
+        <div class="flabel">↑ Retikulosit (&gt;1,5%)</div>
+        <div class="fhead">Nilai Jaundice</div>
+        <ul>
+          <li><b>Jaundice (+)</b> → Anemia Hemolitik → cek <b>Coombs Test</b>: (+) Imun → AIHA, inkompatibilitas ABO-Rh · (–) Non-imun → G6PD, Malaria</li>
+          <li><b>Jaundice (–)</b> → Anemia e.c. Perdarahan</li>
+        </ul>
+      </div>
+      <div class="fbranch teal">
+        <div class="flabel">↓ / N Retikulosit</div>
+        <div class="fhead">Nilai WBC & Trombosit</div>
+        <ul>
+          <li>Retikulosit normal → <b>Anemia on CKD</b></li>
+          <li>WBC & Trombosit juga turun → <b>Anemia Aplastik</b></li>
+        </ul>
+      </div>
+    </div>`}
+},
+{
+  id:'aiha', cat:'anemia-normo', level:'3A', title:'AIHA (Autoimmune Hemolytic Anemia)',
+  sub:'Penghancuran eritrosit oleh autoantibodi.',
+  sections:[
+    {h:'Patofisiologi Singkat', list:['Sistem imun pasien "salah mengenali" antigen di permukaan eritrosit sendiri sebagai benda asing, lalu membentuk autoantibodi yang menempel pada eritrosit tersebut. Eritrosit yang dilapisi antibodi ini kemudian ditangkap dan dihancurkan oleh makrofag di limpa (dan kadang hati), atau langsung dilisiskan oleh sistem komplemen di pembuluh darah — menjelaskan mengapa terjadi anemia hemolitik dengan tanda-tanda peningkatan destruksi eritrosit (bilirubin & LDH naik, retikulosit naik sebagai usaha kompensasi sumsum tulang).']},
+    {h:'Klasifikasi', list:['Primer (idiopatik): terjadi tanpa penyakit dasar yang jelas.','Sekunder: menyertai penyakit lain seperti limfoma, Evans syndrome, SLE, antiphospholipid syndrome, atau IBD — pada kondisi ini sistem imun yang sudah "kacau" akibat penyakit dasarnya ikut menyerang eritrosit.','Diinduksi obat: golongan penisilin, kinin, kuinidin, sulfonamid — obat dapat menempel pada membran eritrosit dan mengubahnya menjadi "tampak asing" di mata sistem imun, atau memicu pembentukan kompleks imun yang ikut merusak eritrosit.','Diinduksi aloantibodi: reaksi hemolitik transfusi (antibodi terhadap eritrosit donor) dan penyakit hemolitik pada bayi baru lahir (antibodi ibu menyerang eritrosit janin akibat inkompatibilitas Rh/ABO).','Warm (diperantarai IgG, bereaksi optimal pada suhu tubuh) vs Cold (diperantarai IgM, bereaksi optimal pada suhu lebih rendah dari suhu tubuh) — pembagian ini penting karena menentukan pola klinis dan strategi terapi yang sangat berbeda.']},
+    {h:'Pemeriksaan Penunjang', list:['Normositik normokrom — karena masalahnya bukan pada sintesis Hb, melainkan destruksi eritrosit yang sudah matang.','Retikulositosis (>2%) — sumsum tulang berusaha mengkompensasi hilangnya eritrosit dengan mempercepat produksi.','LDH dan bilirubin indirek meningkat — keduanya dilepaskan saat eritrosit pecah (hemolisis), menjadi penanda tidak langsung derajat hemolisis.','Direct antiglobulin test (DAT) / Coombs test positif — pemeriksaan kunci yang membuktikan adanya antibodi/komplemen menempel langsung pada eritrosit pasien, sehingga menjadi dasar diagnosis definitif AIHA.','Sferosit (eritrosit bulat tanpa area pucat di tengah, akibat sebagian membrannya "digigit" makrofag) pada tipe warm; aglutinasi (eritrosit saling menggumpal) pada tipe cold akibat IgM yang mengikat banyak eritrosit sekaligus.']},
+    {h:'Tatalaksana', list:['Lini pertama: kortikosteroid — Prednison 1 mg/kgBB/hari oral, atau metilprednisolon IV pada kasus berat, bekerja menekan sistem imun agar produksi autoantibodi dan aktivitas makrofag penghancur eritrosit berkurang.','Lini kedua bila steroid gagal/kambuh: splenektomi (menghilangkan tempat utama destruksi eritrosit) atau anti-CD20 (rituximab, menekan sel B penghasil autoantibodi).','Transfusi memerlukan perhatian khusus karena sel darah donor pun berisiko dikenali dan dihancurkan oleh autoantibodi pasien yang sama — crossmatch menjadi lebih sulit dan hasil transfusi kadang tidak bertahan lama, sehingga transfusi hanya diberikan bila benar-benar diperlukan secara klinis (bukan sekadar mengejar angka Hb).']},
+  ],
+  table:{title:'Warm vs Cold AIHA', head:['Aspek','Warm (70%)','Cold (30%)'],
+    rows:[
+      ['Suhu aglutinasi','Suhu tubuh (37°C)','Di bawah suhu tubuh (4–37°C)'],
+      ['Klinis','Akut & berat; penyakit kolagen, idiopatik','Acrocyanosis, pasca infeksi, idiopatik'],
+      ['Prevalensi','Usia muda','Usia tua'],
+      ['Direct Coombs test','Positif IgG','Positif komplemen C3, IgG negatif'],
+      ['Tipe antibodi','IgG (warm agglutinin)','IgM (cold agglutinin) mengikat C3'],
+      ['Terapi','Kortikosteroid dosis tinggi, splenektomi bila resisten','Hindari paparan dingin; steroid & splenektomi kurang efektif'],
+    ]}
+},
+{
+  id:'g6pd', cat:'anemia-normo', level:'3A', title:'Anemia Defisiensi G6PD',
+  sub:'Enzimopati terkait kromosom X (Xq28) yang paling umum diderita manusia.',
+  sections:[
+    {h:'Patofisiologi Singkat', list:['Enzim G6PD (Glukosa-6-Fosfat Dehidrogenase) berperan menjaga persediaan glutation tereduksi di dalam eritrosit — molekul yang melindungi sel dari kerusakan akibat stres oksidatif. Saat G6PD kurang/tidak berfungsi, eritrosit kehilangan pertahanan antioksidannya.','Ketika terpapar zat pengoksidasi (obat tertentu, infeksi, atau kacang fava), hemoglobin di dalam eritrosit yang tidak terlindungi ini akan mengalami denaturasi dan mengendap membentuk Heinz bodies, lalu eritrosit yang rusak ini dihancurkan baik oleh makrofag limpa (menyisakan gambaran bite cells, karena sebagian membrannya "digigit") maupun langsung pecah di pembuluh darah (hemolisis intravaskular) — menjelaskan mengapa hemolisis pada G6PD bersifat akut dan episodik, hanya muncul saat ada pemicu.']},
+    {h:'Epidemiologi', list:['Prevalensi tinggi di daerah endemis malaria, termasuk Asia Tenggara & Indonesia — diduga karena eritrosit defisiensi G6PD justru kurang nyaman menjadi tempat hidup parasit malaria, memberi keuntungan evolusioner (heterozygote advantage) bagi pembawa gen ini di daerah endemis.','Gen G6PD terletak pada lengan panjang kromosom X (Xq28), berdekatan dengan gen hemofilia A, diskeratosis kongenita, dan buta warna — kedekatan lokasi ini kadang menjadi alasan kondisi-kondisi tersebut disebut bersamaan dalam soal-soal genetik terkait kromosom X.']},
+    {h:'Manifestasi Klinis', list:['Sebagian besar pasien asimtomatik sehari-hari karena eritrosit yang belum terpapar stresor oksidatif tetap berfungsi normal.','Gejala muncul saat eritrosit mengalami stres oksidatif — dipicu oleh obat (penyebab tersering), infeksi (yang juga menghasilkan reactive oxygen species selama respons imun), atau konsumsi kacang fava (mengandung senyawa oksidator vicine dan convicine).','Hemolisis akut ditandai lemah, nyeri punggung (diduga terkait pelepasan hemoglobin bebas yang mengiritasi ginjal), anemia, dan ikterus yang muncul mendadak beberapa hari setelah paparan pemicu.','Bilirubin tidak terkonjugasi meningkat, LDH meningkat, dan retikulositosis — pola klasik penanda hemolisis akut, serupa dengan AIHA namun pemicunya berbeda (oksidatif, bukan autoimun).']},
+    {h:'Pemeriksaan Penunjang', list:['Heinz body pada pewarnaan supravital — tampak sebagai presipitat hemoglobin yang terdenaturasi di dalam eritrosit, bukti langsung kerusakan oksidatif pada hemoglobin.','Bite cells — eritrosit dengan cekungan di tepinya, terbentuk saat makrofag limpa "menggigit" bagian membran yang mengandung Heinz bodies sambil membiarkan sisa selnya tetap beredar.']},
+  ],
+  mnemonic:{label:'Obat Pencetus Hemolisis G6PD (Definite Risk)', text:'Primaquine · Dapsone · Sulfametoksazol · Kotrimoksazol · Nitrofurantoin · Nalidixic acid · Niridazole · Acetanilide · Naphthalene · Methylene blue'}
+},
+{
+  id:'ckd-anemia', cat:'anemia-normo', level:'3A', title:'Anemia on CKD',
+  sub:'Anemia akibat defisiensi eritropoietin pada gagal ginjal kronik.',
+  sections:[
+    {h:'Patofisiologi', list:['Ginjal yang sehat memiliki sel-sel khusus di korteks yang mendeteksi kadar oksigen darah, dan akan melepaskan eritropoietin (EPO) saat mendeteksi hipoksia, yang kemudian merangsang sumsum tulang memproduksi lebih banyak eritrosit.','Pada CKD, jaringan ginjal yang berfungsi rusak progresif sehingga sel penghasil EPO ikut berkurang — akibatnya sekresi EPO terganggu meski tubuh sebenarnya butuh lebih banyak eritrosit (misalnya karena anemia itu sendiri menyebabkan hipoksia jaringan). Ini adalah lingkaran yang sulit diputus tanpa intervensi dari luar berupa suplementasi EPO.']},
+    {h:'Manifestasi Klinis', list:['5L: lemah, letih, lesu — gejala umum anemia akibat berkurangnya kapasitas darah membawa oksigen.','Konjungtiva anemis pada pemeriksaan fisik.','Disertai manifestasi gagal ginjal kronik lainnya seperti edema, hipertensi, mual, dan penurunan produksi urin — penting untuk mengenali anemia ini sebagai bagian dari gambaran klinis CKD secara keseluruhan, bukan kondisi yang berdiri sendiri.']},
+    {h:'Pemeriksaan Penunjang', list:['Morfologi darah tepi (MDT): normositik normokromik — karena masalahnya pada jumlah produksi eritrosit (kekurangan sinyal EPO), bukan pada kualitas sintesis hemoglobinnya.','Fungsi ginjal: ureum dan kreatinin meningkat, mengonfirmasi adanya penurunan fungsi ginjal yang mendasari.','USG: ginjal mengecil — tanda kerusakan struktural kronik pada CKD lanjut.','Kadar eritropoietin menurun, mengonfirmasi mekanisme utama anemia pada pasien ini.']},
+    {h:'Tatalaksana', list:['Mengatasi penyakit ginjal dasar sesuai penyebab dan stadium CKD-nya (kontrol tekanan darah, gula darah, dan faktor risiko progresi lainnya).','Suplementasi eritropoietin (ESA) untuk mengganti sinyal yang seharusnya diproduksi ginjal.','Transfusi darah dipertimbangkan bila anemia berat atau bergejala, sebagai tindakan suportif jangka pendek — bukan solusi jangka panjang karena tidak mengoreksi defisiensi EPO yang mendasarinya.']},
+  ]
+},
+{
+  id:'aplastik', cat:'anemia-normo', level:'2', title:'Anemia Aplastik',
+  sub:'Anemia berat/fatal akibat gangguan stem cell sumsum tulang → pansitopenia.',
+  sections:[
+    {h:'Patofisiologi Singkat', list:['Anemia aplastik terjadi ketika sel punca hematopoietik (hematopoietic stem cell) di sumsum tulang rusak atau berkurang drastis jumlahnya, sehingga sumsum tulang gagal memproduksi ketiga lini sel darah (eritrosit, leukosit, trombosit) secara bersamaan — inilah yang membedakannya dari anemia jenis lain yang biasanya hanya mengganggu lini eritrosit saja.','Kerusakan ini bisa terjadi melalui serangan autoimun terhadap sel punca, toksisitas langsung bahan kimia/obat/radiasi, atau infeksi virus yang merusak sumsum tulang — pada banyak kasus penyebab pastinya tidak dapat ditemukan (idiopatik).']},
+    {h:'Etiologi', list:['Idiopatik — merupakan penyebab tersering, diduga besar berkaitan dengan mekanisme autoimun terhadap sel punca yang belum sepenuhnya dipahami.','Radiasi — merusak DNA sel punca yang sedang aktif membelah.','Obat & bahan kimia: kemoterapi (bekerja menghambat pembelahan sel, termasuk sel punca normal), benzene, garam emas, kloramfenikol, hydantoin, carbamazepine — sebagian bersifat dose-dependent (predictable) dan sebagian bersifat idiosinkratik (reaksi individual yang tidak bisa diprediksi dari dosis).','Infeksi virus: hepatitis (terutama hepatitis non-A non-B non-C), EBV, CMV, parvovirus, HIV — virus-virus ini dapat menginfeksi atau memicu respons imun yang merusak sel punca sumsum tulang.','Penyakit imun, hemoglobinuria paroksismal nokturnal (PNH, yang dapat tumpang tindih dengan anemia aplastik), dan kehamilan (jarang, biasanya membaik setelah persalinan).']},
+    {h:'Manifestasi Klinis', list:['Gejala anemia: 5L (lemah, letih, lesu, lunglai, lalai/lupa), pucat, pusing, jantung berdebar, dan sesak napas — akibat berkurangnya eritrosit.','Gejala trombositopenia: perdarahan mukosa dan memar di bawah kulit (ekimosis) — akibat berkurangnya trombosit yang berperan dalam hemostasis primer.','Gejala leukopenia: rentan mengalami infeksi berulang dan demam — akibat berkurangnya leukosit yang bertugas melawan infeksi. Kombinasi ketiga gejala ini sekaligus (bukan hanya salah satu) adalah kunci mencurigai pansitopenia seperti pada anemia aplastik.']},
+    {h:'Pemeriksaan Penunjang', list:['Gold Standard: Biopsi sumsum tulang, yang akan menunjukkan gambaran hiposelular dengan banyak jaringan lemak menggantikan sel-sel hematopoietik normal — membuktikan secara langsung bahwa sumsum tulang memang "kosong", bukan sekadar tertekan sementara.']},
+    {h:'Tatalaksana', list:['Identifikasi dan hentikan/tatalaksana etiologi dasar bila diketahui (misalnya menghentikan obat penyebab).','Suportif: transfusi (bila Hb <7 g/dL), serta pencegahan perdarahan & infeksi (misalnya menghindari trauma, kewaspadaan terhadap tanda infeksi dini) selagi menunggu terapi definitif bekerja.','Definitif: transplantasi sumsum tulang dari donor HLA matched, idealnya saudara kandung — memberi sumber sel punca baru yang sehat untuk menggantikan yang rusak, dan merupakan satu-satunya terapi yang berpotensi kuratif total.','Imunosupresi (ATG, ALG, cyclosporin, cyclophosphamide, kortikosteroid) menjadi pilihan bila transplantasi tidak memungkinkan (misalnya tidak ada donor cocok) — bekerja dengan asumsi bahwa kerusakan sel punca sebagian besar dimediasi oleh serangan autoimun, sehingga menekan sistem imun dapat memberi kesempatan sel punca yang tersisa untuk pulih.']},
+  ]
+},
+// ---------------- ANEMIA MAKROSITER ----------------
+{
+  id:'b12', cat:'anemia-makro', level:'2', title:'Anemia Defisiensi Vitamin B12',
+  sub:'Gangguan sintesis eritrosit & myelinisasi sistem saraf akibat defisiensi kobalamin.',
+  sections:[
+    {h:'Patofisiologi Singkat', list:['Vitamin B12 (kobalamin) adalah kofaktor penting untuk enzim yang terlibat dalam sintesis DNA. Saat kekurangan, pembelahan sel — termasuk sel prekursor eritrosit di sumsum tulang — menjadi terganggu, sementara sitoplasma sel tetap berkembang normal. Akibatnya terbentuk sel besar dengan inti yang "tertinggal" perkembangannya (megaloblastik), termasuk eritrosit besar berbentuk oval (makroovalosit).','B12 juga berperan penting dalam metabolisme mielin saraf, sehingga defisiensinya juga menimbulkan gangguan neurologis (kesemutan, kebas, ataksia) — inilah yang membedakannya secara klinis dari defisiensi asam folat, yang meski sama-sama menyebabkan anemia megaloblastik, tidak mengganggu saraf.','Absorpsi B12 memerlukan faktor intrinsik yang diproduksi sel parietal lambung, kemudian kompleks B12-faktor intrinsik diserap secara spesifik di ileum terminal — sehingga gangguan di lambung (gastritis atrofi) maupun di ileum (reseksi usus, penyakit Crohn) sama-sama bisa menyebabkan defisiensi B12.']},
+    {h:'Etiologi', sub:[
+      {t:'Malabsorpsi', list:['Defisiensi faktor intrinsik akibat gastritis atrofi autoimun (anemia pernisiosa) — sistem imun menyerang sel parietal lambung penghasil faktor intrinsik.','Gastrektomi — mengurangi jumlah sel parietal penghasil faktor intrinsik secara langsung.','Crohn disease — terutama bila mengenai ileum terminal, tempat spesifik penyerapan kompleks B12-faktor intrinsik.']},
+      {t:'Malnutrisi', list:['Diet vegan/vegetarian ketat — karena B12 secara alami hanya terdapat pada produk hewani, sehingga pola makan tanpa suplementasi berisiko defisiensi dalam jangka panjang (biasanya butuh waktu bertahun-tahun karena cadangan B12 di hati cukup besar).']},
+    ]},
+    {h:'Diagnosis', list:['MCV meningkat dan hitung retikulosit rendah — mencerminkan eritropoiesis yang tidak efektif meski sel prekursornya banyak (karena gagal membelah dengan benar).','Apusan darah tepi: makroovalosit (eritrosit besar oval) dan neutrofil hipersegmentasi (inti neutrofil dengan lebih dari 5 lobus, akibat gangguan pembelahan sel yang sama juga memengaruhi lini leukosit).','Vitamin B12 serum rendah (<100 pg/mL) sebagai pemeriksaan skrining awal.','Asam metilmalonat dan homosistein meningkat — keduanya adalah substrat metabolik yang membutuhkan B12 sebagai kofaktor untuk diproses lebih lanjut, sehingga menumpuk saat B12 kurang; ini membantu membedakan dari defisiensi folat murni (di mana metilmalonat tetap normal).','Gold Standard: Tes Schilling untuk memastikan penyebab spesifik malabsorpsi (defisiensi faktor intrinsik vs gangguan usus lain).']},
+    {h:'Tatalaksana', list:['Vitamin B12 parenteral (IM/SC) 1 mg/hari selama 1 minggu untuk cepat mengisi kembali cadangan yang sudah sangat rendah.','Dilanjutkan 1 mg/minggu selama 4 minggu, lalu 1 mg/bulan sebagai dosis rumatan jangka panjang (seringkali seumur hidup bila penyebabnya adalah gangguan absorpsi permanen seperti anemia pernisiosa atau reseksi ileum).','Sediaan oral kurang efektif bila ada gangguan absorpsi GI yang mendasari — karena masalah utamanya justru pada proses penyerapannya, sehingga rute parenteral (yang melewati proses absorpsi usus) lebih diandalkan pada kasus tersebut.']},
+  ],
+  mnemonic:{label:'Ingat', text:'Reseksi usus dapat memicu defisiensi Vitamin B12. Manifestasi khas: gangguan neurologis (kesemutan, kebas, ataksia) + glositis atrofi — beda dari defisiensi B9 yang tidak bergejala neurologis.'},
+  diagram:{title:'Prosedur Tes Schilling', note:'Gold standard untuk menilai penyebab defisiensi vitamin B12 — membedakan gangguan absorpsi di ileum akibat kurangnya faktor intrinsik vs penyebab lain.', html:`
+    <div class="fseq">
+      <div class="fseq-item"><div class="fnum">1</div><div class="fbody"><b>Tahap 1 — Tanpa faktor intrinsik</b><span>Pasien diberikan vitamin B12 radioaktif per oral, diikuti dosis B12 non-radioaktif dosis besar (flooding dose) secara IM/parenteral untuk menjenuhkan reseptor hati. Ekskresi B12 radioaktif dalam urin 24 jam kemudian diukur.</span></div></div>
+      <div class="fseq-item"><div class="fnum">2</div><div class="fbody"><b>Interpretasi Tahap 1</b><span>Ekskresi urin rendah (&lt;7%) menunjukkan adanya malabsorpsi B12 — namun belum diketahui penyebabnya (faktor intrinsik vs gangguan usus lain).</span></div></div>
+      <div class="fseq-item"><div class="fnum">3</div><div class="fbody"><b>Tahap 2 — Dengan faktor intrinsik</b><span>Tes diulang, kali ini B12 radioaktif oral diberikan bersama faktor intrinsik. Ekskresi urin diukur kembali.</span></div></div>
+      <div class="fseq-item"><div class="fnum">4</div><div class="fbody"><b>Interpretasi Tahap 2</b><span>Bila ekskresi urin normal setelah penambahan faktor intrinsik → <b>Anemia pernisiosa</b> (defisiensi faktor intrinsik / gastritis atrofi autoimun). Bila tetap rendah → penyebab malabsorpsi lain di usus (mis. reseksi ileum, penyakit Crohn, overgrowth bakteri).</span></div></div>
+    </div>`}
+},
+{
+  id:'b9', cat:'anemia-makro', level:'2', title:'Anemia Defisiensi Vitamin B9 (Asam Folat)',
+  sub:'Anemia megaloblastik tanpa gejala neurologis, absorpsi di duodenum.',
+  sections:[
+    {h:'Patofisiologi Singkat', list:['Sama seperti B12, asam folat (vitamin B9) juga merupakan kofaktor penting untuk sintesis DNA — namun perannya lebih di jalur sintesis basa nukleotida secara langsung. Kekurangannya menghasilkan gambaran megaloblastik yang identik secara morfologi dengan defisiensi B12.','Perbedaan utamanya: folat diserap di duodenum & jejunum proksimal (bukan ileum), tidak membutuhkan faktor intrinsik, dan cadangannya di tubuh jauh lebih sedikit (hanya cukup untuk sekitar 2–4 bulan) dibanding cadangan B12 yang bisa bertahan bertahun-tahun — sehingga defisiensi folat cenderung muncul lebih cepat saat asupan berkurang, misalnya pada kondisi akut seperti alkoholisme berat atau malnutrisi mendadak.','Karena folat tidak berperan dalam metabolisme mielin saraf, defisiensinya tidak menimbulkan gejala neurologis — inilah pembeda klinis utama dari defisiensi B12 meski gambaran darahnya serupa.']},
+    {h:'Etiologi', list:['Diet kurang adekuat — folat mudah rusak oleh pemanasan sehingga makanan yang terlalu lama dimasak juga bisa mengurangi asupan efektifnya.','Kebutuhan meningkat, terutama pada kehamilan — karena folat sangat dibutuhkan untuk pembelahan sel yang cepat pada pertumbuhan janin, sehingga suplementasi folat rutin dianjurkan sejak sebelum dan selama kehamilan.','Malabsorpsi, banyak terjadi akibat masalah di usus halus bagian proksimal tempat folat diserap.','Obat-obatan seperti fenitoin, metotreksat, sulfasalazine, dan trimetoprim — beberapa bekerja sebagai antagonis folat langsung (metotreksat, trimetoprim menghambat enzim dihidrofolat reduktase), sementara yang lain mengganggu absorpsinya.']},
+    {h:'Pemeriksaan Penunjang', list:['Morfologi darah tepi (MDT): neutrofil hipersegmentasi — gambaran yang identik dengan defisiensi B12 karena mekanisme dasarnya sama-sama gangguan sintesis DNA.','Kadar serum folat (B9) menurun sebagai konfirmasi diagnosis.','Untuk membedakan dari defisiensi B12: kadar asam metilmalonat tetap normal pada defisiensi folat murni (berbeda dengan B12 yang meningkat), sementara homosistein tetap meningkat pada keduanya karena keduanya sama-sama dibutuhkan dalam siklus metabolisme homosistein.']},
+    {h:'Tatalaksana', list:['Asam folat 1–5 mg/hari selama 1–4 bulan, tergantung derajat defisiensi dan kemampuan mengatasi penyebab dasarnya.','Dosis 1 mg/hari umumnya sudah efektif untuk sebagian besar kasus, kecuali pada malabsorpsi berat yang mungkin membutuhkan dosis lebih tinggi.']},
+  ],
+  table:{title:'Defisiensi B9 vs B12', head:['Aspek','Defisiensi B9 (Asam Folat)','Defisiensi B12 (Anemia Pernisiosa)'],
+    rows:[
+      ['Darah tepi','Makrositik, makroovalosit, neutrofil hipersegmentasi','Sama — makroovalosit & neutrofil hipersegmentasi'],
+      ['Etiologi','Alkohol, fenitoin, fenobarbital, kehamilan','Vegetarian, gastrektomi, anemia pernisiosa'],
+      ['Absorpsi','Duodenum','Ileum, gaster (faktor intrinsik)'],
+      ['Gejala khas','Riwayat anak dengan NTD (jika ibu defisiensi)','Gejala neurologis (kebas, kesemutan)'],
+      ['Penunjang','Metilmalonat normal, homosistein ↑','Schilling test (+) — Gold Standard'],
+      ['Tatalaksana','Asam folat 1 mg/hari','Cobalamin 1000 mcg IM/SC/hari (5 hari) → 1000 mcg/minggu (5 minggu) → 100–1000 mcg/minggu'],
+    ]}
+},
+// ---------------- GANGGUAN HEMOSTASIS ----------------
+{
+  id:'hemostasis-overview', cat:'hemostasis', level:'1', title:'Alur Diagnosis Gangguan Hemostasis',
+  sub:'Klasifikasi gangguan hemostasis primer, sekunder, dan tersier berdasarkan komponen yang terganggu.',
+  sections:[
+    {h:'Cara Berpikir', list:['Hemostasis primer melibatkan pembuluh darah & trombosit (klinis: petekie, purpura; BT memanjang)','Hemostasis sekunder melibatkan faktor koagulasi (klinis: ekimosis, hemartrosis; PT/aPTT memanjang)','Hemostasis tersier terkait fibrinolisis/stasis vena (klinis: bengkak, hangat; D-dimer meningkat)']},
+  ],
+  diagram:{title:'Skema Gangguan Hemostasis Primer – Sekunder – Tersier', html:`
+    <div class="fsplit three">
+      <div class="fbranch red">
+        <div class="flabel">Primer — Vaskular / Trombosit</div>
+        <div class="fhead">Petekie, purpura · BT ↑</div>
+        <ul>
+          <li>Trombosit normal → HSP, Scurvy</li>
+          <li>Trombosit ↓ → ITP, DHF</li>
+        </ul>
+      </div>
+      <div class="fbranch teal">
+        <div class="flabel">Sekunder — Faktor Koagulasi</div>
+        <div class="fhead">Ekimosis, hemartrosis · CT ↑</div>
+        <ul>
+          <li>aPTT ↑ (intrinsik) → vWD (ristosetin abnormal), Hemofilia A (F.VIII), Hemofilia B (F.IX)</li>
+          <li>PT ↑ (ekstrinsik) → Defisiensi F.VII</li>
+          <li>Kombinasi berat → DIC</li>
+        </ul>
+      </div>
+      <div class="fbranch amber">
+        <div class="flabel">Tersier — Stasis Vena</div>
+        <div class="fhead">Merah, bengkak, hangat</div>
+        <ul>
+          <li>D-dimer ↑ → DVT (Deep Vein Thrombosis)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="fdivider">Coagulation Cascade</div>
+    <div class="fstep"><div class="fbox">Intrinsic: XII → XI → IX → VIII</div><span class="farrow">＋</span><div class="fbox">Extrinsic: Tissue Factor → VII</div></div>
+    <div class="fstep"><span class="farrow">↓ keduanya menuju</span></div>
+    <div class="fstep"><div class="fbox">Common Pathway: X → Prothrombin (II) → Thrombin</div></div>
+    <div class="fstep"><div class="fbox">Fibrinogen (I) → Fibrin Clot (dengan bantuan F.XIII)</div></div>`}
+},
+{
+  id:'hsp', cat:'hemostasis', level:'2', title:'Henoch-Schönlein Purpura (HSP)',
+  sub:'Vaskulitis generalisata akut yang dimediasi IgA, mengenai pembuluh darah kecil.',
+  sections:[
+    {h:'Patofisiologi Singkat', list:['HSP adalah reaksi vaskulitis yang dipicu deposisi kompleks imun IgA pada dinding pembuluh darah kecil (venula, kapiler, arteriol). Deposit ini memicu peradangan pada dinding pembuluh darah, yang membuatnya menjadi rapuh dan bocor — menjelaskan mengapa muncul purpura (perdarahan kecil di kulit) meski jumlah trombosit dan faktor koagulasi pasien sepenuhnya normal (berbeda dari ITP atau hemofilia).','Karena deposit IgA ini dapat terjadi di berbagai organ, gejalanya pun bisa muncul di banyak tempat sekaligus: kulit (purpura), sendi (artritis akibat inflamasi sinovial), saluran cerna (nyeri perut akibat vaskulitis dinding usus), dan ginjal (glomerulus yang juga mengalami deposit IgA, menimbulkan hematuria).']},
+    {h:'Definisi', list:['Melibatkan pembuluh darah ukuran kecil pada kulit, traktus gastrointestinal, ginjal, dan sendi; pada kasus yang lebih jarang juga dapat melibatkan paru dan sistem saraf pusat.']},
+    {h:'Epidemiologi', list:['Sekitar 90% kasus terjadi pada anak-anak, terutama usia 3–15 tahun — jarang pada dewasa, dan bila terjadi pada dewasa cenderung lebih berat.','Rasio laki-laki : perempuan = 1,5 : 1, menunjukkan sedikit predominansi pada anak laki-laki.','Gejala awal sering tidak spesifik seperti nyeri kepala, demam ringan, dan anoreksia, muncul beberapa hari sebelum tanda khas purpura terlihat — sehingga di fase awal sering disangka infeksi virus biasa.']},
+    {h:'Manifestasi Klinis', list:['Palpable purpura — bercak kemerahan yang bisa diraba (berbeda dari ruam biasa yang rata), khas muncul simetris di ekstremitas bawah dan bokong; biasanya didahului riwayat infeksi saluran napas atas 1–3 minggu sebelumnya, yang diduga memicu respons imun IgA berlebih.','Artritis, biasanya mengenai sendi besar (lutut, pergelangan kaki), bersifat sementara dan tidak meninggalkan kerusakan sendi permanen.','Nyeri abdomen akibat vaskulitis pada dinding usus, pada kasus berat bisa disertai perdarahan saluran cerna atau bahkan intususepsi (usus yang masuk ke bagian usus lainnya) sebagai komplikasi.','Hematuria, sebagai tanda keterlibatan ginjal (nefritis HSP) — perlu dipantau karena bisa berkembang menjadi masalah ginjal jangka panjang meski gejala kulit sudah membaik.']},
+    {h:'Tatalaksana', list:['Suportif: menjaga hidrasi dan nutrisi yang adekuat, serta analgetik untuk mengatasi nyeri sendi/perut — pada sebagian besar kasus anak, HSP bersifat self-limited dan membaik dengan sendirinya dalam beberapa minggu.','Bila ada tanda inflamasi berat (nyeri perut hebat, artritis mengganggu aktivitas): prednison 1 mg/kg/hari selama 1–2 minggu lalu tapering off — kortikosteroid membantu meredakan gejala lebih cepat namun tidak terbukti mengubah perjalanan penyakit ginjalnya secara jangka panjang.','Kasus berat (misalnya perdarahan GI masif atau keterlibatan ginjal progresif) mempertimbangkan IVIG sebagai terapi tambahan.']},
+  ],
+  mnemonic:{label:'Awas Jebakan', text:'HSP berhubungan dengan IgA Nefropati (Berger Disease) — BUKAN Buerger Disease (penyakit vaskular kaki/tangan menghitam).'}
+},
+{
+  id:'itp', cat:'hemostasis', level:'2', title:'Immune Thrombocytopenia Purpura (ITP)',
+  sub:'Trombositopenia menetap (<150.000/µL) akibat autoantibodi terhadap antigen trombosit.',
+  sections:[
+    {h:'Patofisiologi', list:['Sistem imun pasien membentuk autoantibodi (mayoritas IgG) yang menyerang glikoprotein di membran trombosit, paling sering glikoprotein IIb-IIIa atau Ib-IX — dua protein yang berperan penting dalam agregasi dan adhesi trombosit saat proses pembekuan darah normal.','Trombosit yang sudah dilapisi antibodi ini kemudian dikenali sebagai "target" oleh reseptor Fc IgG pada makrofag (terutama di limpa), yang kemudian menghancurkan trombosit tersebut lebih cepat dari biasanya — mempersingkat usia trombosit dari normalnya 7–10 hari menjadi hanya beberapa jam pada kasus berat.','Pada kasus yang lebih berat, autoantibodi ini juga menyerang megakariosit (sel prekursor trombosit di sumsum tulang), sehingga produksi trombosit baru pun ikut terganggu — menjelaskan mengapa derajat ITP bisa bervariasi dari ringan hingga sangat berat.']},
+    {h:'Manifestasi Klinis', list:['Perdarahan: ekimosis, petekie, dan purpura — derajatnya sangat bergantung pada jumlah trombosit yang tersisa; perdarahan spontan berat biasanya baru muncul saat trombosit di bawah 10.000–20.000/µL.']},
+    {h:'Klasifikasi', sub:[
+      {t:'Derajat', list:['ITP ringan: hanya trombosit yang diserang, sementara megakariosit di sumsum tulang masih mampu berkompensasi memproduksi trombosit lebih banyak.','ITP berat: megakariosit turut diserang oleh autoantibodi, sehingga produksi trombosit dari sumsum tulang pun ikut menurun — kombinasi destruksi cepat dan produksi rendah inilah yang membuat trombositnya bisa sangat rendah.']},
+      {t:'Perjalanan penyakit', list:['ITP akut: lebih sering pada anak, biasanya dipicu infeksi virus sebelumnya, >90% sembuh spontan dalam 3–6 bulan (self-limited), dengan manifestasi purpura kulit & mukosa.','ITP kronik: lebih sering pada dewasa (terutama perempuan), berlangsung >12 bulan, cenderung menimbulkan perdarahan yang lebih berat dengan traktus urogenital (misalnya menoragia) sebagai tempat perdarahan tersering.']},
+    ]},
+    {h:'Pemeriksaan Penunjang', list:['Trombositopenia terisolasi; morfologi eritrosit, leukosit, dan retikulosit umumnya normal — karena masalahnya spesifik pada trombosit saja, bukan mengenai seluruh lini sel darah seperti pada anemia aplastik.','Bleeding time memanjang, mencerminkan gangguan hemostasis primer akibat kurangnya trombosit fungsional.','Aspirasi sumsum tulang tidak rutin dilakukan, hanya dipertimbangkan pada usia >40 tahun, gambaran klinis yang tidak khas, atau tidak respons terhadap terapi — untuk menyingkirkan penyebab lain seperti keganasan hematologi yang juga bisa menyebabkan trombositopenia.']},
+    {h:'Tatalaksana', list:['Angka trombosit (AT) >30.000/mm³ dengan kondisi asimtomatik atau purpura minimal → umumnya tidak diterapi rutin, cukup observasi, karena risiko perdarahan berat pada rentang ini relatif rendah.','Perdarahan mukosa dengan AT <20.000, atau perdarahan ringan dengan AT <10.000 → kortikosteroid (Prednison 1–2 mg/kgBB/hari), bekerja menekan produksi autoantibodi dan aktivitas makrofag penghancur trombosit.','Transfusi suspensi trombosit dipertimbangkan pada situasi berisiko tinggi: AT <20.000, perdarahan retina/berat, AT <50.000 dengan perdarahan mukosa berulang, kecurigaan perdarahan intrakranial, atau sebelum operasi dengan AT <150.000 — meski perlu diingat trombosit donor juga berisiko cepat dihancurkan oleh autoantibodi yang masih beredar, sehingga transfusi lebih bersifat "penopang sementara" daripada solusi jangka panjang.']},
+  ],
+  mnemonic:{label:'Kata Kunci UKMPPD', text:'Riwayat infeksi + purpura + trombositopenia, tanpa penyebab lain → curigai ITP. ITP adalah diagnosis "tong sampah" — pilihan terakhir setelah menyingkirkan penyebab lain.'}
+},
+{
+  id:'hemofilia', cat:'hemostasis', level:'2', title:'Hemofilia',
+  sub:'Gangguan pembekuan darah akibat defisiensi faktor koagulasi, diturunkan X-linked resesif.',
+  sections:[
+    {h:'Patofisiologi Singkat', list:['Faktor VIII dan IX adalah bagian dari jalur intrinsik kaskade koagulasi yang bekerja mengaktifkan faktor X menuju jalur bersama (common pathway) untuk akhirnya membentuk fibrin yang menstabilkan bekuan darah. Tanpa faktor ini dalam jumlah cukup, bekuan awal (yang dibentuk trombosit) tetap terbentuk namun rapuh dan mudah pecah kembali — sehingga perdarahan hemofilia sering bersifat "delayed" (baru terlihat beberapa jam setelah trauma) dan cenderung terjadi di jaringan dalam seperti sendi dan otot, berbeda dari gangguan trombosit yang biasanya langsung tampak di kulit/mukosa.','Karena gen F.VIII dan F.IX terletak di kromosom X, hemofilia diwariskan secara X-linked resesif — hampir selalu mengenai laki-laki (yang hanya punya 1 kromosom X), sementara perempuan biasanya menjadi carrier asimtomatik (kecuali kasus yang sangat jarang).']},
+    {h:'Klasifikasi & Epidemiologi', list:['Hemofilia A: defisiensi faktor VIII ("hemofilia klasik") — merupakan bentuk tersering, sekitar 80% dari seluruh kasus hemofilia.','Hemofilia B: defisiensi faktor IX (dikenal sebagai Christmas disease, dinamai dari pasien pertama yang dilaporkan) — sekitar 15% kasus.','Hemofilia C: defisiensi faktor XI — sekitar 5% kasus, dengan pola pewarisan autosomal (bukan X-linked) sehingga bisa mengenai laki-laki maupun perempuan.','Sekitar 70% pasien memiliki riwayat keluarga dengan gangguan pembekuan darah serupa, meski 30% sisanya bisa merupakan mutasi baru (de novo) tanpa riwayat keluarga.']},
+    {h:'Manifestasi Klinis', list:['Perdarahan dalam (hematoma jaringan lunak, hemartrosis sendi) yang dapat terjadi spontan atau bahkan akibat trauma yang sangat ringan pada kasus berat.','Tipe perdarahan yang khas: hemartrosis (perdarahan sendi, paling sering lutut, siku, pergelangan kaki — bila berulang dapat merusak sendi secara permanen/artropati hemofilik), hematoma otot, perdarahan intrakranial (paling berbahaya), hematuria, epistaksis, dan perdarahan tali pusat/frenulum pada bayi baru lahir.','Riwayat perdarahan berlebihan sejak kecil (misalnya perdarahan lama setelah sirkumsisi, atau memar berlebihan saat mulai belajar merangkak/berjalan) menjadi petunjuk penting dalam anamnesis.']},
+    {h:'Pemeriksaan Penunjang', list:['Trombosit normal, Bleeding Time normal, dan PT normal — karena hemostasis primer (trombosit) dan jalur ekstrinsik (PT) tidak terganggu; masalahnya spesifik pada jalur intrinsik.','Clotting Time memanjang dan aPTT memanjang — mencerminkan gangguan pada jalur intrinsik koagulasi tempat faktor VIII dan IX berperan.','Gold Standard: pemeriksaan kadar faktor VIII, IX, atau XI secara spesifik, yang sekaligus menentukan jenis hemofilia dan derajat keparahannya.']},
+    {h:'Tatalaksana', list:['Hindari trauma dan aktivitas berisiko tinggi cedera, sebagai pencegahan utama.','Perdarahan akut ditatalaksana dengan prinsip RICE (Rest, Ice, Compression, Elevation) sebagai pertolongan awal sambil menunggu koreksi faktor.','Analgetik bila nyeri (hindari NSAID/aspirin karena efek antiplatelet dapat memperparah perdarahan) serta rehabilitasi medik untuk mencegah/memperbaiki kerusakan sendi akibat hemartrosis berulang.','Koreksi faktor sesuai jenis hemofilia: F.VIII → konsentrat F.VIII atau kriopresipitat (mengandung F.VIII dalam jumlah tinggi); F.IX & F.XI → konsentrat F.IX/F.XI atau FFP bila konsentrat tidak tersedia.']},
+  ],
+  table:{title:'Derajat Keparahan Hemofilia', head:['Parameter','Berat','Sedang','Ringan'],
+    rows:[
+      ['Aktivitas F VIII/IX','<0,01 (<1%)','0,01–0,05','>0,05 (>5%)'],
+      ['Usia awitan','<1 tahun','1–2 tahun','>2 tahun'],
+      ['Perdarahan otot/sendi','Tanpa trauma','Trauma ringan','Trauma cukup kuat'],
+      ['Perdarahan SSP','Risiko tinggi','Risiko sedang','Jarang'],
+      ['Karakteristik','Selalu hemartrosis','Hemartrosis bila trauma ringan','Asimtomatis, hemartrosis jika trauma berat'],
+    ]}
+},
+{
+  id:'vwd', cat:'hemostasis', level:'2', title:'Von Willebrand Disease (vWD)',
+  sub:'Gangguan kuantitas/kualitas von Willebrand Factor — autosomal dominan.',
+  sections:[
+    {h:'Etiologi & Patofisiologi', list:['Von Willebrand Factor (vWF) memiliki dua fungsi penting dalam hemostasis: pertama, sebagai "jembatan" yang membantu trombosit menempel pada dinding pembuluh darah yang rusak (adhesi trombosit) saat hemostasis primer; kedua, sebagai protein pembawa (carrier) yang melindungi faktor VIII dari degradasi di dalam plasma.','Karena vWD adalah gangguan autosomal dominan (berbeda dari hemofilia yang X-linked), penyakit ini dapat mengenai laki-laki maupun perempuan secara setara, dan merupakan gangguan perdarahan herediter yang paling umum di populasi.','Karena vWF berperan ganda, gangguannya menghasilkan gambaran klinis campuran: gangguan hemostasis primer (bleeding time memanjang, mirip gangguan trombosit) sekaligus gangguan hemostasis sekunder ringan (aPTT dapat memanjang akibat F.VIII yang ikut menurun karena kehilangan proteksinya).']},
+    {h:'Manifestasi Klinis', list:['Perdarahan membran mukosa seperti epistaksis berulang — mencerminkan gangguan adhesi trombosit pada pembuluh darah kecil di mukosa yang rentan trauma ringan.','Menstruasi lama dan banyak (menoragia) — sering menjadi keluhan utama pada perempuan dewasa muda dan kadang baru terdiagnosis saat evaluasi menoragia.','Perdarahan berlebihan pasca operasi & trauma, termasuk prosedur gigi — karena adhesi trombosit yang terganggu membuat penghentian perdarahan awal menjadi lebih lambat dari normal.']},
+    {h:'Pemeriksaan Penunjang', list:['Tes ristosetin abnormal — ristosetin adalah zat yang secara artifisial memicu vWF mengikat trombosit di laboratorium; hasil abnormal menunjukkan vWF tidak berfungsi normal.','Bleeding time memanjang, mencerminkan gangguan hemostasis primer akibat adhesi trombosit yang terganggu.','Faktor VIII menurun (karena kehilangan proteksi dari vWF) → aPTT dapat memanjang, meski biasanya tidak sememanjang pada hemofilia murni.','Kadar vWF menurun, mengonfirmasi diagnosis secara langsung.']},
+    {h:'Tatalaksana', list:['Agen antifibrinolisis seperti asam traneksamat, membantu menstabilkan bekuan yang sudah terbentuk dengan menghambat pemecahannya kembali — berguna terutama untuk perdarahan mukosa ringan-sedang.','Desmopressin (DDAVP) — bekerja merangsang pelepasan cadangan vWF dari sel endotel pembuluh darah, sehingga meningkatkan kadar vWF plasma secara akut; efektif untuk vWD tipe 1 (bentuk paling ringan dan tersering).','Konsentrat vWF diberikan pada kasus lebih berat atau yang tidak respons desmopressin, menggantikan vWF secara langsung.']},
+  ],
+  table:{title:'Hemofilia A vs Hemofilia B vs vWD', head:['Aspek','Hemofilia A','Hemofilia B','vWD'],
+    rows:[
+      ['Pewarisan','X-linked resesif','X-linked resesif','Autosomal dominan'],
+      ['Trombosit','Normal','Normal','Normal'],
+      ['Bleeding Time','Normal','Normal','Memanjang'],
+      ['PT','Normal','Normal','Normal'],
+      ['aPTT','Memanjang','Memanjang','Normal / memanjang'],
+      ['F VIII','Rendah','Normal','Rendah'],
+      ['F IX','Normal','Rendah','Normal'],
+      ['Tes Ristosetin','Normal','Normal','Abnormal'],
+    ]}
+},
+{
+  id:'vkdb', cat:'hemostasis', level:'2', title:'VKDB (Vitamin K Deficiency Bleeding)',
+  sub:'Perdarahan pada neonatus/bayi akibat kekurangan faktor koagulasi dependen vitamin K (II, VII, IX, X).',
+  sections:[
+    {h:'Patofisiologi Singkat', list:['Vitamin K adalah kofaktor esensial untuk aktivasi faktor koagulasi II, VII, IX, dan X di hati (karenanya disebut faktor "dependen vitamin K") melalui proses karboksilasi yang membuat faktor-faktor ini mampu mengikat kalsium dan berfungsi normal dalam kaskade koagulasi.','Bayi baru lahir secara alami rentan defisiensi vitamin K karena tiga hal sekaligus: cadangan vitamin K dari plasenta sangat minim (vitamin K sulit menembus plasenta), ASI mengandung vitamin K dalam kadar sangat rendah dibanding susu formula, dan flora usus bayi (yang pada orang dewasa turut memproduksi vitamin K) belum berkembang sempurna — kombinasi inilah yang membuat profilaksis vitamin K saat lahir menjadi sangat penting secara rutin.']},
+    {h:'Etiologi', list:['Tidak mendapat injeksi vitamin K profilaksis saat lahir — faktor risiko utama yang sepenuhnya dapat dicegah.','ASI eksklusif tanpa suplementasi tambahan, karena kandungan vitamin K dalam ASI memang secara alami sangat rendah.','Flora usus pembentuk vitamin K yang belum sempurna pada bayi baru lahir, terutama di minggu-minggu pertama kehidupan.','Riwayat defisiensi vitamin K pada ibu, misalnya akibat konsumsi obat antikonvulsan (yang mengganggu metabolisme vitamin K) selama kehamilan, atau malnutrisi berat pada ibu.']},
+    {h:'Pemeriksaan Penunjang', list:['Profil koagulasi: Bleeding Time normal (karena trombosit dan hemostasis primer tidak terganggu), PT sangat memanjang (paling sensitif karena F.VII memiliki waktu paruh terpendek di antara faktor dependen vitamin K), aPTT normal atau sedikit memanjang.','Penurunan aktivitas faktor koagulasi dependen vitamin K (II, VII, IX, X) bila diperiksa secara spesifik.','CT-scan atau MRI kepala diperlukan untuk evaluasi bila dicurigai perdarahan intrakranial, komplikasi paling berbahaya dari VKDB.']},
+    {h:'Tatalaksana', list:['Vitamin K1 (phytonadione) 1–2 mg IV/SC sebagai tatalaksana akut, akan mengoreksi faktor koagulasi dalam beberapa jam setelah pemberian.','Transfusi FFP 10–15 mL/kgBB dipertimbangkan pada perdarahan sedang–berat yang membutuhkan koreksi faktor koagulasi secara lebih cepat dibanding menunggu efek vitamin K1 saja.','Pencegahan (jauh lebih penting daripada pengobatan): Vitamin K1 0,5–1 mg IM diberikan rutin pada semua bayi baru lahir segera setelah lahir, sebagai standar perawatan neonatus di seluruh dunia.']},
+  ],
+  table:{title:'Klasifikasi VKDB', head:['Parameter','Early-onset','Classic','Late-onset'],
+    rows:[
+      ['Umur','<24 jam','2–7 hari','2–8 bulan'],
+      ['Faktor Risiko','Defisiensi vit.K maternal, ibu terapi antikonvulsan','Asupan vitamin K kurang, ASI eksklusif','Diare (malabsorpsi), penyakit hati, ASI eksklusif'],
+      ['Manifestasi Tersering','Perdarahan intrakranial','Perdarahan saluran cerna','Perdarahan intrakranial'],
+      ['Profilaksis','Hindari obat saat hamil','Vitamin K1, susu formula','Vitamin K1, susu formula'],
+    ]}
+},
+{
+  id:'dic', cat:'hemostasis', level:'2', title:'DIC (Disseminated Intravascular Coagulation)',
+  sub:'Sindrom didapat dengan aktivasi koagulasi intravaskular yang luas.',
+  sections:[
+    {h:'Patofisiologi Singkat', list:['DIC dipicu oleh pelepasan tromboplastin jaringan (tissue factor) dalam jumlah besar ke sirkulasi — misalnya akibat sepsis berat, kerusakan jaringan masif, atau komplikasi obstetrik — yang mengaktifkan kaskade koagulasi secara sistemik dan tidak terkontrol di seluruh pembuluh darah tubuh, bukan hanya di lokasi cedera seperti pada pembekuan normal.','Aktivasi masif ini menghabiskan (mengonsumsi) faktor koagulasi dan trombosit dalam jumlah besar untuk membentuk mikrotrombus di banyak pembuluh darah kecil sekaligus — menjelaskan istilah "consumptive coagulopathy". Paradoksnya, meski awalnya terjadi pembekuan berlebihan, pasien justru berakhir mengalami perdarahan hebat karena faktor koagulasi dan trombosit yang tersisa untuk hemostasis normal sudah habis terpakai.','Mikrotrombus yang terbentuk di berbagai organ juga menyebabkan iskemia jaringan dan disfungsi organ multipel — menjelaskan mengapa DIC bukan sekadar masalah perdarahan, tetapi juga kegagalan organ akibat sumbatan mikrovaskular di banyak tempat sekaligus.']},
+    {h:'Etiologi', list:['Infeksi berat (sepsis) dan keganasan (terutama leukemia promielositik akut) merupakan penyebab tersering.','Malformasi pembuluh darah, trauma berat, luka bakar luas, reaksi alergi berat, dan syok — semuanya dapat memicu pelepasan tissue factor dalam jumlah besar ke sirkulasi.']},
+    {h:'Manifestasi Klinis', list:['Perdarahan kulit & mukosa yang luas, mencerminkan habisnya cadangan faktor koagulasi dan trombosit.','Paradoksnya, tanda trombosis juga muncul bersamaan: purpura fulminan, akrosianosis perifer, dan perubahan pregangren pada jari/genital/jantung — akibat mikrotrombus yang menyumbat pembuluh darah kecil di area tersebut.','Disfungsi organ multipel: ikterus (hati), aritmia (jantung), ARDS (paru), dan gangguan organ lain — mencerminkan kerusakan luas akibat iskemia dari mikrotrombus yang tersebar di seluruh tubuh.']},
+    {h:'Pemeriksaan Penunjang', list:['Trombosit turun secara kontinu (bukan sekali turun lalu stabil) — mencerminkan konsumsi trombosit yang terus berlangsung selama proses DIC aktif.','D-dimer meningkat tajam, sebagai bukti aktivitas fibrinolisis yang tinggi (tubuh berusaha memecah mikrotrombus yang terbentuk berlebihan).','PT & aPTT memanjang, mencerminkan konsumsi faktor koagulasi di jalur intrinsik maupun ekstrinsik.','Fibrinogen rendah, biasanya hanya terlihat pada DIC yang sudah berat karena fibrinogen adalah cadangan terakhir yang paling banyak jumlahnya di tubuh sebelum ikut terkuras.','Diagnosis ditegakkan dengan sistem skoring DIC (menggabungkan hitung trombosit, D-dimer, PT, dan fibrinogen) — skor >5 dianggap bermakna mendukung diagnosis DIC.']},
+    {h:'Tatalaksana', list:['Tatalaksana penyebab dasar adalah kunci utama — DIC tidak akan membaik tanpa mengatasi pemicunya (misalnya sepsis diobati dengan antibiotik adekuat, atau solusio plasenta ditangani dengan persalinan segera).','Suportif: stabilisasi hemodinamik/ventilator, serta transfusi PRC untuk mengoreksi anemia akibat perdarahan.','Transfusi platelet dipertimbangkan bila ada perdarahan serius, kebutuhan tindakan bedah darurat, atau trombosit <50.000/µL.','FFP/kriopresipitat diberikan bila ada perdarahan serius disertai PT/aPTT memanjang atau fibrinogen <50 mg/dL — untuk menggantikan faktor koagulasi dan fibrinogen yang sudah terkonsumsi habis.']},
+  ],
+  mnemonic:{label:'Pola DIC', text:'Purpura fulminan + Trombosit ↓ + D-dimer ↑ + PT ↑ + Fibrinogen ↓'}
+},
+// ---------------- LIMFOMA ----------------
+{
+  id:'limfoma-overview', cat:'limfoma', level:'1', title:'Limfoma — Pengantar',
+  sub:'Keganasan pada sistem limfatik (limfonodus, limpa, timus, atau sumsum tulang).',
+  sections:[
+    {h:'Konsep Dasar', list:['Limfoma adalah keganasan yang berasal dari sel limfosit (sel B, sel T, atau sel NK) yang biasanya bermula di kelenjar getah bening, namun dapat menyebar ke organ limfoid lain seperti limpa, timus, cincin Waldeyer, maupun ke sumsum tulang.','Secara garis besar, limfoma dibagi menjadi dua kelompok besar berdasarkan gambaran histopatologinya — pembagian ini penting karena keduanya memiliki karakteristik biologis, pola penyebaran, dan prognosis yang cukup berbeda meski sama-sama disebut "limfoma".']},
+    {h:'Klasifikasi', list:['Limfoma Non-Hodgkin: berasal dari sel B atau sel T (baik yang masih imatur/progenitor maupun yang sudah matur) — kelompok ini jauh lebih heterogen dan lebih sering ditemui.','Limfoma Hodgkin: umumnya berasal dari sel B, namun dengan gambaran histopatologi yang sangat khas berupa sel Reed-Sternberg yang membedakannya secara jelas dari limfoma non-Hodgkin.']},
+  ],
+  mnemonic:{label:'Membedakan Pembesaran KGB', text:'Limfadenitis: nyeri (+), demam (+). Limfadenopati murni: tidak nyeri, tanpa alarm sign. Bila tidak nyeri + alarm sign (+) → curigai limfoma maligna (Hodgkin/Non-Hodgkin).'}
+},
+{
+  id:'limfoma-hodgkin', cat:'limfoma', level:'1', title:'Limfoma Hodgkin',
+  sub:'Keganasan kelenjar getah bening yang berasal dari sel B.',
+  sections:[
+    {h:'Epidemiologi', list:['Distribusi usia bimodal — memiliki dua puncak insidensi, yaitu pada usia remaja/dewasa muda dan pada usia >50 tahun, pola yang cukup unik dan berbeda dari kebanyakan keganasan lain yang biasanya hanya memiliki satu puncak usia.','Lebih sering pada pria dibanding wanita.']},
+    {h:'Etiologi', list:['Infeksi virus Epstein-Barr (EBV) ditemukan pada sekitar 30% kasus — virus ini diduga berperan dalam transformasi sel B menjadi sel Reed-Sternberg melalui gangguan regulasi pertumbuhan sel yang terinfeksi.','Kondisi autoimun dan defisiensi imun (termasuk HIV) juga meningkatkan risiko, karena pengawasan sistem imun terhadap sel yang bertransformasi menjadi kurang efektif.']},
+    {h:'Manifestasi Klinis', list:['Limfadenopati tanpa nyeri — paling sering mengenai KGB servikalis dan aksilaris, dengan pola penyebaran contiguous artinya menyebar berurutan ke KGB yang berdekatan secara anatomis (bukan meloncat ke lokasi jauh), mencerminkan cara penyebaran limfoma Hodgkin yang relatif lebih "teratur" dibanding non-Hodgkin.','Demam Pel-Ebstein — pola demam khas berupa periode demam tinggi selama 1–2 minggu, diselingi periode bebas demam 1–2 minggu, berulang secara siklik; termasuk dalam gejala B (bersama penurunan berat badan dan keringat malam) yang penting untuk penentuan stadium dan prognosis.','Massa mediastinum dapat menimbulkan nyeri dada, batuk kering, dan sesak napas akibat penekanan struktur di rongga dada — pada kasus berat bahkan bisa menimbulkan sindrom vena kava superior akibat penekanan pembuluh darah besar.']},
+    {h:'Pemeriksaan Penunjang', list:['Darah: leukositosis dan hiperkalsemia dapat ditemukan sebagai gambaran penunjang non-spesifik akibat aktivitas sel keganasan.','Pencitraan: X-ray/CT-scan paru untuk menilai keterlibatan mediastinum dan membantu penentuan stadium penyakit.','Gold Standard: histopatologi KGB, dengan temuan sel Reed-Sternberg — sel besar dengan nukleus bilobus (dua lobus) yang masing-masing memiliki nukleolus besar menyerupai mata burung hantu ("owl\'s eyes appearance") — gambaran inilah yang menjadi penanda diagnostik definitif limfoma Hodgkin.']},
+  ],
+},
+{
+  id:'limfoma-non-hodgkin', cat:'limfoma', level:'1', title:'Limfoma Non-Hodgkin',
+  sub:'Keganasan KGB dari progenitor/sel matur B, T, maupun sel NK.',
+  sections:[
+    {h:'Epidemiologi', list:['Distribusi usia lebih condong ke usia tua (>60 tahun), berbeda dari limfoma Hodgkin yang bimodal.','Insidensinya sekitar 5× lebih sering dibanding limfoma Hodgkin, menjadikannya kelompok limfoma yang jauh lebih sering ditemui dalam praktik klinis.']},
+    {h:'Etiologi', list:['Faktor genetik — translokasi kromosom, misalnya t(14;18) yang khas pada limfoma folikuler (melibatkan gen BCL-2 yang menghambat apoptosis sehingga sel limfosit abnormal "gagal mati" sebagaimana seharusnya).','Kondisi autoimun, misalnya tiroiditis Hashimoto — inflamasi kronik yang terus-menerus merangsang proliferasi limfosit dapat meningkatkan risiko transformasi menjadi keganasan.','Defisiensi imun (termasuk HIV, transplantasi organ dengan imunosupresi jangka panjang) — menurunnya pengawasan imun terhadap sel abnormal meningkatkan risiko limfoma.']},
+    {h:'Manifestasi Klinis', list:['Limfadenopati tanpa nyeri, namun berbeda dari Hodgkin — sering mengenai limfonodus intraabdominal dan menyebar secara non-contiguous (dapat "meloncat" ke lokasi KGB yang jauh dan tidak berurutan secara anatomis), mencerminkan perilaku biologis yang lebih agresif dan tidak terduga.','Splenomegali dan hepatomegali dapat ditemukan akibat infiltrasi sel limfoma ke organ tersebut.']},
+    {h:'Pemeriksaan Penunjang', list:['Darah: leukositosis dan hiperkalsemia sebagai gambaran penunjang non-spesifik.','Histopatologi merupakan tes konfirmasi utama, menunjukkan proliferasi limfosit yang umumnya lebih uniform/homogen dibanding gambaran Reed-Sternberg pada Hodgkin.','Aspirasi sumsum tulang dilakukan untuk staging, menilai apakah sudah ada keterlibatan sumsum tulang yang akan memengaruhi derajat keparahan dan pilihan terapi.','Imunohistokimia membantu menentukan jenis sel asal: sel B ditandai CD20 positif, sel T ditandai CD3 positif — penting untuk menentukan jenis terapi target yang sesuai (misalnya rituximab hanya efektif untuk limfoma sel B CD20 positif).']},
+  ]
+},
+{
+  id:'limfoma-compare', cat:'limfoma', level:'1', title:'Perbandingan: Hodgkin vs Non-Hodgkin',
+  sub:'Ringkasan pembeda kedua jenis limfoma yang sering diujikan.',
+  sections:[],
+  table:{title:'Limfoma Hodgkin vs Non-Hodgkin', head:['Aspek','Hodgkin','Non-Hodgkin'],
+    rows:[
+      ['Asal sel','Sel B','Sel B dan T'],
+      ['Insidensi','Semua usia (sering usia 30-an)','Usia tua'],
+      ['Etiologi','Infeksi EBV','Translokasi kromosom'],
+      ['Lokasi nodul','Supradiafragma, tunggal; keterlibatan mediastinum (efusi pleura, SVC syndrome)','Dimanapun, multipel; keterlibatan orofaring (cincin Waldeyer)'],
+      ['Prognosis','70–80% kesembuhan','Umumnya buruk'],
+      ['Patologi Anatomi','Reed-Sternberg cell / owl eyes','Sel uniform/homogen (starry sky pada limfoma Burkitt)'],
+    ]}
+},
+// ---------------- LIMFADENITIS ----------------
+{
+  id:'limfadenitis', cat:'limfadenitis', level:'3A', title:'Limfadenitis Tuberkulosa',
+  sub:'Peradangan kelenjar getah bening; bila akibat M. tuberculosis di leher disebut skrofula.',
+  sections:[
+    {h:'Nomenklatur', list:['Limfadenopati adalah istilah umum untuk pembengkakan kelenjar getah bening tanpa memandang penyebabnya, termasuk tanpa proses peradangan aktif (misalnya pada limfoma).','Limfadenitis secara spesifik mengacu pada pembengkakan kelenjar getah bening akibat proses peradangan/infeksi — sehingga biasanya disertai tanda inflamasi seperti nyeri, kemerahan, dan hangat pada perabaan.','Limfangitis adalah radang pada saluran (pembuluh) getah bening itu sendiri, biasanya tampak sebagai garis kemerahan yang menjalar dari lokasi infeksi menuju KGB terdekat — berbeda dari limfadenitis yang mengenai kelenjarnya.']},
+    {h:'Klasifikasi', list:['Spesifik: disebabkan oleh Mycobacterium tuberculosis — bila mengenai kelenjar getah bening di leher, disebut skrofula, salah satu manifestasi TB ekstraparu yang cukup sering ditemukan.','Non-spesifik: disebabkan oleh infeksi bakteri/organisme lain (paling sering bakteri piogenik seperti Staphylococcus atau Streptococcus), umumnya perjalanan penyakitnya lebih akut dibanding TB.']},
+    {h:'Manifestasi Klinis', list:['Demam dan malaise sebagai gejala sistemik akibat infeksi yang mendasari.','Limfadenopati — pembesaran kelenjar getah bening yang teraba, biasanya di area yang mengalirkan getah bening dari sumber infeksi.','Nyeri tekan limfonodus sering tidak ditemukan pada limfadenitis TB (berbeda dari limfadenitis bakterial akut yang biasanya nyeri) — hal ini karena perjalanan penyakit TB yang kronik dan indolen, sering kali membuatnya sulit dibedakan dari limfadenopati akibat keganasan hanya dari pemeriksaan fisik saja.']},
+    {h:'Pemeriksaan Penunjang', list:['Leukositosis dapat ditemukan sebagai tanda infeksi aktif, meski pada TB kronik gambarannya bisa tidak terlalu mencolok.','FNAB (Fine Needle Aspiration Biopsy): pada limfadenitis spesifik (TB) akan menunjukkan granuloma dengan nekrosis kaseosa sentral, sel epiteloid, dan sel datia Langhans — gambaran khas respons imun tubuh yang berusaha "mengurung" basil TB dalam struktur granuloma; pada limfadenitis non-spesifik akan menunjukkan serbukan sel radang akut (neutrofil) tanpa gambaran granuloma tersebut.','Pemeriksaan BTA dari limfe membantu konfirmasi keberadaan basil tahan asam secara langsung.','X-ray paru penting dilakukan karena limfadenitis TB sering menyertai atau mendahului TB paru aktif, meski tidak selalu ditemukan bersamaan.']},
+    {h:'Tatalaksana', list:['Tatalaksana limfadenitis TB mengikuti regimen pengobatan TB paru standar, dengan lama terapi 6–9 bulan tergantung respons dan kondisi klinis.','Regimen 6 bulan: 2RHZE (2 bulan fase intensif dengan Rifampicin-Isoniazid-Pirazinamid-Etambutol) dilanjutkan 4RH (4 bulan fase lanjutan Rifampicin-Isoniazid) — Regimen 9 bulan: 4RHZE/5RH digunakan pada kasus tertentu yang membutuhkan terapi lebih panjang.','Dosis standar: Rifampicin 5 mg/kgBB (bekerja menghambat sintesis RNA bakteri), Isoniazid 10 mg/kgBB (menghambat sintesis dinding sel mikobakteri), Pirazinamid 25 mg/kgBB (efektif pada lingkungan asam intraseluler), Etambutol 15 mg/kgBB (menghambat sintesis dinding sel, ditambahkan untuk mencegah resistensi).']},
+  ]
+},
+// ---------------- LEUKEMIA ----------------
+{
+  id:'leukemia-overview', cat:'leukemia', level:'2', title:'Leukemia — Pengantar',
+  sub:'Keganasan hematologi dengan peningkatan leukosit prematur di peredaran darah.',
+  sections:[
+    {h:'Konsep Dasar', list:['Leukemia adalah keganasan sel punca hematopoietik di sumsum tulang yang menghasilkan produksi sel darah putih abnormal secara berlebihan, yang kemudian "membanjiri" sumsum tulang dan mendesak produksi sel darah normal lainnya (eritrosit, trombosit, dan leukosit sehat) — inilah yang menjelaskan mengapa leukemia hampir selalu disertai gejala anemia dan trombositopenia sekaligus, meski leukositnya sendiri justru meningkat drastis.','Pembagian akut vs kronik bukan sekadar soal kecepatan gejala muncul, tetapi mencerminkan tingkat kematangan sel yang berproliferasi: pada leukemia akut, sel yang berproliferasi adalah sel yang masih sangat imatur (blas) yang gagal berdiferensiasi menjadi sel matang, sehingga gejalanya muncul cepat dan berat; pada leukemia kronik, sel yang berproliferasi masih relatif matang dan sebagian masih bisa berfungsi, sehingga perjalanan penyakitnya lebih lambat dan kadang baru terdeteksi insidental.']},
+    {h:'Klasifikasi', list:['Akut: Acute Lymphoblastic Leukemia (ALL) — berasal dari lini limfoid, dan Acute Myeloid Leukemia (AML) — berasal dari lini myeloid.','Kronis: Chronic Lymphocytic Leukemia (CLL) — berasal dari lini limfoid, dan Chronic Myeloid Leukemia (CML) — berasal dari lini myeloid.']},
+  ],
+  mnemonic:{label:'Tips Menjawab Soal UKMPPD', text:'Leukosit biasanya >30.000. Pemeriksaan penunjang terbaik: aspirasi sumsum tulang. Tatalaksana definitif: transplantasi sumsum tulang. Akut = sel blas >20% tanpa organomegali; Kronik = sel blas <20% dengan organomegali.'},
+  diagram:{title:'Alur Klasifikasi Leukemia', note:'Leukosit >30.000/µL → curigai leukemia. Persentase sel blas dan ada/tidaknya organomegali menentukan Akut vs Kronik.', html:`
+    <div class="fstep"><div class="fbox">Leukosit &gt; 30.000</div><span class="farrow">→</span><div class="fresult">curiga <b>Leukemia</b></div></div>
+    <div class="fdivider">Bagi berdasarkan sel blas & organomegali</div>
+    <div class="fsplit">
+      <div class="fbranch red">
+        <div class="flabel">Akut — Sel blas &gt;20%, (–) organomegali</div>
+        <ul>
+          <li><b>AML</b> — dewasa muda, hipertrofi gingiva, mieloblas (+), Auer rod</li>
+          <li><b>ALL</b> — 90% anak, nyeri sendi, limfoblas (+)</li>
+        </ul>
+      </div>
+      <div class="fbranch teal">
+        <div class="flabel">Kronik — Sel blas &lt;20%, (+) organomegali</div>
+        <ul>
+          <li><b>CML</b> — mutasi BCR-ABL, mielosit (+), kromosom Philadelphia</li>
+          <li><b>CLL</b> — smudge cell / basket cell</li>
+        </ul>
+      </div>
+    </div>`}
+},
+{
+  id:'all', cat:'leukemia', level:'2', title:'Leukemia Limfoblastik Akut (ALL)',
+  sub:'Keganasan sel lini limfoid (B/T) dengan sel blas yang banyak — keganasan anak tersering.',
+  sections:[
+    {h:'Etiologi & Epidemiologi', list:['Sebagian besar kasus bersifat idiopatik, namun kelainan genetik/kromosom diketahui meningkatkan risiko — misalnya anak dengan Down syndrome memiliki risiko ALL sekitar 20 kali lebih tinggi dibanding populasi umum, diduga terkait gen pada kromosom 21 yang berperan dalam regulasi proliferasi sel limfoid.','Merupakan keganasan tersering pada anak secara keseluruhan, dengan puncak insidensi pada usia 2–5 tahun — periode ini bertepatan dengan masa aktif proliferasi sel limfoid dalam perkembangan sistem imun anak, yang diduga membuat sel-sel ini lebih rentan mengalami mutasi onkogenik.','Sekitar 90% kasus ALL terjadi pada anak, menjadikannya kontras yang jelas dengan AML yang lebih sering pada dewasa.']},
+    {h:'Manifestasi Klinis Umum Leukemia Akut (ALL & AML)', list:['Gejala anemia: lemas dan tidak bersemangat, akibat sel blas yang mendesak ruang produksi eritrosit normal di sumsum tulang.','Gejala trombositopenia: epistaksis, perdarahan gusi, dan petekie, akibat desakan serupa terhadap produksi trombosit.','Hepatosplenomegali dapat terjadi pada kedua jenis leukemia akut, namun insidensinya lebih sering pada ALL dibanding AML — mencerminkan kecenderungan sel limfoblas untuk berinfiltrasi ke organ limfoid seperti hati dan limpa.','Sindrom leukostasis — pengentalan darah (hyperviscosity) akibat leukosit yang sangat tinggi (>100.000/mm³), dapat menyumbat mikrovaskular dan menyebabkan gangguan perfusi organ, termasuk gejala neurologis dan respirasi akut yang mengancam nyawa bila tidak segera ditangani.']},
+    {h:'Manifestasi Klinis Khas ALL', list:['Demam tanpa fokus infeksi yang jelas — berbeda dari demam akibat infeksi biasa, disebabkan oleh sitokin yang dilepaskan sel leukemia itu sendiri.','Limfadenopati yang tidak nyeri, persisten, dan progresif — mencerminkan infiltrasi sel limfoblas ke kelenjar getah bening.','Nyeri tulang, akibat ekspansi sel leukemia di dalam rongga sumsum tulang yang meningkatkan tekanan intramedular.','Meningeal leukemia — tanda dan gejala menyerupai meningitis (nyeri kepala, kaku kuduk, muntah) akibat infiltrasi sel blas ke susunan saraf pusat, salah satu tempat "persembunyian" sel leukemia yang sulit dijangkau kemoterapi standar (sanctuary site) sehingga sering memerlukan terapi intratekal tambahan.','Obstruksi jalan napas dapat terjadi akibat infiltrasi sel blas ke timus, membentuk massa mediastinum yang menekan trakea — lebih sering pada ALL sel T.','Pembesaran testis (pada anak laki-laki) — testis juga merupakan sanctuary site lain tempat sel leukemia dapat bersembunyi dan menjadi sumber kekambuhan meski terapi sistemik sudah berhasil menekan sel leukemia di darah dan sumsum tulang.']},
+    {h:'Pemeriksaan Penunjang', list:['Darah lengkap umumnya menunjukkan pola pansitopenia parsial: anemia dan trombositopenia (akibat desakan sel blas), disertai leukositosis atau justru leukopenia (tergantung apakah sel blas yang berlebihan tersebut dominan beredar di darah tepi atau masih terkonsentrasi di sumsum tulang).','Hapusan darah tepi menunjukkan sel limfoblas yang meningkat, memberikan kecurigaan awal sebelum konfirmasi lebih lanjut.','Gold Standard: aspirasi & biopsi sumsum tulang, dengan ambang diagnostik sel limfoblas >20% dari total sel berinti di sumsum tulang.']},
+    {h:'Tatalaksana (Kemoterapi)', list:['Terapi Induksi (4–6 minggu): bertujuan mengurangi massa sel tumor secepat mungkin hingga mencapai remisi (sel blas sumsum tulang <5%).','Terapi Konsolidasi (beberapa bulan): bertujuan mematikan sisa sel tumor mikroskopik yang mungkin masih tersisa setelah remisi tercapai, untuk mencegah kekambuhan dini.','Terapi Rumatan (hingga 2 tahun): fase terpanjang, menggunakan kemoterapi dosis rendah dalam jangka waktu lama untuk mempertahankan remisi dan mengeliminasi sel leukemia residual dalam jumlah sangat kecil yang tersisa.']},
+  ],
+  table:{title:'Klasifikasi Morfologi ALL', head:['Subtipe','Karakteristik'],
+    rows:[
+      ['L1','Sel blas kecil, homogen, sedikit sitoplasma, nukleolus tidak jelas — paling sering pada anak'],
+      ['L2','Sel blas besar, heterogen, nukleolus jelas — paling sering pada dewasa'],
+      ['L3','Sel blas besar, homogen — misal pada limfoma Burkitt'],
+    ]}
+},
+{
+  id:'aml', cat:'leukemia', level:'2', title:'Leukemia Myeloid Akut (AML)',
+  sub:'Keganasan sel lini myeloid dengan sel blas yang banyak — sering pada lansia >65 tahun.',
+  sections:[
+    {h:'Etiologi', list:['Sebagian besar idiopatik, namun beberapa faktor risiko dikenal meningkatkan kemungkinan terjadinya AML.','Gangguan hematopoietik lain seperti anemia aplastik dan CML dapat bertransformasi menjadi AML sebagai komplikasi jangka panjangnya (pada CML disebut krisis blas myeloid).','Kelainan genetik/kromosom, termasuk Down syndrome, juga meningkatkan risiko AML — meski pada usia yang lebih muda dibanding populasi umum.','Faktor lingkungan seperti radiasi ionisasi dan paparan bahan kimia benzena diketahui bersifat leukemogenik, merusak DNA sel punca myeloid dan memicu mutasi onkogenik.']},
+    {h:'Manifestasi Klinis Khas AML', list:['Leukemia kutis (sarkoma mieloid) — infiltrasi sel mieloblas ke kulit membentuk lesi nodular berwarna ungu kebiruan, gambaran khas yang jarang ditemukan pada ALL.','Hiperplasia gingiva — pembengkakan gusi akibat infiltrasi sel mieloblas ke jaringan mukosa mulut, terutama pada subtipe AML monositik/monoblastik yang memiliki kecenderungan lebih besar berinfiltrasi ke jaringan lunak ekstramedular.']},
+    {h:'Pemeriksaan Penunjang', list:['Darah lengkap: pola serupa ALL — anemia, trombositopenia, disertai leukositosis atau leukopenia.','Hapusan darah tepi: mieloblas meningkat, dengan penanda khas berupa Auer rods — badan inklusi sitoplasma berbentuk tongkat merah yang merupakan agregat granula azurofilik abnormal, ditemukan hanya pada lini myeloid dan menjadi petunjuk morfologi penting yang membedakan AML dari ALL secara visual.','Gold Standard: aspirasi & biopsi sumsum tulang, dengan ambang diagnostik sel mieloblas >20%.','Imunohistokimia: mieloperoksidase positif pada AML (enzim spesifik granulosit/monosit), sementara pada ALL hasilnya negatif — pemeriksaan ini menjadi cara konfirmasi laboratorium untuk membedakan kedua jenis leukemia akut bila morfologi saja belum cukup jelas.']},
+    {h:'Tatalaksana (Kemoterapi)', list:['Terapi Induksi (4–6 minggu) untuk mencapai remisi awal.','Terapi Konsolidasi (beberapa bulan) untuk mengeliminasi sisa sel tumor mikroskopik.','Terapi Rumatan (hingga 2 tahun) untuk mempertahankan remisi jangka panjang — meski pada beberapa protokol AML modern durasi rumatan dapat lebih singkat dibanding ALL, tergantung subtipe dan risiko sitogenetiknya.']},
+  ],
+},
+{
+  id:'cll', cat:'leukemia', level:'2', title:'Leukemia Limfositik Kronis (CLL)',
+  sub:'Akumulasi progresif limfosit B matur/imatur — khas dewasa tua.',
+  sections:[
+    {h:'Patofisiologi Singkat', list:['Berbeda dari leukemia akut yang sel proliferatifnya sangat imatur, CLL ditandai akumulasi limfosit B yang secara morfologi tampak matang namun secara fungsional tidak bekerja normal — sel-sel ini menumpuk perlahan di darah, sumsum tulang, dan kelenjar getah bening karena gagal mengalami apoptosis sebagaimana limfosit normal pada akhir siklus hidupnya, bukan karena berproliferasi sangat cepat. Inilah salah satu alasan mengapa CLL berjalan sangat indolen (lambat) dan kadang tidak bergejala bertahun-tahun.']},
+    {h:'Manifestasi Klinis', list:['Gejala konstitusional (gejala B): penurunan berat badan, demam, dan keringat malam — menandakan aktivitas penyakit yang mulai signifikan.','Limfadenopati tidak nyeri akibat infiltrasi sel B limfositik ke kelenjar getah bening.','Hepatomegali dan splenomegali akibat infiltrasi sel yang sama ke organ tersebut.','Infeksi berulang, terutama pada tahap awal penyakit — tampak paradoksal karena leukositnya justru tinggi, namun ini terjadi karena leukosit yang menumpuk adalah sel limfosit B abnormal yang tidak berfungsi optimal, sementara produksi sel imun normal lainnya (termasuk imunoglobulin) justru tertekan.','Leukemia kutis (makula, papul, nodul) dapat terjadi akibat infiltrasi sel ke kulit, meski tidak sesering pada AML.']},
+    {h:'Pemeriksaan Penunjang', list:['Darah lengkap: limfositosis absolut (biasanya kriteria diagnostik menyaratkan hitung limfosit >5.000/µL yang menetap), disertai granulositopenia, trombositopenia, dan Hb rendah pada tahap lanjut akibat desakan sel CLL terhadap lini sel lain.','Hapusan darah tepi: smudge cells (juga disebut basket cells) — limfosit yang pecah/rusak saat pembuatan preparat apus karena membran selnya rapuh, gambaran yang sangat khas dan sering menjadi petunjuk diagnostik awal CLL.','Aspirasi sumsum tulang dilakukan bila pemeriksaan lain belum konklusif, menunjukkan limfosit matur >30% dengan penurunan sel lini myeloid akibat desakan ruang sumsum tulang.']},
+    {h:'Tatalaksana', list:['Pasien asimtomatik cukup diobservasi ("watch and wait") — karena CLL berjalan sangat lambat, terapi dini pada pasien tanpa gejala tidak terbukti memperbaiki kelangsungan hidup dan hanya menambah efek samping.','Kemoterapi paliatif diberikan saat penyakit mulai bergejala/progresif; bila sel CLL menunjukkan CD20 positif, ditambahkan rituximab (antibodi monoklonal anti-CD20) untuk meningkatkan efektivitas terapi.','Transplantasi stem cell hematopoietik dipertimbangkan pada kasus tertentu yang berisiko tinggi atau kambuh, meski bukan pilihan lini pertama mengingat usia pasien CLL yang umumnya sudah lanjut.']},
+  ],
+},
+{
+  id:'cml', cat:'leukemia', level:'2', title:'Leukemia Mieloid Kronis (CML)',
+  sub:'Proliferasi granulosit matur & imatur tanpa gangguan diferensiasi — kromosom Philadelphia.',
+  sections:[
+    {h:'Etiologi', list:['Kromosom Philadelphia — hasil translokasi resiprokal antara gen ABL1 pada kromosom 9 dengan gen BCR pada kromosom 22, dituliskan sebagai t(9;22), yang membentuk gen fusi BCR-ABL. Gen fusi ini menghasilkan protein tirosin kinase yang aktif secara terus-menerus (constitutively active) tanpa perlu sinyal regulasi normal, sehingga terus-menerus mendorong sel myeloid berproliferasi tak terkendali — inilah dasar biologis mengapa terapi target inhibitor tirosin kinase begitu efektif pada CML, karena langsung menghambat "mesin" penggerak utama penyakitnya.','Lebih sering pada laki-laki usia >65 tahun, meski dapat terjadi pada usia berapa pun.']},
+    {h:'Manifestasi Klinis per Fase', sub:[
+      {t:'Fase Kronis (blas <10%)', list:['Gejala konstitusional: penurunan berat badan, demam, keringat malam — sering ringan dan tidak spesifik sehingga banyak kasus baru terdeteksi insidental saat pemeriksaan darah rutin.','Splenomegali, kadang masif, akibat infiltrasi sel granulosit berlebihan ke limpa — pada fase ini sel-sel yang berproliferasi masih relatif matang sehingga fungsinya sebagian besar masih baik.']},
+      {t:'Fase Akselerasi (blas 10–19%)', list:['Tanda anemia mulai muncul: lemas, konjungtiva pucat — menandakan sel blas yang mulai mendesak lini eritrosit normal.','Leukostasis dapat terjadi akibat leukosit yang sangat tinggi, menyebabkan iskemia jaringan karena penyumbatan mikrovaskular.','Splenomegali yang semakin ekstrem menjadi pertanda peringatan bahwa penyakit sedang bertransformasi menuju krisis blas.']},
+      {t:'Fase Krisis Blas (blas >20%)', list:['Merupakan fase terakhir dan paling agresif dari CML, dengan gejala menyerupai leukemia akut — perburukan cepat, sitopenia berat, dan risiko komplikasi tinggi.','Krisis blas dapat mengarah ke tipe myeloid (AML, sekitar 2/3 kasus, sesuai asal sel CML dari lini myeloid) atau tipe limfoid (ALL, sekitar 1/3 kasus, menunjukkan bahwa mutasi BCR-ABL sebenarnya terjadi pada sel punca yang masih berpotensi berdiferensiasi ke berbagai lini sel).']},
+    ]},
+    {h:'Pemeriksaan Penunjang', list:['Darah lengkap: leukositosis berat (seringkali >100.000/µL), disertai trombositosis, basofilia, dan eosinofilia — pola peningkatan multi-lini granulosit ini khas CML dan berbeda dari leukemia akut yang biasanya lebih dominan satu jenis sel blas saja.','Apusan darah tepi menunjukkan dominasi granulosit pada berbagai tahap maturasi (mielosit, metamielosit) — mencerminkan proses maturasi yang masih berjalan meski berlebihan, berbeda dari leukemia akut yang maturasinya benar-benar terhenti pada tahap blas.','Aspirasi sumsum tulang: granulositosis dengan banyak mielosit/promielosit, mengonfirmasi hiperselularitas lini myeloid.','Gold Standard: pemeriksaan genetik untuk mendeteksi gen BCR-ABL, baik melalui sitogenetik konvensional (menemukan kromosom Philadelphia) maupun PCR (lebih sensitif) — pemeriksaan ini juga digunakan untuk memantau respons terapi jangka panjang.']},
+    {h:'Tatalaksana', list:['Targeted therapy sebagai lini pertama pada fase kronis & akselerasi: inhibitor tirosin kinase yang diminum seumur hidup — imatinib (generasi pertama), dasatinib dan nilotinib (generasi kedua, digunakan bila resistensi atau intoleransi imatinib) — bekerja langsung menghambat protein BCR-ABL yang menjadi akar masalah penyakit ini.','Hidroksiurea digunakan sebagai alternatif bila targeted therapy gagal atau sebagai terapi sitoreduktif cepat sementara menunggu hasil pemeriksaan genetik.','Transplantasi stem cell hematopoietik merupakan tatalaksana definitif dengan potensi kuratif, memberikan remisi jangka panjang (>9 tahun) — namun mengingat efektivitas tinggi dan risiko lebih rendah dari inhibitor tirosin kinase, transplantasi kini lebih sering dicadangkan untuk kasus yang gagal terapi target atau sudah masuk fase krisis blas.']},
+  ]
+},
+{
+  id:'leukemia-compare', cat:'leukemia', level:'2', title:'Perbandingan Empat Leukemia',
+  sub:'Ringkasan pembeda ALL, AML, CLL, CML.',
+  sections:[],
+  table:{title:'ALL vs AML vs CLL vs CML', head:['Aspek','ALL','AML','CLL','CML'],
+    rows:[
+      ['Usia khas','Anak-anak','Dewasa muda','Dewasa tua','Dewasa tua'],
+      ['Ciri khas darah tepi','Limfoblas >20%','Myeloblas >20%, Auer rods','Smudge cell / basket cell','Kromosom Philadelphia (+)'],
+    ]}
+},
+// ---------------- LAINNYA ----------------
+{
+  id:'polisitemia', cat:'lainnya', level:'2', title:'Polisitemia Vera',
+  sub:'Kelainan neoplastik myeloproliferatif kronik dengan peningkatan eritrosit — 90% akibat mutasi gen JAK2.',
+  sections:[
+    {h:'Patofisiologi Singkat', list:['Pada kondisi normal, produksi eritrosit oleh sumsum tulang diatur ketat oleh sinyal eritropoietin (EPO) dari ginjal, yang hanya dilepas saat tubuh mendeteksi hipoksia. Pada Polisitemia Vera, terjadi mutasi somatik pada gen JAK2 (JAK2 V617F pada sekitar 90% kasus) di sel punca hematopoietik, yang membuat jalur sinyal JAK-STAT di dalam sel aktif secara terus-menerus tanpa perlu diaktivasi oleh EPO.','Akibatnya, sumsum tulang terus memproduksi eritrosit (dan sering juga leukosit serta trombosit) secara berlebihan meski kadar EPO dalam darah justru rendah (karena tubuh berusaha "mengerem" produksi dengan menekan EPO, namun sel sumsum tulang tidak lagi peduli terhadap sinyal ini) — inilah yang menjelaskan mengapa kadar eritropoietin yang rendah justru menjadi salah satu kriteria diagnosis, bertolak belakang dengan polisitemia sekunder (misalnya akibat penyakit paru kronik) yang EPO-nya justru meningkat sebagai respons kompensasi normal terhadap hipoksia.']},
+    {h:'Definisi', list:['Hb di atas normal: Laki-laki >16,5 g/dL; Perempuan >16 g/dL.','Stem cell hematopoietik aktif memproduksi eritrosit terus-menerus tanpa membutuhkan stimulasi eritropoietin, akibat mutasi JAK2 yang membuat jalur sinyal proliferasinya aktif secara otonom.']},
+    {h:'Manifestasi Klinis', list:['Biasanya asimtomatik pada tahap awal — banyak kasus terdeteksi insidental saat pemeriksaan darah rutin menunjukkan Hb/Ht yang tinggi tanpa keluhan apapun.','Gejala non-spesifik seperti mudah lelah, pusing, dan nyeri kepala dapat muncul akibat darah yang menjadi lebih kental (viscous) sehingga aliran darah ke jaringan, termasuk otak, menjadi kurang optimal.','Sindrom hiperviskositas — darah yang terlalu kental meningkatkan risiko perdarahan mukosa (paradoks, karena trombosit yang berlebihan justru sering disfungsional), gejala neurologis, dan gangguan penglihatan akibat gangguan aliran darah di pembuluh kecil.','Plethora (wajah tampak kemerahan akibat pembuluh darah kulit yang penuh sel darah merah), pruritus (gatal, klasik memberat setelah mandi air hangat — diduga terkait pelepasan histamin dari basofil yang jumlahnya ikut meningkat), tinnitus, hipertensi, dan splenomegali (akibat hematopoiesis ekstramedular serta penumpukan sel darah berlebih).']},
+    {h:'Diagnosis', list:['Kriteria mayor: Hb >16,5 g/dL (pria) / >16 g/dL (wanita) atau Ht >49%/>48%, disertai peningkatan red cell mass; biopsi sumsum tulang menunjukkan hiperselularitas pada ketiga lini sel (eritrosit, granulosit, trombosit) — mencerminkan proses myeloproliferatif yang tidak hanya mengenai satu lini sel saja; dan ditemukannya mutasi gen JAK2.','Kriteria minor: kadar eritropoietin serum yang rendah, sesuai dengan patofisiologi bahwa proliferasi sel terjadi independen dari sinyal EPO.','Diagnosis ditegakkan bila memenuhi ketiga kriteria mayor, ATAU dua kriteria mayor pertama disertai kriteria minor.']},
+    {h:'Tatalaksana', list:['Flebotomi (mengeluarkan darah secara berkala) 200–500 cc/minggu hingga hematokrit mencapai maksimal 45% — merupakan cara tercepat dan paling langsung untuk mengurangi volume sel darah merah serta menurunkan viskositas darah, sehingga menjadi tatalaksana lini pertama.','Hidroksiurea 15 mg/kgBB/hari dipertimbangkan pada pasien risiko tinggi trombosis, bekerja menekan proliferasi sel di sumsum tulang secara farmakologis.','JAK2 inhibitor (ruxolitinib) menjadi pilihan pada kasus yang resisten atau intoleran terhadap hidroksiurea, bekerja langsung menghambat jalur sinyal JAK-STAT yang menjadi akar masalah penyakit ini.','Suportif: Aspirin dosis rendah 1×80 mg untuk mencegah komplikasi trombosis (risiko utama kematian pada polisitemia vera), dan allopurinol 1×100–300 mg untuk mengatasi hiperurisemia akibat tingginya turnover sel yang melepaskan asam urat berlebih.']},
+  ],
+  mnemonic:{label:'MED+EASY — "PVR"', text:'Plethora · pruritus · hiperViskositas (perdarahan mukosa) · RBC meningkat (Hb meningkat)'}
+},
+{
+  id:'myeloma', cat:'lainnya', level:'1', title:'Multiple Myeloma',
+  sub:'Keganasan sel plasma monoklonal yang menginfiltrasi sumsum tulang.',
+  sections:[
+    {h:'Patofisiologi Singkat', list:['Multiple Myeloma bermula dari satu klon sel plasma (sel B yang sudah matang dan seharusnya memproduksi antibodi) yang bertransformasi menjadi ganas dan berproliferasi tak terkendali di sumsum tulang. Karena berasal dari satu klon tunggal, sel-sel ini menghasilkan imunoglobulin yang identik dalam jumlah sangat besar (disebut protein monoklonal atau M-protein), yang justru tidak berfungsi sebagai antibodi normal.','Sel plasma ganas ini juga merangsang aktivitas osteoklas (sel penghancur tulang) secara berlebihan sambil menekan osteoblas (sel pembentuk tulang), sehingga terjadi destruksi tulang progresif (lesi litik) yang melepaskan kalsium ke darah (hiperkalsemia) sekaligus menyebabkan nyeri tulang dan risiko fraktur patologis.','Rantai ringan imunoglobulin monoklonal berlebih yang difiltrasi ginjal (protein Bence Jones) bersifat toksik terhadap tubulus ginjal, sehingga sering menyebabkan gangguan fungsi ginjal — salah satu dari empat manifestasi klasik OLD CRAB (hiperkalsemia, gangguan ginjal, anemia, lesi tulang) yang menjadi ciri khas penyakit ini.']},
+    {h:'Klasifikasi', list:['IgG dan IgA merupakan bentuk paling sering ditemukan, sesuai dengan proporsi alami jenis imunoglobulin yang paling banyak diproduksi sel plasma pada populasi umum.','Mieloma Bence Jones (hanya memproduksi rantai ringan tanpa rantai berat lengkap) terjadi pada sekitar 15–20% kasus — bentuk ini cenderung lebih agresif terhadap ginjal karena rantai ringan lebih mudah difiltrasi dan menumpuk di tubulus.','IgD, IgE, IgM sangat jarang ditemukan sebagai jenis protein monoklonal pada Multiple Myeloma.']},
+    {h:'Manifestasi Klinis', list:['Sering asimtomatik pada tahap awal (fase smoldering myeloma), terdeteksi insidental saat pemeriksaan darah rutin menunjukkan peningkatan protein total atau anemia yang tidak jelas sebabnya.','Demam ringan dapat muncul terkait aktivitas penyakit atau infeksi berulang (karena produksi imunoglobulin fungsional normal ikut tertekan oleh dominasi klon sel plasma ganas).','Gangguan tulang: nyeri tulang (terutama tulang belakang, panggul, tengkorak) akibat lesi osteolisis, hingga fraktur spontan/patologis pada kasus lanjut.','Gejala hiperkalsemia (mual, konstipasi, poliuria, gangguan kesadaran) akibat kalsium yang dilepas dari tulang yang hancur.','Urin berbusa akibat proteinuria Bence Jones, salah satu tanda keterlibatan ginjal.']},
+    {h:'Pemeriksaan Penunjang', list:['Elektroforesis protein serum merupakan pemeriksaan awal terbaik, menemukan gambaran protein monoklonal (M-spike) — puncak tajam pada grafik elektroforesis yang mencerminkan produksi imunoglobulin identik berlebihan dari satu klon sel.','Urinalisis untuk mendeteksi protein Bence Jones, menandakan ekskresi rantai ringan monoklonal berlebih melalui ginjal.','Darah: anemia (Hb <10 g/dL, akibat desakan sel plasma ganas terhadap eritropoiesis normal di sumsum tulang), hiperkalsemia (>11 mg/dL, akibat destruksi tulang), kreatinin meningkat (>2 mg/dL, akibat toksisitas rantai ringan terhadap ginjal).','Pencitraan: whole body CT-scan menjadi pilihan pertama karena lebih sensitif mendeteksi lesi tulang dini dibanding foto polos konvensional; skeletal survey (foto polos seluruh tulang) tetap dapat digunakan dan menunjukkan gambaran klasik lesi "punched-out" (area radiolusen bulat tegas seperti dilubangi).','Konfirmasi diagnosis: biopsi sumsum tulang menunjukkan sel plasma monoklonal >10% dari total sel berinti, dengan gambaran morfologi khas "fried-egg appearance" (nukleus eksentrik dikelilingi sitoplasma basofilik luas, menyerupai telur goreng).']},
+  ],
+  mnemonic:{label:'Diagnosis Multiple Myeloma — "OLD CRAB"', text:'Old age · Calcium elevated · Renal failure · Anemia · Bone lytic lesion'}
+},
+// ---------------- REAKSI IMUNOLOGI ----------------
+{
+  id:'hipersensitivitas', cat:'imunologi', level:'4A', title:'Reaksi Hipersensitivitas',
+  sub:'Respons sistem imun berlebihan terhadap antigen yang berpotensi merusak tubuh.',
+  sections:[
+    {h:'Konsep Dasar', list:['Hipersensitivitas terjadi ketika sistem imun, yang seharusnya melindungi tubuh, justru bereaksi berlebihan terhadap suatu antigen (baik dari luar tubuh seperti alergen dan obat, maupun dari tubuh sendiri seperti pada penyakit autoimun) sehingga menimbulkan kerusakan jaringan. Klasifikasi Gell & Coombs membagi reaksi ini menjadi empat tipe berdasarkan mekanisme imunologis yang mendasarinya — pembagian ini penting secara klinis karena menentukan kecepatan onset gejala, jenis pemeriksaan penunjang yang relevan, dan pilihan terapi.']},
+    {h:'Klasifikasi', list:['Tipe I (Immediate) — diperantarai IgE: antigen (alergen) berikatan dengan IgE yang sudah menempel di permukaan sel mast dan basofil, memicu degranulasi cepat (dalam hitungan menit) yang melepaskan histamin dan mediator inflamasi lain, menimbulkan gejala klasik alergi seperti urtikaria, bronkospasme, hingga anafilaksis.','Tipe II (Sitotoksik) — diperantarai IgM/IgG: antibodi menempel langsung pada antigen yang berada di permukaan sel tubuh sendiri (atau sel donor pada transfusi), mengaktifkan sistem komplemen atau menarik sel fagosit untuk menghancurkan sel yang "ditandai" tersebut — contoh klasiknya adalah reaksi hemolisis pada AIHA atau reaksi transfusi inkompatibel.','Tipe III (Kompleks Imun) — diperantarai IgG: berbeda dari tipe II yang antibodinya menempel langsung pada sel, pada tipe ini antigen dan antibodi membentuk kompleks yang bersirkulasi bebas dalam darah terlebih dahulu, baru kemudian mengendap di jaringan tertentu (ginjal, sendi, pembuluh darah kecil) dan memicu inflamasi lokal di tempat pengendapannya.','Tipe IV (T-cell mediated / Delayed): berbeda dari ketiga tipe lain yang melibatkan antibodi, tipe ini sepenuhnya diperantarai sel T (baik T helper maupun T sitotoksik) tanpa melibatkan antibodi sama sekali — karena membutuhkan waktu bagi sel T untuk teraktivasi dan bermigrasi ke lokasi antigen, reaksi ini baru muncul 24–72 jam setelah paparan (delayed), jauh lebih lambat dibanding tipe I yang immediate.']},
+  ],
+  table:{title:'Contoh Klinis per Tipe Hipersensitivitas', head:['Tipe I','Tipe II','Tipe III','Tipe IV'],
+    rows:[[
+      'Alergi makanan, asma, urtikaria, anafilaksis',
+      'AIHA, reaksi transfusi, rheumatic heart disease, penyakit Graves, myastenia gravis, Goodpasture syndrome',
+      'Serum sickness, rheumatoid arthritis, GNAPS, SLE',
+      'Dermatitis kontak, tes Mantoux, penyakit celiac, diabetes melitus, multiple sklerosis',
+    ]]},
+  diagram:{title:'Empat Tipe Reaksi Hipersensitivitas (Gell & Coombs)', html:`
+    <div class="fsplit">
+      <div class="fbranch red">
+        <div class="flabel">Tipe I — Immediate</div>
+        <div class="fhead">Diperantarai IgE</div>
+        <p>Degranulasi sel mast & basofil setelah paparan ulang alergen → pelepasan histamin.</p>
+      </div>
+      <div class="fbranch teal">
+        <div class="flabel">Tipe II — Sitotoksik</div>
+        <div class="fhead">Diperantarai IgM / IgG</div>
+        <p>Antibodi menempel langsung pada antigen di permukaan sel → sel dihancurkan (mis. hemolisis).</p>
+      </div>
+    </div>
+    <div class="fsplit">
+      <div class="fbranch amber">
+        <div class="flabel">Tipe III — Kompleks Imun</div>
+        <div class="fhead">Diperantarai IgG</div>
+        <p>Kompleks antigen-antibodi bersirkulasi & mengendap di jaringan (ginjal, sendi, pembuluh darah).</p>
+      </div>
+      <div class="fbranch">
+        <div class="flabel">Tipe IV — Delayed (Cell-mediated)</div>
+        <div class="fhead">Diperantarai Sel T</div>
+        <p>Sel T helper/sitotoksik teraktivasi berlebihan tanpa melibatkan antibodi — reaksi muncul 24–72 jam.</p>
+      </div>
+    </div>`}
+},
+{
+  id:'anafilaksis', cat:'imunologi', level:'4A', title:'Reaksi Anafilaksis',
+  sub:'Reaksi hipersensitivitas tipe I berat diperantarai IgE, berpotensi mengancam nyawa.',
+  sections:[
+    {h:'Definisi & Patofisiologi', list:['Anafilaksis adalah bentuk paling berat dari reaksi hipersensitivitas tipe I, terjadi saat paparan ulang alergen memicu degranulasi masif sel mast dan basofil di seluruh tubuh secara sistemik (bukan lokal seperti pada alergi biasa), melepaskan histamin dan mediator inflamasi lain dalam jumlah besar ke sirkulasi.','Mediator yang dilepas menyebabkan vasodilatasi luas dan peningkatan permeabilitas kapiler di seluruh tubuh, sehingga cairan intravaskular bocor ke jaringan interstisial — inilah yang menyebabkan syok anafilaktik, yaitu syok distributif akibat volume darah efektif yang menurun drastis meski volume cairan tubuh total tidak berkurang. Mediator yang sama juga menyebabkan bronkospasme dan edema laring, sumber utama kematian pada anafilaksis bila jalan napas tidak segera diamankan.']},
+    {h:'Etiologi', list:['Alergi makanan (kacang, seafood, telur, susu, dan lainnya) — termasuk pemicu tersering terutama pada anak.','Alergi obat (NSAID, antibiotik golongan penisilin/sefalosporin, dan lainnya) — sering menjadi pemicu pada dewasa, termasuk pada prosedur medis seperti transfusi atau pemberian obat suntik.']},
+    {h:'Kriteria Diagnosis', list:[
+      'Kriteria 1: Hipotensi (tekanan darah sistolik <90 mmHg) yang muncul setelah paparan alergen.',
+      'Kriteria 2: Gejala kulit/mukosa akut (urtikaria, angioedema) disertai minimal 1 dari: hipotensi/penurunan kesadaran/nyeri dada/anuria, ATAU gejala respirasi (sesak, hipoksia, mengi, batuk) — kombinasi gejala kulit dengan gejala sistemik lain inilah yang paling sering dipakai untuk menegakkan diagnosis di lapangan.',
+      'Kriteria 3: Munculnya ≥2 gejala setelah paparan alergen dari kategori GIT (mual, muntah, nyeri perut), hipotensi/penurunan kesadaran, respirasi, dan kulit/mukosa — berguna terutama saat gejala kulit tidak dominan atau tidak muncul.',
+      'Diagnosis anafilaksis ditegakkan bila minimal 1 dari 3 kriteria di atas terpenuhi.',
+    ]},
+    {h:'Tatalaksana', list:['Primary survey (ABCDE) untuk menilai kondisi jalan napas, pernapasan, dan sirkulasi secara cepat, disertai posisi Trendelenburg (berbaring dengan tungkai ditinggikan) untuk membantu aliran balik darah ke jantung mengatasi hipotensi.','Atasi/hindari alergen — hentikan paparan lebih lanjut bila memungkinkan (misalnya menghentikan infus obat yang dicurigai).','Adrenalin (epinefrin) IM 1:1000 (1 mg/mL) dosis 0,3–0,5 mL di paha anterolateral (vastus lateralis) merupakan tatalaksana lini pertama dan paling penting — bekerja cepat melawan efek mediator anafilaksis melalui vasokonstriksi (mengatasi hipotensi), bronkodilatasi (mengatasi sesak), dan menekan pelepasan mediator lebih lanjut; dapat diulang tiap 5–15 menit bila gejala belum membaik.','Setelah kondisi mulai stabil, terapi tambahan berupa antihistamin (klorfeniramin, difenhidramin) dan kortikosteroid (hidrokortison, metilprednisolon) dapat diberikan sebagai terapi lini kedua — keduanya membantu meredakan gejala kulit/mukosa dan mencegah reaksi bifasik (kekambuhan gejala beberapa jam kemudian), namun tidak boleh menggantikan atau menunda pemberian adrenalin.']},
+  ],
+  diagram:{title:'Algoritma Reaksi Anafilaksis (Resuscitation Council)', note:'Alur tatalaksana cepat begitu dicurigai reaksi anafilaksis.', html:`
+    <div class="fseq">
+      <div class="fseq-item"><div class="fnum">1</div><div class="fbody"><b>Kenali & Nilai ABCDE</b><span>Curiga anafilaksis bila: awitan akut, ada masalah Airway/Breathing/Circulation yang mengancam nyawa, biasanya disertai perubahan kulit (urtikaria, angioedema).</span></div></div>
+      <div class="fseq-item"><div class="fnum">2</div><div class="fbody"><b>Panggil bantuan & posisikan pasien</b><span>Baringkan pasien (posisi Trendelenburg), tungkai ditinggikan; hindari posisi duduk mendadak.</span></div></div>
+      <div class="fseq-item"><div class="fnum">3</div><div class="fbody"><b>Adrenalin IM (lini pertama)</b><span>Dosis IM 1:1000 — Dewasa &amp; anak &gt;12 th: 500 mcg (0,5 mL) · Anak 6–12 th: 300 mcg (0,3 mL) · Anak &lt;6 th: 150 mcg (0,15 mL). Ulangi tiap 5 menit bila belum membaik.</span></div></div>
+      <div class="fseq-item"><div class="fnum">4</div><div class="fbody"><b>Terapi suportif</b><span>Oksigen aliran tinggi, akses IV, cairan kristaloid (dewasa 500–1000 mL; anak 20 mL/kgBB) — hentikan koloid bila dicurigai sebagai pemicu. Pantau SpO₂, EKG, tekanan darah.</span></div></div>
+      <div class="fseq-item"><div class="fnum">5</div><div class="fbody"><b>Terapi tambahan</b><span>Klorfeniramin IM/IV lambat (dewasa 10 mg) dan Hidrokortison IM/IV lambat (dewasa 200 mg) — setelah resusitasi awal, bukan pengganti adrenalin.</span></div></div>
+    </div>`}
+},
+// ---------------- TRANSFUSI DARAH ----------------
+{
+  id:'transfusi', cat:'transfusi', level:'4A', title:'Transfusi Darah',
+  sub:'Indikasi transfusi berbagai komponen darah — umumnya pada Hb <7 g/dL.',
+  sections:[
+    {h:'Konsep Dasar', list:['Darah donor jarang diberikan sebagai whole blood utuh dalam praktik modern — sebagian besar dipisah menjadi komponen (PRC, trombosit, plasma) agar pasien hanya menerima komponen yang benar-benar dibutuhkan, mengurangi risiko reaksi transfusi dan volume overload, sekaligus memungkinkan satu kantong darah donor dimanfaatkan untuk beberapa pasien dengan kebutuhan berbeda.']},
+    {h:'Whole Blood', list:['Perdarahan akut dengan hipovolemia berat, di mana pasien membutuhkan penggantian volume sekaligus komponen sel darah dan faktor koagulasi secara bersamaan.','Transfusi tukar (exchange transfusion), misalnya pada hiperbilirubinemia neonatus berat, karena membutuhkan penggantian darah pasien secara menyeluruh.','Sebagai pengganti PRC saat memerlukan transfusi sel darah merah namun sediaan komponen tidak tersedia.']},
+    {h:'Packed Red Cells (PRC)', list:['Komponen darah yang paling sering ditransfusikan, sebagai pengganti sel darah merah pada berbagai jenis anemia — memberikan eritrosit dalam volume plasma yang jauh lebih sedikit dibanding whole blood, sehingga risiko overload cairan lebih rendah.','Anemia akibat perdarahan akut, idealnya diberikan setelah resusitasi cairan kristaloid/koloid awal untuk menstabilkan volume intravaskular terlebih dahulu.']},
+    {h:'Washed Erythrocyte', list:['Eritrosit yang telah dicuci untuk menghilangkan hampir seluruh plasma dan protein donor, sehingga meminimalkan risiko reaksi alergi terhadap protein plasma.','Transfusi masif pada neonatus sampai usia <1 tahun, karena sistem imun bayi yang belum matang lebih rentan terhadap reaksi transfusi.','Transfusi intrauterin, pada kondisi seperti penyakit hemolitik janin.','Pasien dengan anti-IgA atau defisiensi IgA yang memiliki riwayat alergi transfusi berat — mereka berisiko mengalami reaksi anafilaktoid terhadap IgA dalam plasma donor.','Riwayat reaksi transfusi berat yang tidak membaik meski sudah diberikan premedikasi (antihistamin/kortikosteroid sebelum transfusi).']},
+    {h:'Thrombocyte Concentrate', list:['Diberikan pada perdarahan akibat trombositopenia atau gangguan fungsi trombosit, untuk menggantikan trombosit yang kurang/tidak berfungsi.','Sebagai pencegahan perdarahan spontan bila trombosit <10.000/µL, ambang di mana risiko perdarahan spontan meningkat tajam meski tanpa trauma.','Profilaksis sebelum operasi bila trombosit <50.000/µL (kecuali untuk operasi berisiko tinggi seperti trepanasi/kraniotomi dan kardiovaskular yang membutuhkan ambang lebih tinggi, <100.000/µL, mengingat konsekuensi perdarahan pada area tersebut jauh lebih berbahaya).']},
+    {h:'Fresh Frozen Plasma (FFP)', list:['Mengandung seluruh faktor koagulasi plasma, diberikan pada defisiensi faktor koagulasi seperti pada penyakit hati (hati tidak mampu memproduksi faktor koagulasi cukup), overdosis warfarin (yang menghambat faktor koagulasi dependen vitamin K), dan transfusi masif (di mana faktor koagulasi ikut terdilusi oleh cairan resusitasi dan komponen darah lain).','DIC, untuk menggantikan faktor koagulasi yang terkonsumsi habis akibat aktivasi koagulasi sistemik.','TTP (Thrombotic Thrombocytopenic Purpura), di mana FFP (atau plasma exchange) menjadi bagian penting terapi untuk menggantikan enzim ADAMTS13 yang defisien.']},
+    {h:'Cryoprecipitate', list:['Fraksi plasma yang kaya akan fibrinogen, F.VIII, F.XIII, dan vWF, diperoleh dari FFP yang dicairkan perlahan — menjadi alternatif konsentrat F.VIII pada defisiensi vWF, F.VIII, atau F.XIII bila konsentrat spesifik tidak tersedia.','Sumber fibrinogen utama pada koagulopati seperti DIC yang fibrinogennya sudah sangat rendah, karena volumenya jauh lebih kecil dibanding FFP untuk jumlah fibrinogen yang setara, sehingga lebih efisien digunakan pada pasien yang perlu dibatasi volume cairannya.']},
+  ],
+  mnemonic:{label:'Ingat', text:'Reaksi transfusi akibat inkompatibilitas ABO tanpa crossmatch merupakan hipersensitivitas Tipe II (sitotoksik) — antibodi IgM/IgG menyerang antigen pada sel darah merah donor.'}
+},
+];
+</script>
+<script>
+/* =========================================================
+   QUIZ DATA — 10 soal MED+QUIZ dari materi kelas
+   ========================================================= */
+const QUIZ = [
+{
+  vignette:'Seorang remaja perempuan berusia 18 tahun dibawa ke Puskesmas dengan keluhan mudah lelah dan terlihat lunglai sejak 1 bulan terakhir. Pada pemeriksaan tanda vital dijumpai HR 111, RR 26. Pada pemeriksaan fisik dijumpai konjungtiva anemis (+). Pada pemeriksaan lab dijumpai Hb 8,8, Leukosit 7.500, Trombosit 210.000, MCV dan MCHC menurun.',
+  question:'Apa pemeriksaan penunjang yang digunakan untuk menegakkan diagnosis?',
+  options:['Profil besi','Elektroforesis','Apus darah tepi',"Coomb's test",'Apus tebal apus tipis'],
+  answer:0,
+  explain:'Gambaran anemia mikrositik hipokrom (MCV & MCHC menurun) pada remaja perempuan mengarah ke Anemia Defisiensi Besi. Pemeriksaan penunjang paling tepat untuk menegakkan diagnosis ADB adalah <b>profil besi</b> (ferritin, serum besi, TIBC, saturasi transferin) — serum feritin merupakan pemeriksaan paling sensitif.'
+},
+{
+  vignette:'Pasien laki-laki datang dengan keluhan muntah hebat sejak 3 jam yang lalu. Pasien juga mengeluh kaki bengkak, gatal disekujur tubuh, disertai dengan tidak keluar kencing sejak 2 hari. Pasien memiliki riwayat diabetes mellitus tidak terkontrol. Pemeriksaan fisik didapatkan TD 180/100, RR 20, HR 90, suhu afebris. Pemeriksaan laboratorium didapatkan Hb 9,5, ureum 198, creatinin 4.5, GDS 330.',
+  question:'Apakah penyebab anemia pada pasien?',
+  options:['Peningkatan lisis eritrosit','Perdarahan masif','Penurunan pembentukan eritrosit','Gangguan rantai hemoglobin','Defisiensi zat besi'],
+  answer:2,
+  explain:'Pasien dengan riwayat DM tidak terkontrol, ureum & kreatinin sangat tinggi menunjukkan gagal ginjal kronik (CKD). Anemia pada CKD terjadi karena <b>penurunan produksi eritropoietin</b> oleh ginjal yang rusak, sehingga pembentukan eritrosit di sumsum tulang menurun.'
+},
+{
+  vignette:'Seorang laki-laki berusia 37 tahun datang ke poliklinik umum puskesmas dengan keluhan jari-jemari sering terasa baal dan kesemutan. Pasien menjalani reseksi usus halus 3 bulan yang lalu. Pada pemeriksaan tanda vital didapatkan TD 110/80, HR 80, RR 22, T 37. Pada pemeriksaan fisik pasien mengalami ataxia. Konjungtiva tampak anemis.',
+  question:'Apakah pemeriksaan penunjang yang tepat?',
+  options:['Coomb Test','Crossmatch Test','Ristosetin Test','Schilling Test','Schimmer Test'],
+  answer:3,
+  explain:'Riwayat reseksi usus halus + gejala neurologis (baal, kesemutan, ataksia) + anemia mengarah ke <b>Anemia Defisiensi Vitamin B12</b> (gangguan absorpsi di ileum). Gold standard pemeriksaan penunjang adalah <b>Tes Schilling</b> untuk menilai absorpsi vitamin B12.'
+},
+{
+  vignette:'Pasien anak perempuan berusia 5 tahun dibawa ibunya ke poliklinik anak dengan keluhan muncul bercak kemerahan pada tubuh sejak tiga hari. Seminggu sebelumnya pasien terjatuh saat bermain dan di lukanya muncul nanah. Pada pemeriksaan fisik didapatkan petekie dan purpura pada ekstremitas. Pada pemeriksaan laboratorium ditemukan Hb 13,6, leukosit 7.000, trombosit 33.000. Pemeriksaan faal hemostasis didapatkan bleeding time memanjang.',
+  question:'Apakah diagnosis yang paling mungkin pada pasien?',
+  options:['Von Willebrand disease','Anemia Aplastik','DIC','Hemofilia','ITP'],
+  answer:4,
+  explain:'Riwayat infeksi (luka bernanah) 1 minggu sebelumnya, diikuti petekie/purpura dengan trombositopenia berat (33.000) tanpa kelainan Hb/leukosit adalah pola klasik <b>ITP</b> pada anak — "riwayat infeksi + purpura + trombositopenia" tanpa penyebab lain.'
+},
+{
+  vignette:'Anak perempuan usia 12 tahun dibawa ke dokter karena haid dengan siklus regular namun jumlah darah cenderung banyak. HPHT pasien 3 minggu yang lalu. Pemeriksaan tanda vital dalam batas normal. Pada pemeriksaan fisik tidak ditemukan kelainan. Dokter melakukan pemeriksaan laboratorium dengan hasil Hb 11 g/dL, leukosit 7.000/mikroL, trombosit 180.000/mikroL, PT 13 detik (normal), aPTT 45 detik (memanjang), D-dimer normal. Masa perdarahan pasien 10 menit (normal 2-7 menit).',
+  question:'Apakah patofisiologi yang mendasari kasus di atas?',
+  options:['Vasculitis yang disebabkan imunoglobulin','Mutasi genetik','Terganggunya adhesi platelet','Defisiensi platelet','Malformasi pembuluh darah'],
+  answer:2,
+  explain:'Menorrhagia dengan trombosit normal, PT normal, aPTT memanjang, dan bleeding time memanjang adalah pola khas <b>Von Willebrand Disease</b>. vWF berperan pada adhesi trombosit ke subendotel, sehingga patofisiologi yang mendasari adalah <b>terganggunya adhesi platelet</b>.'
+},
+{
+  vignette:'Seorang pasien anak laki-laki berusia 8 bulan dibawa oleh ibunya karena memar-memar pada tubuhnya. Riwayat trauma disangkal. Memar pertama kali ditemukan 1 bulan yang lalu saat pasien belajar merangkak. Memar juga membutuhkan waktu yang lama untuk sembuh. Saat ditanya, ternyata mendiang sepupu pasien juga memiliki keluhan serupa. Pada pemeriksaan fisik ditemukan edema lutut bilateral disertai dengan eritem. Pasien menangis saat lutut dipalpasi. Aspirasi cairan sendi lutut menunjukkan adanya perdarahan.',
+  question:'Apakah diagnosis pada ilustrasi di atas?',
+  options:['DIC','Von Willebrand disease','ITP','Christmas disease','Hematoma'],
+  answer:3,
+  explain:'Anak laki-laki dengan hemartrosis spontan, riwayat keluarga (sepupu, pola X-linked), dan perdarahan yang sulit berhenti mengarah ke hemofilia. Karena pilihan spesifik menyebut nama lain hemofilia B, jawaban tepat adalah <b>Christmas disease (Hemofilia B — defisiensi faktor IX)</b>.'
+},
+{
+  vignette:'Seorang pasien laki-laki berusia 50 tahun datang ke poliklinik RS dengan keluhan sesak nafas yang hilang timbul terutama saat sedang beraktivitas berat sejak 1 bulan yang lalu. Keluhan disertai mudah lelah dan terkadang timbul lebam di lengan dan tungkai. Pemeriksaan fisik ditemukan terdapat konjungtiva pucat dan splenomegali. Laboratorium didapatkan Hb 12, leukosit 80.000, trombosit 100.000.',
+  question:'Apakah diagnosis yang tepat pada pasien di atas?',
+  options:['Multiple myeloma','Leukemia Mieloblastik Kronik','Leukemia Limfoblastik Akut','Leukemia Limfoblastik Kronik','Leukemia Mieloblastik Akut'],
+  answer:1,
+  explain:'Dewasa tua, leukositosis sangat tinggi (80.000) dengan splenomegali dan gejala konstitusional kronik (bukan akut) mengarah ke <b>Leukemia Mieloid Kronik (CML)</b>, khas dengan splenomegali masif dan perjalanan penyakit yang lebih indolen dibanding leukemia akut.'
+},
+{
+  vignette:'Seorang pasien perempuan berusia 41 tahun, datang dengan keluhan benjolan di leher kiri. Keluhan disertai penurunan berat badan, malaise, sering demam, dan berkeringat malam. Benjolan tidak nyeri, kenyal, dan berukuran 2 cm. Pada pemeriksaan PA didapatkan sel berbentuk seperti mata burung hantu.',
+  question:'Apakah diagnosis yang paling mungkin pada pasien?',
+  options:['Limfoma non-Hodgkin','Limfadenitis Tuberkulosis','Limfoma Hodgkin','Leukemia Limfositik akut','Skrofuloderma'],
+  answer:2,
+  explain:'Limfadenopati tidak nyeri disertai gejala B (BB turun, demam, keringat malam) dengan gambaran patologi anatomi sel Reed-Sternberg ("owl\'s eyes appearance" / mata burung hantu) adalah diagnostik untuk <b>Limfoma Hodgkin</b>.'
+},
+{
+  vignette:'Seorang wanita usia 30 tahun datang ke praktek dokter dengan keluhan nyeri kepala dan kaku leher. Dari hasil pemeriksaan fisik didapatkan TD 120/80, HR 80, RR 18, T 36, plethora (+). Dari pemeriksaan laboratorium didapatkan Hb 21.4, Hct 60%, Leukosit 15.000, Trombosit 480.000.',
+  question:'Apakah diagnosis yang tepat untuk kasus tersebut?',
+  options:['Leukemia','Trombositosis esensial','Hemokonsentrasi relatif','Polisitemia sekunder','Polisitemia vera'],
+  answer:4,
+  explain:'Hb dan Ht sangat tinggi disertai plethora, dan peningkatan ketiga lini sel (eritrosit, leukosit, trombosit) menunjukkan proses myeloproliferatif primer, yaitu <b>Polisitemia Vera</b> — bukan polisitemia sekunder karena tidak ada etiologi hipoksia yang mendasari serta terdapat peningkatan leukosit & trombosit juga.'
+},
+{
+  vignette:'Seorang pria berusia 18 tahun mengalami fraktur terbuka dan tampak kehilangan banyak darah. Pada pemeriksaan fisik didapatkan TD 70/50, HR 150, RR 40, dan akral teraba dingin. Pasien hendak diberikan transfusi darah.',
+  question:'Apakah patomekanisme yang dapat terjadi jika tidak dilakukan crossmatch terlebih dahulu?',
+  options:['Sistem komplemen','Hipersensitivitas tipe IV','Hipersensitivitas tipe III','Hipersensitivitas tipe II','Hipersensitivitas tipe I'],
+  answer:3,
+  explain:'Reaksi hemolitik transfusi akibat inkompatibilitas ABO yang tidak melalui crossmatch merupakan reaksi <b>hipersensitivitas tipe II (sitotoksik)</b> — antibodi IgM/IgG penerima menyerang antigen pada eritrosit donor, menyebabkan hemolisis intravaskular.'
+},
+{
+  vignette:'Seorang perempuan berusia 24 tahun, G1P0A0 hamil 20 minggu, datang untuk kontrol kehamilan rutin. Pasien tidak memiliki keluhan. Pemeriksaan fisik dalam batas normal. Pemeriksaan laboratorium menunjukkan Hb 10,2 g/dL, MCV 68 fL, MCH 22 pg. Pasien memiliki riwayat saudara kandung dengan keluhan serupa namun tanpa gejala berarti sejak kecil, dan tidak pernah mendapat transfusi rutin. Elektroforesis Hb menunjukkan HbA2 meningkat.',
+  question:'Apakah diagnosis yang paling mungkin?',
+  options:['Anemia defisiensi besi','Thalassemia minor','Thalassemia mayor','Anemia sideroblastik','Anemia penyakit kronis'],
+  answer:1,
+  explain:'Anemia mikrositik ringan pada kehamilan tanpa gejala berat, riwayat keluarga dengan keluhan serupa yang tidak memerlukan transfusi rutin, disertai HbA2 meningkat pada elektroforesis, sesuai dengan <b>Thalassemia minor (trait)</b> — biasanya asimtomatik dan terdeteksi insidental saat skrining.'
+},
+{
+  vignette:'Seorang laki-laki berusia 45 tahun dengan riwayat konsumsi alkohol berat selama 10 tahun terakhir datang dengan keluhan lemas. Pemeriksaan lab menunjukkan anemia mikrositik hipokrom dengan serum besi meningkat, TIBC menurun, dan feritin meningkat. Pemeriksaan sumsum tulang dengan pewarnaan Prussian blue menunjukkan cincin sideroblastik pada eritroblas.',
+  question:'Apakah patofisiologi mendasar pada kondisi ini?',
+  options:['Defisiensi besi absolut','Gangguan sintesis rantai globin','Besi masuk mitokondria namun gagal terikat pada heme','Autoantibodi terhadap eritrosit','Defisiensi eritropoietin'],
+  answer:2,
+  explain:'Gambaran serum besi tinggi, feritin tinggi, TIBC rendah, dengan ring sideroblast pada sumsum tulang adalah karakteristik <b>Anemia Sideroblastik</b> — akibat alkohol kronik. Patofisiologinya adalah besi berhasil masuk ke dalam mitokondria eritroblas namun gagal diikat menjadi heme, sehingga menumpuk mengelilingi nukleus (ring sideroblast).'
+},
+{
+  vignette:'Seorang perempuan berusia 34 tahun datang dengan keluhan lemas dan kulit tampak kekuningan sejak 1 minggu. Pasien memiliki riwayat SLE. Pemeriksaan fisik: konjungtiva anemis, sklera ikterik, splenomegali ringan. Laboratorium: Hb 8,1 g/dL, MCV 92 fL, retikulosit 6%, bilirubin indirek meningkat, LDH meningkat. Direct Coombs test positif IgG.',
+  question:'Apakah diagnosis yang paling mungkin?',
+  options:['Anemia defisiensi G6PD','Anemia aplastik','AIHA tipe warm sekunder','AIHA tipe cold','Anemia penyakit kronis'],
+  answer:2,
+  explain:'Anemia hemolitik (retikulositosis, bilirubin & LDH meningkat) dengan Direct Coombs test positif IgG pada pasien dengan penyakit dasar SLE menunjukkan <b>AIHA tipe warm sekunder</b> — SLE adalah salah satu underlying disease tersering pada AIHA sekunder, dan tipe warm diperantarai IgG.'
+},
+{
+  vignette:'Seorang anak laki-laki berusia 6 tahun dibawa ke IGD dengan keluhan lemas, mata dan kulit tampak kuning, serta urin berwarna gelap sejak semalam, 2 hari setelah mengonsumsi obat primakuin untuk terapi malaria. Pemeriksaan fisik: konjungtiva anemis, sklera ikterik. Pemeriksaan darah tepi menunjukkan adanya sel dengan gambaran seperti tergigit (bite cells) dan Heinz bodies pada pewarnaan supravital.',
+  question:'Apakah diagnosis yang paling mungkin?',
+  options:['Anemia defisiensi G6PD','AIHA tipe cold','Thalassemia HbH disease','Anemia sideroblastik','ITP'],
+  answer:0,
+  explain:'Hemolisis akut dengan bite cells dan Heinz bodies yang dipicu oleh obat primakuin (obat pencetus hemolisis definitif pada G6PD) merupakan gambaran khas <b>Anemia Defisiensi G6PD</b> — enzimopati terkait kromosom X yang menyebabkan eritrosit rentan terhadap stres oksidatif.'
+},
+{
+  vignette:'Seorang laki-laki berusia 28 tahun datang dengan keluhan mudah lelah, mudah memar, dan gusi sering berdarah sejak 2 bulan terakhir. Pasien bekerja di pabrik cat dan sering terpapar bahan kimia benzena. Pemeriksaan fisik: konjungtiva anemis, ekimosis multipel, tanpa organomegali. Laboratorium: Hb 6,8 g/dL, leukosit 2.100/µL, trombosit 18.000/µL. Biopsi sumsum tulang menunjukkan gambaran hiposelular dengan banyak jaringan lemak.',
+  question:'Apakah tatalaksana definitif untuk kondisi pasien ini?',
+  options:['Kemoterapi induksi','Transplantasi sumsum tulang','Splenektomi','Transfusi PRC rutin','Kortikosteroid dosis tinggi'],
+  answer:1,
+  explain:'Pansitopenia dengan sumsum tulang hiposelular berlemak (tanpa infiltrasi sel blas atau organomegali), dipicu paparan benzena, adalah gambaran <b>Anemia Aplastik</b>. Tatalaksana definitif adalah <b>transplantasi sumsum tulang</b> dari donor HLA matched (idealnya saudara kandung).'
+},
+{
+  vignette:'Seorang perempuan berusia 45 tahun dengan riwayat gastrektomi total 2 tahun lalu datang dengan keluhan lemas dan mudah lelah. Tidak ada keluhan kesemutan atau gangguan keseimbangan. Pemeriksaan lab: Hb 9,4 g/dL, MCV 108 fL, apusan darah tepi menunjukkan makroovalosit dan neutrofil hipersegmentasi. Kadar homosistein meningkat namun asam metilmalonat normal.',
+  question:'Apakah kemungkinan penyebab kondisi pasien ini?',
+  options:['Defisiensi vitamin B12 akibat kurangnya faktor intrinsik','Defisiensi asam folat (vitamin B9)','Defisiensi zat besi akibat gastrektomi','Anemia penyakit kronis pasca operasi','Anemia hemolitik autoimun'],
+  answer:1,
+  explain:'Meskipun ada riwayat gastrektomi (faktor risiko defisiensi B12), kunci pembeda di soal ini adalah asam metilmalonat yang <b>normal</b> — pada defisiensi B12 asam metilmalonat meningkat. Homosistein meningkat dengan metilmalonat normal serta tanpa gejala neurologis mengarah ke <b>defisiensi asam folat (vitamin B9)</b>.'
+},
+{
+  vignette:'Seorang anak laki-laki berusia 7 tahun dibawa ke poliklinik dengan keluhan bercak kemerahan di kedua tungkai bawah disertai nyeri perut dan nyeri sendi lutut sejak 3 hari. Riwayat batuk pilek 2 minggu sebelumnya. Pemeriksaan fisik: purpura teraba (palpable purpura) simetris di ekstremitas bawah dan bokong, nyeri tekan abdomen, edema sendi lutut. Trombosit dan faktor koagulasi dalam batas normal.',
+  question:'Apakah diagnosis yang paling mungkin?',
+  options:['ITP','Henoch-Schönlein Purpura','DIC','Hemofilia A','Von Willebrand Disease'],
+  answer:1,
+  explain:'Palpable purpura simetris di ekstremitas bawah, disertai nyeri sendi dan nyeri perut, dengan trombosit dan faktor koagulasi normal, pasca infeksi saluran napas atas, sangat khas untuk <b>Henoch-Schönlein Purpura (HSP)</b> — vaskulitis IgA pada pembuluh darah kecil.'
+},
+{
+  vignette:'Seorang bayi laki-laki berusia 5 hari dibawa ke IGD dengan keluhan BAB berdarah dan muntah darah sejak semalam. Bayi lahir cukup bulan, ditolong dukun beranak, tidak mendapat suntikan vitamin K saat lahir, dan diberikan ASI eksklusif. Pemeriksaan lab: Bleeding time normal, PT sangat memanjang, aPTT sedikit memanjang.',
+  question:'Apakah tatalaksana yang paling tepat pada kondisi akut pasien ini?',
+  options:['Transfusi trombosit','Vitamin K1 IV/IM dan pertimbangkan FFP','Asam traneksamat oral','Kortikosteroid dosis tinggi','Transfusi tukar'],
+  answer:1,
+  explain:'Bayi tanpa profilaksis vitamin K saat lahir, ASI eksklusif, dengan perdarahan saluran cerna pada usia 2–7 hari dan PT sangat memanjang adalah gambaran klasik <b>Classic VKDB</b>. Tatalaksana akut: <b>Vitamin K1 IV/IM</b>, dan FFP 10–15 mL/kgBB bila perdarahan sedang-berat.'
+},
+{
+  vignette:'Seorang perempuan berusia 32 tahun dirawat di ICU akibat sepsis berat. Pada hari perawatan ketiga, muncul perdarahan spontan dari bekas tusukan infus dan gusi, disertai bercak kebiruan pada jari-jari tangan. Laboratorium: trombosit turun progresif dari 250.000 menjadi 45.000/µL dalam 2 hari, D-dimer sangat meningkat, PT dan aPTT memanjang, fibrinogen menurun.',
+  question:'Apakah diagnosis yang paling mungkin?',
+  options:['ITP sekunder','Trombositopenia akibat sepsis biasa','Disseminated Intravascular Coagulation (DIC)','Thrombotic Thrombocytopenic Purpura','Hemofilia didapat'],
+  answer:2,
+  explain:'Pada pasien sepsis dengan trombositopenia progresif, D-dimer sangat meningkat, PT/aPTT memanjang, dan fibrinogen menurun disertai perdarahan multipel serta tanda trombosis (bercak kebiruan jari), diagnosisnya adalah <b>DIC</b> — aktivasi koagulasi intravaskular luas yang mengonsumsi faktor pembekuan dan trombosit.'
+},
+{
+  vignette:'Seorang laki-laki berusia 55 tahun datang dengan keluhan benjolan multipel tidak nyeri di leher, ketiak, dan lipat paha sejak 2 bulan, disertai penurunan berat badan 8 kg dan keringat malam. Pemeriksaan fisik ditemukan limfadenopati generalisata dan splenomegali. Biopsi kelenjar getah bening menunjukkan proliferasi limfosit B monomorfik tanpa sel Reed-Sternberg. Imunohistokimia CD20 positif.',
+  question:'Apakah diagnosis yang paling mungkin?',
+  options:['Limfoma Hodgkin','Limfoma Non-Hodgkin','Limfadenitis tuberkulosis','Leukemia Limfositik Kronis','Multiple Myeloma'],
+  answer:1,
+  explain:'Limfadenopati generalisata non-contiguous (multi-lokasi), gejala B, tanpa sel Reed-Sternberg, dan imunohistokimia CD20 (+) menunjukkan proliferasi sel B yang khas untuk <b>Limfoma Non-Hodgkin</b>.'
+},
+{
+  vignette:'Seorang anak perempuan berusia 8 tahun dibawa ibunya karena benjolan di leher kanan yang nyeri sejak 5 hari, disertai demam. Dua minggu sebelumnya pasien mengalami luka pada kulit kepala yang bernanah. Pemeriksaan fisik: limfadenopati servikal kanan, nyeri tekan (+), hangat, teraba fluktuasi. Tidak ditemukan gejala B (penurunan berat badan/keringat malam).',
+  question:'Apakah diagnosis yang paling mungkin?',
+  options:['Limfoma Hodgkin','Limfadenitis non-spesifik (bakterial)','Limfadenitis tuberkulosis (skrofula)','Limfoma Non-Hodgkin','Kista brankial terinfeksi'],
+  answer:1,
+  explain:'Limfadenopati yang nyeri, hangat, dengan fluktuasi, disertai demam dan riwayat infeksi kulit kepala sebelumnya (sumber infeksi jelas), tanpa gejala B, mengarah ke <b>limfadenitis non-spesifik (bakterial)</b> — berbeda dengan limfadenitis TB yang biasanya kronik, tidak nyeri, dan berhubungan dengan riwayat kontak TB.'
+},
+{
+  vignette:'Seorang anak laki-laki berusia 4 tahun dibawa ke IGD dengan keluhan demam naik turun sejak 3 minggu, lemas, dan mudah memar. Pemeriksaan fisik: konjungtiva anemis, ekimosis multipel, limfadenopati generalisata tidak nyeri, hepatosplenomegali, dan nyeri tekan tulang tibia. Laboratorium: Hb 7,2 g/dL, leukosit 62.000/µL, trombosit 22.000/µL. Aspirasi sumsum tulang menunjukkan 65% sel limfoblas.',
+  question:'Apakah diagnosis yang paling mungkin?',
+  options:['Leukemia Mieloblastik Akut','Leukemia Limfoblastik Akut','Leukemia Mieloblastik Kronik','Leukemia Limfositik Kronik','Anemia aplastik'],
+  answer:1,
+  explain:'Anak dengan pansitopenia gejala (anemia, trombositopenia), limfadenopati, hepatosplenomegali, nyeri tulang, dan sel blas sumsum tulang >20% (limfoblas 65%) sangat khas untuk <b>Leukemia Limfoblastik Akut (ALL)</b> — keganasan tersering pada anak, puncak usia 2–5 tahun.'
+},
+{
+  vignette:'Seorang laki-laki berusia 62 tahun datang dengan keluhan gusi mudah berdarah dan muncul benjolan kebiruan pada kulit lengan sejak 1 bulan. Pemeriksaan fisik: hiperplasia gingiva, beberapa nodul ungu kebiruan pada kulit lengan, konjungtiva anemis. Apusan darah tepi menunjukkan sel blas besar dengan batang Auer (Auer rods). Pemeriksaan imunohistokimia mieloperoksidase positif.',
+  question:'Apakah diagnosis yang paling mungkin?',
+  options:['Leukemia Limfoblastik Akut','Leukemia Mieloblastik Akut','Leukemia Limfositik Kronik','Limfoma Non-Hodgkin','Multiple Myeloma'],
+  answer:1,
+  explain:'Hiperplasia gingiva, leukemia kutis (nodul kebiruan pada kulit), Auer rods pada apusan darah tepi, dan mieloperoksidase positif adalah kombinasi diagnostik khas untuk <b>Leukemia Mieloblastik Akut (AML)</b> — sering pada dewasa/lansia.'
+},
+{
+  vignette:'Seorang laki-laki berusia 68 tahun datang untuk kontrol rutin. Pasien tidak memiliki keluhan spesifik selain sering merasa lelah. Pemeriksaan fisik: limfadenopati leher bilateral tidak nyeri, splenomegali ringan. Laboratorium: leukosit 55.000/µL dengan limfositosis absolut, Hb 10,8 g/dL, trombosit 130.000/µL. Apusan darah tepi menunjukkan banyak smudge cells.',
+  question:'Apakah diagnosis yang paling mungkin?',
+  options:['Leukemia Mieloblastik Akut','Leukemia Mieloid Kronik','Leukemia Limfositik Kronik','Leukemia Limfoblastik Akut','Limfoma Hodgkin'],
+  answer:2,
+  explain:'Pasien lansia dengan limfositosis kronik, limfadenopati, splenomegali ringan, dan smudge cells pada apusan darah tepi adalah gambaran khas <b>Leukemia Limfositik Kronik (CLL)</b> — sering ditemukan insidental karena perjalanan penyakitnya indolen.'
+},
+{
+  vignette:'Seorang laki-laki berusia 63 tahun datang dengan keluhan nyeri punggung bawah yang memberat sejak 3 bulan, disertai lemas. Pemeriksaan fisik: nyeri tekan vertebra lumbal, konjungtiva anemis. Laboratorium: Hb 8,9 g/dL, kalsium serum 12,1 mg/dL, kreatinin 2,4 mg/dL. Elektroforesis protein serum menunjukkan M-spike monoklonal. Foto polos vertebra menunjukkan lesi litik multipel ("punched-out lesions").',
+  question:'Apakah pemeriksaan konfirmasi Gold Standard untuk diagnosis pasien ini?',
+  options:['CT-scan whole body','Elektroforesis protein serum','Biopsi sumsum tulang','Urinalisis protein Bence Jones','Foto polos skeletal survey'],
+  answer:2,
+  explain:'Gambaran OLD CRAB (usia tua, hiperkalsemia, gangguan ginjal, anemia, lesi litik tulang) mengarah pada <b>Multiple Myeloma</b>. Meski elektroforesis protein adalah pemeriksaan awal terbaik, konfirmasi diagnosis Gold Standard adalah <b>biopsi sumsum tulang</b> yang menunjukkan sel plasma monoklonal >10% dengan gambaran "fried-egg appearance".'
+},
+{
+  vignette:'Seorang perempuan berusia 29 tahun mendapat suntikan penisilin untuk terapi faringitis. Lima belas menit kemudian, pasien mengeluh sesak napas, gatal seluruh tubuh, dan pusing. Pemeriksaan fisik: TD 78/50 mmHg, HR 128x/menit, RR 28x/menit, urtikaria generalisata, wheezing pada auskultasi paru.',
+  question:'Apakah tatalaksana lini pertama yang paling tepat dan segera diberikan?',
+  options:['Difenhidramin IV','Hidrokortison IV','Adrenalin IM 1:1000 di paha anterolateral','Salbutamol nebulisasi','Cairan kristaloid IV cepat'],
+  answer:2,
+  explain:'Reaksi anafilaksis dengan hipotensi, gejala respirasi (wheezing, sesak), dan kulit (urtikaria) memenuhi kriteria diagnosis anafilaksis. Tatalaksana lini pertama dan tersegera adalah <b>adrenalin IM 1:1000 di paha anterolateral (vastus lateralis)</b> — bukan antihistamin atau steroid, yang hanya bersifat suportif setelah adrenalin diberikan.'
+},
+{
+  vignette:'Seorang laki-laki berusia 40 tahun dengan riwayat sirosis hati dan perdarahan varises esofagus memerlukan transfusi untuk mengoreksi koagulopati sebelum tindakan endoskopi. Laboratorium menunjukkan PT dan aPTT memanjang dengan trombosit normal.',
+  question:'Apakah komponen darah yang paling tepat diberikan?',
+  options:['Packed Red Cells','Fresh Frozen Plasma','Thrombocyte Concentrate','Washed Erythrocyte','Whole Blood'],
+  answer:1,
+  explain:'Koagulopati akibat penyakit hati (defisiensi faktor koagulasi, PT/aPTT memanjang) dengan trombosit normal adalah indikasi pemberian <b>Fresh Frozen Plasma (FFP)</b> yang mengandung seluruh faktor koagulasi.'
+},
+{
+  vignette:'Seorang bayi berusia 6 bulan dengan riwayat defisiensi IgA dan pernah mengalami reaksi alergi berat (demam tinggi, urtikaria luas) pada transfusi sebelumnya, kini memerlukan transfusi sel darah merah akibat anemia berat.',
+  question:'Apakah komponen darah yang paling tepat diberikan untuk mencegah reaksi alergi berulang?',
+  options:['Whole Blood','Packed Red Cells biasa','Washed Erythrocyte','Fresh Frozen Plasma','Cryoprecipitate'],
+  answer:2,
+  explain:'Pasien dengan defisiensi IgA dan riwayat reaksi transfusi alergi berat sebelumnya berisiko mengalami reaksi anafilaktoid terhadap protein plasma donor. <b>Washed Erythrocyte</b> (eritrosit yang dicuci dari plasma) adalah komponen pilihan karena meminimalkan paparan protein plasma penyebab alergi.'
+},
+{
+  vignette:'Seorang anak perempuan berusia 3 tahun dibawa ibunya karena sering terlihat memakan tanah dan kapur tembok sejak 2 bulan terakhir. Pasien juga terlihat pucat dan rewel. Pemeriksaan fisik: konjungtiva anemis, atrofi papil lidah, dan kuku tampak cekung seperti sendok. Laboratorium: Hb 8,9 g/dL, MCV 62 fL, MCHC menurun.',
+  question:'Apakah temuan pemeriksaan fisik pada pasien yang menggambarkan koilonikia?',
+  options:['Atrofi papil lidah','Perilaku makan tanah (pica)','Kuku cekung seperti sendok','Konjungtiva anemis','Rewel dan pucat'],
+  answer:2,
+  explain:'Koilonikia (spoon nail) adalah kelainan kuku yang menjadi cekung seperti sendok, salah satu tanda khas <b>Anemia Defisiensi Besi</b> pada kasus kronik, bersama pica dan atrofi papil lidah.'
+},
+{
+  vignette:'Seorang perempuan berusia 50 tahun dengan riwayat rheumatoid arthritis sejak 8 tahun lalu datang dengan keluhan lemas yang memberat perlahan. Pemeriksaan lab: Hb 9,8 g/dL, MCV 84 fL (normal), serum besi menurun, feritin normal-tinggi, TIBC menurun, saturasi transferin normal.',
+  question:'Apakah diagnosis yang paling mungkin pada pasien ini?',
+  options:['Anemia defisiensi besi','Anemia penyakit kronis','Thalassemia minor','Anemia sideroblastik','Anemia aplastik'],
+  answer:1,
+  explain:'Pada pasien dengan penyakit inflamasi kronik (RA), gambaran serum besi rendah namun feritin normal/tinggi dan TIBC rendah (berkebalikan dengan ADB) merupakan pola khas <b>Anemia Penyakit Kronis</b> — feritin adalah reaktan fase akut yang meningkat pada inflamasi kronik.'
+},
+{
+  vignette:'Seorang anak laki-laki berusia 2 tahun dibawa orang tuanya karena tampak pucat, perut membuncit, dan wajah tampak khas dengan dahi menonjol serta jarak antar mata melebar. Anak sudah mendapat transfusi darah rutin setiap bulan sejak usia 8 bulan. Pemeriksaan fisik: hepatosplenomegali masif, facies cooley. Elektroforesis Hb menunjukkan HbF sangat dominan.',
+  question:'Apakah diagnosis yang paling mungkin?',
+  options:['Thalassemia minor','Thalassemia mayor','Anemia defisiensi besi berat','HbH disease','Anemia sideroblastik kongenital'],
+  answer:1,
+  explain:'Anak dengan facies cooley (dahi menonjol, hipertelorisme), ketergantungan transfusi sejak bayi, hepatosplenomegali masif, dan HbF dominan pada elektroforesis merupakan gambaran klasik <b>Thalassemia Beta Mayor</b> — bentuk transfusion-dependent yang muncul setelah usia 6 bulan.'
+},
+{
+  vignette:'Seorang laki-laki berusia 70 tahun datang dengan keluhan jari-jari tangan sering membiru dan nyeri bila terkena udara dingin sejak 3 bulan, disertai lemas. Riwayat infeksi Mycoplasma pneumoniae 1 bulan sebelumnya. Pemeriksaan lab: Hb 9,0 g/dL, Direct Coombs test positif untuk komplemen C3, negatif untuk IgG. Aglutinasi eritrosit tampak pada suhu ruangan.',
+  question:'Apakah diagnosis yang paling mungkin?',
+  options:['AIHA tipe warm','AIHA tipe cold','ITP','DIC','Anemia sideroblastik'],
+  answer:1,
+  explain:'Akrosianosis yang dipicu udara dingin, riwayat infeksi Mycoplasma, Coombs test positif komplemen C3 (IgG negatif), dan aglutinasi pada suhu ruangan merupakan gambaran khas <b>AIHA tipe cold</b> — diperantarai IgM yang mengaktifkan komplemen pada suhu rendah.'
+},
+{
+  vignette:'Seorang perempuan berusia 26 tahun datang dengan keluhan mudah memar dan menstruasi sangat banyak sejak 6 bulan, tanpa demam. Riwayat keluhan serupa berulang sejak remaja namun tidak pernah diperiksakan. Pemeriksaan fisik dalam batas normal selain ekimosis multipel. Laboratorium: Hb 10,5 g/dL, leukosit normal, trombosit 9.000/µL tanpa kelainan sel lain pada apusan darah tepi.',
+  question:'Apakah kondisi yang paling mungkin mendasari trombositopenia kronik pada pasien ini?',
+  options:['Anemia aplastik','ITP kronik','DIC kronik','Hemofilia','Von Willebrand disease'],
+  answer:1,
+  explain:'Trombositopenia berat terisolasi (tanpa kelainan lini sel lain) yang berlangsung kronik sejak remaja, tanpa penyebab lain yang jelas, merupakan gambaran <b>ITP kronik</b> — sering pada perempuan dewasa muda dengan manifestasi perdarahan mukosa/urogenital (menoragia) yang lebih menonjol dibanding bentuk akut pada anak.'
+},
+{
+  vignette:'Seorang anak laki-laki berusia 3 tahun dengan riwayat hemofilia A berat (kadar F.VIII <1%) mengalami pembengkakan mendadak pada sendi siku kanan setelah terjatuh ringan saat bermain. Anak tampak kesakitan dan menahan lengannya dalam posisi fleksi.',
+  question:'Apakah tatalaksana awal yang paling tepat?',
+  options:['Aspirasi cairan sendi segera','Pemberian konsentrat F.VIII secepatnya','Fisioterapi agresif','Kompres hangat pada sendi','Pemberian aspirin untuk nyeri'],
+  answer:1,
+  explain:'Pada anak hemofilia berat dengan hemartrosis akut, tatalaksana paling penting dan segera adalah <b>koreksi faktor pembekuan (konsentrat F.VIII)</b> untuk menghentikan perdarahan sendi; aspirasi tidak dianjurkan sebagai langkah awal, dan aspirin dikontraindikasikan karena efek antiplatelet.'
+},
+{
+  vignette:'Seorang perempuan berusia 32 tahun sedang hamil 34 minggu datang ke IGD dengan nyeri perut hebat mendadak dan perdarahan pervaginam gelap. Pemeriksaan fisik: uterus tegang, TD 90/60, HR 118. Laboratorium: trombosit 60.000/µL, fibrinogen 80 mg/dL, D-dimer sangat meningkat, PT dan aPTT memanjang.',
+  question:'Apakah kondisi obstetrik yang paling mungkin mendasari gambaran koagulopati pada pasien ini?',
+  options:['Plasenta previa','Solusio plasenta (abruptio placentae)','Preeklampsia ringan','Kehamilan ektopik','Mola hidatidosa'],
+  answer:1,
+  explain:'Solusio plasenta dapat memicu pelepasan tromboplastin jaringan plasenta ke sirkulasi ibu dalam jumlah besar, mengaktifkan koagulasi sistemik dan menyebabkan <b>DIC</b> — ditandai trombositopenia, fibrinogen rendah, D-dimer sangat tinggi, dan PT/aPTT memanjang, sesuai gambaran klinis nyeri perut hebat mendadak dengan uterus tegang.'
+},
+{
+  vignette:'Seorang laki-laki berusia 25 tahun datang dengan keluhan demam hilang timbul selama 2 minggu — demam tinggi selama beberapa hari diikuti periode bebas demam beberapa hari, berulang. Disertai keringat malam dan penurunan berat badan. Pemeriksaan fisik: limfadenopati servikal kiri tidak nyeri, kenyal.',
+  question:'Apakah istilah untuk pola demam pada pasien ini dan kondisi yang mendasarinya?',
+  options:['Demam intermiten — Limfadenitis TB','Demam Pel-Ebstein — Limfoma Hodgkin','Demam septik — Limfoma Non-Hodgkin','Demam remiten — Leukemia akut','Demam kontinu — Multiple myeloma'],
+  answer:1,
+  explain:'Pola demam naik-turun bersiklus (demam tinggi beberapa hari, diikuti periode afebris, berulang) disebut <b>Demam Pel-Ebstein</b>, salah satu gejala konstitusional khas pada <b>Limfoma Hodgkin</b>.'
+},
+{
+  vignette:'Seorang laki-laki berusia 58 tahun dengan riwayat CML fase kronis yang telah mendapat terapi imatinib selama 2 tahun datang dengan perburukan kondisi — lemas berat, demam, nyeri tulang, dan perdarahan gusi dalam 2 minggu terakhir. Laboratorium: leukosit 180.000/µL, sel blas pada apusan darah tepi 28%.',
+  question:'Apakah fase CML yang paling mungkin dialami pasien saat ini?',
+  options:['Fase kronis','Fase akselerasi','Fase krisis blas','Remisi komplet','Relaps fase kronis'],
+  answer:2,
+  explain:'Perburukan klinis mendadak dengan gejala menyerupai leukemia akut dan sel blas >20% pada CML menandakan transformasi ke <b>fase krisis blas</b> — fase terakhir dan paling agresif dari perjalanan penyakit CML, membutuhkan evaluasi ulang tatalaksana.'
+},
+{
+  vignette:'Seorang perempuan berusia 55 tahun terdiagnosis Polisitemia Vera berdasarkan pemeriksaan JAK2 positif dan Hb 19,2 g/dL. Pasien belum pernah mendapat terapi apapun sebelumnya.',
+  question:'Apakah tatalaksana awal lini pertama yang paling tepat?',
+  options:['Kemoterapi hidroksiurea','Flebotomi dan aspirin dosis rendah','Transfusi PRC','Splenektomi','JAK2 inhibitor (ruxolitinib)'],
+  answer:1,
+  explain:'Tatalaksana awal Polisitemia Vera adalah <b>flebotomi</b> (200–500 cc/minggu hingga hematokrit ≤45%) dikombinasikan dengan <b>aspirin dosis rendah (40–80 mg/hari)</b> untuk mencegah komplikasi trombosis. Hidroksiurea dan JAK2 inhibitor dicadangkan untuk kasus resisten/risiko tinggi.'
+},
+{
+  vignette:'Seorang laki-laki berusia 66 tahun dengan keluhan nyeri tulang kronik menjalani pemeriksaan urin 24 jam yang menunjukkan protein Bence Jones positif. Elektroforesis serum menunjukkan gambaran M-spike.',
+  question:'Protein Bence Jones pada urin pasien ini sesungguhnya merupakan komponen apa?',
+  options:['Rantai ringan imunoglobulin monoklonal bebas','Albumin yang bocor akibat kerusakan ginjal','Fibrinogen hasil pemecahan koagulasi','Hemoglobin bebas akibat hemolisis','Kompleks imun IgG-antigen'],
+  answer:0,
+  explain:'Protein Bence Jones adalah <b>rantai ringan (light chain) imunoglobulin monoklonal bebas</b> (kappa atau lambda) yang diproduksi berlebihan oleh sel plasma ganas pada Multiple Myeloma dan diekskresikan melalui urin karena ukurannya yang kecil sehingga lolos filtrasi glomerulus.'
+},
+{
+  vignette:'Seorang laki-laki berusia 35 tahun mendapat terapi serum anti-tetanus (produk hewan) untuk luka tusuk paku. Sepuluh hari kemudian, pasien mengeluh demam, ruam kulit, nyeri sendi multipel, dan pembengkakan kelenjar getah bening.',
+  question:'Reaksi hipersensitivitas tipe berapakah yang mendasari kondisi pasien ini?',
+  options:['Tipe I','Tipe II','Tipe III','Tipe IV','Tipe V'],
+  answer:2,
+  explain:'Gejala muncul 7–14 hari setelah pemberian serum asing (serum sickness) berupa demam, ruam, artralgia, dan limfadenopati merupakan reaksi <b>hipersensitivitas tipe III (kompleks imun)</b> — kompleks antigen-antibodi bersirkulasi dan mengendap di berbagai jaringan.'
+},
+{
+  vignette:'Seorang perempuan berusia 40 tahun bekerja sebagai perawat mengeluh kulit tangan kemerahan, gatal, dan melepuh setelah memakai sarung tangan lateks selama beberapa jam, berulang setiap kali bekerja dalam beberapa hari terakhir.',
+  question:'Reaksi hipersensitivitas tipe berapakah yang paling mungkin mendasari keluhan pasien?',
+  options:['Tipe I (immediate)','Tipe II (sitotoksik)','Tipe III (kompleks imun)','Tipe IV (delayed, cell-mediated)','Bukan reaksi hipersensitivitas'],
+  answer:3,
+  explain:'Dermatitis kontak akibat paparan berulang suatu bahan (lateks) dengan onset gejala tertunda (24–72 jam setelah kontak) merupakan reaksi <b>hipersensitivitas tipe IV</b> yang diperantarai sel T, bukan antibodi.'
+},
+{
+  vignette:'Seorang perempuan berusia 45 tahun dengan diagnosis Leukemia Limfoblastik Akut menjalani kemoterapi dan mengalami trombositopenia berat (trombosit 8.000/µL) tanpa perdarahan aktif namun akan menjalani prosedur pemasangan kateter vena sentral.',
+  question:'Apakah tatalaksana transfusi yang paling tepat?',
+  options:['Tidak perlu transfusi karena tidak ada perdarahan aktif','Transfusi PRC','Transfusi Thrombocyte Concentrate','Transfusi FFP','Transfusi Whole Blood'],
+  answer:2,
+  explain:'Trombosit <10.000/µL merupakan indikasi transfusi profilaksis untuk mencegah perdarahan spontan, dan sebelum tindakan invasif seperti pemasangan kateter, transfusi <b>Thrombocyte Concentrate</b> diperlukan untuk mencapai kadar aman.'
+},
+{
+  vignette:'Seorang laki-laki berusia 60 tahun dengan CKD stage 5 rutin menjalani hemodialisis. Pasien mengeluh lemas kronik. Laboratorium: Hb 8,5 g/dL, MCV normal, kadar eritropoietin serum sangat rendah, feritin dan cadangan besi cukup.',
+  question:'Apakah tatalaksana yang paling tepat untuk mengatasi anemia pasien ini?',
+  options:['Transfusi PRC rutin setiap bulan','Suplementasi eritropoietin (ESA)','Suplementasi besi oral dosis tinggi','Vitamin B12 parenteral','Kortikosteroid dosis rendah'],
+  answer:1,
+  explain:'Anemia pada CKD terjadi akibat defisiensi produksi eritropoietin oleh ginjal, sehingga tatalaksana lini utama (dengan cadangan besi yang sudah cukup) adalah <b>suplementasi eritropoietin (Erythropoiesis-Stimulating Agent/ESA)</b>, bukan transfusi rutin yang berisiko komplikasi jangka panjang.'
+},
+{
+  vignette:'Seorang laki-laki berusia 30 tahun dengan riwayat lepra mendapat terapi dapson untuk pengobatan. Lima hari kemudian pasien mengeluh lemas, urin berwarna gelap, dan kulit tampak kekuningan.',
+  question:'Apakah kondisi yang mendasari keluhan pasien ini?',
+  options:['Hepatitis akut akibat dapson','Hemolisis akut akibat defisiensi G6PD','Anemia aplastik akibat dapson','Reaksi anafilaksis terhadap dapson','Sindrom Stevens-Johnson'],
+  answer:1,
+  explain:'Dapson termasuk obat dengan risiko pasti (definite risk) memicu hemolisis pada individu dengan <b>defisiensi G6PD</b>. Gejala hemolisis akut (urin gelap, ikterus, lemas) muncul beberapa hari setelah paparan obat oksidatif tersebut.'
+},
+{
+  vignette:'Seorang bayi berusia 3 bulan dengan riwayat diare kronik sejak usia 1 bulan dan mendapat ASI eksklusif tanpa suplementasi vitamin K tambahan, dibawa ke IGD dengan kejang dan penurunan kesadaran mendadak. CT-scan kepala menunjukkan perdarahan intrakranial luas.',
+  question:'Apakah klasifikasi VKDB yang paling mungkin dialami bayi ini?',
+  options:['Early-onset VKDB','Classic VKDB','Late-onset VKDB','VKDB akibat obat maternal','Bukan VKDB'],
+  answer:2,
+  explain:'VKDB yang terjadi pada usia 2–8 bulan, berhubungan dengan diare kronik (malabsorpsi vitamin K) dan ASI eksklusif tanpa profilaksis, dengan manifestasi tersering berupa <b>perdarahan intrakranial</b>, merupakan <b>Late-onset VKDB</b> — bentuk paling berbahaya karena sering terlambat dikenali.'
+},
+{
+  vignette:'Seorang anak laki-laki berusia 6 tahun dengan riwayat HSP 3 minggu yang lalu (sudah membaik) datang kontrol dan ditemukan urin berwarna seperti teh disertai edema kelopak mata ringan. Urinalisis menunjukkan hematuria dan proteinuria ringan.',
+  question:'Apakah komplikasi yang paling mungkin terjadi pada pasien ini?',
+  options:['Gagal ginjal akut e.c. NSAID','IgA Nefropati (nefritis HSP)','Sindrom nefrotik primer','Infeksi saluran kemih','Glomerulonefritis pasca-streptokokus'],
+  answer:1,
+  explain:'Keterlibatan ginjal pada HSP dapat muncul beberapa minggu setelah gejala kulit membaik, berupa hematuria dan proteinuria akibat deposit IgA di glomerulus — dikenal sebagai <b>nefritis HSP / IgA Nefropati (Berger disease)</b>, komplikasi jangka panjang HSP yang perlu dipantau.'
+},
+{
+  vignette:'Seorang laki-laki berusia 40 tahun datang dengan keluhan lemas dan mudah memar sejak 3 minggu. Pemeriksaan fisik: hepatosplenomegali, limfadenopati generalisata. Laboratorium: leukosit 95.000/µL, Hb 7,5 g/dL, trombosit 30.000/µL. Dokter merencanakan pemeriksaan penunjang untuk konfirmasi diagnosis leukemia.',
+  question:'Apakah pemeriksaan penunjang terbaik untuk konfirmasi diagnosis leukemia pada pasien ini?',
+  options:['Pemeriksaan darah lengkap ulang','Apusan darah tepi','Aspirasi dan biopsi sumsum tulang','USG abdomen','Pemeriksaan LDH serum'],
+  answer:2,
+  explain:'Meski darah lengkap dan apusan darah tepi dapat memberi kecurigaan awal, pemeriksaan penunjang terbaik (gold standard) untuk konfirmasi diagnosis leukemia adalah <b>aspirasi dan biopsi sumsum tulang</b>, yang menilai persentase sel blas serta morfologi sel secara langsung.'
+},
+{
+  vignette:'Seorang laki-laki berusia 48 tahun yang bekerja di pabrik baterai selama 15 tahun datang dengan keluhan nyeri perut kolik berulang, konstipasi, dan lemas. Pemeriksaan fisik ditemukan garis kebiruan pada gusi (Burton line). Laboratorium: anemia mikrositik hipokrom dengan basophilic stippling pada eritrosit.',
+  question:'Apakah penyebab anemia mikrositik pada pasien ini?',
+  options:['Defisiensi besi kronik','Talasemia','Keracunan timbal (Pb) menyebabkan anemia sideroblastik','Anemia penyakit kronis','Defisiensi vitamin B6'],
+  answer:2,
+  explain:'Riwayat paparan kerja jangka panjang (pabrik baterai mengandung timbal), Burton line pada gusi, dan basophilic stippling pada eritrosit merupakan gambaran klasik <b>keracunan timbal (plumbism)</b>, yang mengganggu sintesis heme dan menyebabkan <b>anemia sideroblastik</b> akuisita.'
+},
+{
+  vignette:'Seorang perempuan berusia 27 tahun sedang merencanakan kehamilan dan berkonsultasi ke dokter mengenai suplementasi yang dianjurkan untuk mencegah kelainan kongenital pada janin, khususnya kelainan tabung saraf (neural tube defect).',
+  question:'Apakah suplementasi yang paling tepat direkomendasikan sejak periode prakonsepsi?',
+  options:['Vitamin B12','Zat besi','Asam folat (vitamin B9)','Vitamin B6','Vitamin D'],
+  answer:2,
+  explain:'Suplementasi <b>asam folat (vitamin B9)</b> sejak periode prakonsepsi dan awal kehamilan terbukti efektif menurunkan risiko kelainan tabung saraf (neural tube defect) pada janin, karena folat esensial untuk sintesis DNA pada fase pembelahan sel yang cepat.'
+},
+{
+  vignette:'Seorang laki-laki berusia 52 tahun dengan Multiple Myeloma yang baru terdiagnosis mengeluh nyeri punggung hebat dan kelemahan tungkai bawah mendadak sejak 6 jam yang lalu. Pemeriksaan fisik: kekuatan motorik tungkai menurun, refleks patologis (+), retensi urin.',
+  question:'Apakah komplikasi kegawatdaruratan yang paling mungkin dialami pasien ini?',
+  options:['Hiperkalsemia akut','Gagal ginjal akut','Kompresi medula spinalis (spinal cord compression)','Sindrom hiperviskositas','Fraktur kompresi vertebra tanpa kompresi saraf'],
+  answer:2,
+  explain:'Kelemahan motorik mendadak, refleks patologis positif, dan retensi urin pada pasien Multiple Myeloma sangat mengarah pada <b>kompresi medula spinalis</b> akibat destruksi tulang vertebra oleh sel plasma ganas atau fraktur kompresi — kegawatdaruratan onkologis yang memerlukan evaluasi dan tatalaksana segera (kortikosteroid dosis tinggi, radioterapi/dekompresi bedah) untuk mencegah kelumpuhan permanen.'
+},
+];
+</script>
+<script>
+/* =========================================================
+   APP LOGIC
+   ========================================================= */
+const state = {
+  view:'home',        // home | topic | quiz
+  topicId:null,
+  done:new Set(),
+  quizIdx:0,
+  quizAnswers:[],      // array parallel to QUIZ: null (unanswered) or {chosen, correct}
+};
+
+/* ---------- Progress persistence (localStorage) ---------- */
+const PROGRESS_KEY = 'hematologi-progress-v1';
+function loadProgress(){
+  try{
+    const raw = localStorage.getItem(PROGRESS_KEY);
+    if(!raw) return;
+    const parsed = JSON.parse(raw);
+    if(Array.isArray(parsed.done)) state.done = new Set(parsed.done);
+  }catch(e){ console.warn('Gagal memuat progres tersimpan:', e); }
+}
+function saveProgress(){
+  try{
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify({ done:[...state.done] }));
+  }catch(e){ console.warn('Gagal menyimpan progres:', e); }
+}
+
+const QUIZ_PROGRESS_KEY = 'hematologi-quiz-progress-v1';
+function loadQuizProgress(){
+  try{
+    const raw = localStorage.getItem(QUIZ_PROGRESS_KEY);
+    if(!raw) return null;
+    const parsed = JSON.parse(raw);
+    if(!Array.isArray(parsed.quizAnswers) || parsed.quizAnswers.length!==QUIZ.length) return null;
+    return parsed;
+  }catch(e){ console.warn('Gagal memuat progres kuis:', e); return null; }
+}
+function saveQuizProgress(){
+  try{
+    localStorage.setItem(QUIZ_PROGRESS_KEY, JSON.stringify({ quizIdx:state.quizIdx, quizAnswers:state.quizAnswers }));
+  }catch(e){ console.warn('Gagal menyimpan progres kuis:', e); }
+}
+function clearQuizProgress(){
+  try{ localStorage.removeItem(QUIZ_PROGRESS_KEY); }catch(e){}
+}
+
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+const viewRoot = $('#viewRoot');
+
+function esc(s){ return (s+'').replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+function findTopic(id){ return TOPICS.find(t=>t.id===id); }
+function topicsInCat(catId){ return TOPICS.filter(t=>t.cat===catId); }
+
+/* ---------- Sidebar / Nav tree ---------- */
+function renderNavTree(filter){
+  const q = (filter||'').trim().toLowerCase();
+  const groups = {};
+  CATEGORIES.forEach(c=>{
+    const group = c.group || '__solo__';
+    if(!groups[group]) groups[group] = [];
+    groups[group].push(c);
+  });
+
+  let html = '';
+  Object.keys(groups).forEach(groupKey=>{
+    const cats = groups[groupKey];
+    cats.forEach(cat=>{
+      let topics = topicsInCat(cat.id);
+      if(q){
+        topics = topics.filter(t =>
+          t.title.toLowerCase().includes(q) ||
+          (t.sub||'').toLowerCase().includes(q) ||
+          JSON.stringify(t.sections||[]).toLowerCase().includes(q)
+        );
+      }
+      if(q && topics.length===0) return;
+      const isOpen = !!q || cat.id === (findTopic(state.topicId)||{}).cat;
+      const label = groupKey!=='__solo__' ? `${groupKey} · ${cat.label}` : cat.label;
+      html += `<div class="nav-cat ${isOpen?'open':''}" data-cat="${cat.id}">
+        <div class="nav-cat-head">
+          <span>${esc(label)}</span>
+          <span style="display:flex;align-items:center;">
+            <span class="badge-count">${topics.length}</span>
+            <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+        <div class="nav-list">
+          ${topics.map(t=>`
+            <div class="nav-item ${t.id===state.topicId?'active':''}" data-topic="${t.id}">
+              <span class="dot"></span>
+              <span>${esc(t.title)}</span>
+              <span class="check ${state.done.has(t.id)?'done':''}"></span>
+            </div>`).join('')}
+        </div>
+      </div>`;
+    });
+  });
+  $('#navTree').innerHTML = html;
+
+  $$('.nav-cat-head').forEach(h=>{
+    h.addEventListener('click', ()=>{
+      h.closest('.nav-cat').classList.toggle('open');
+    });
+  });
+  $$('.nav-item').forEach(it=>{
+    it.addEventListener('click', ()=>{
+      goTopic(it.dataset.topic);
+      closeSidebarMobile();
+    });
+  });
+  updateProgress();
+}
+
+function updateProgress(){
+  $('#progressLabel').textContent = `${state.done.size} / ${TOPICS.length}`;
+  $('#progressFill').style.width = (state.done.size/TOPICS.length*100)+'%';
+}
+
+/* ---------- Home / Hero view ---------- */
+function renderHome(push){
+  state.view='home'; state.topicId=null;
+  if(push!==false){ history.pushState({view:'home'}, '', '#'); }
+  setActiveModeButtons();
+  const mikro = topicsInCat('anemia-mikro'), normo = topicsInCat('anemia-normo'), makro = topicsInCat('anemia-makro');
+  viewRoot.innerHTML = `
+  <div class="content-wrap">
+    <div class="hero reveal">
+      <div class="eyebrow">By Naruxhz</div>
+      <h1>Peta <em>Hematologi</em><br>untuk UKMPPD.</h1>
+      <p class="lede">Rangkuman interaktif ${TOPICS.length} topik hematologi — dari anemia mikrositik hingga transfusi darah — lengkap dengan algoritma diagnosis, mnemonic, tabel banding, dan ${QUIZ.length} soal latihan.</p>
+      <div class="hero-stats">
+        <div class="stat"><b>${TOPICS.length}</b><span>Topik Klinis</span></div>
+        <div class="stat"><b>${QUIZ.length}</b><span>Soal Latihan</span></div>
+        <div class="stat"><b>10</b><span>Kategori</span></div>
+      </div>
+    </div>
+
+    <div class="algo-widget reveal">
+      <h3>Coba alur pikir: Klasifikasi Anemia berdasarkan MCV</h3>
+      <div class="sub">Pilih hasil MCV pasien untuk melihat kemungkinan diagnosis — persis alur berpikir yang dipakai di soal UKMPPD.</div>
+      <div class="algo-row" id="algoRow">
+        <button class="algo-btn" data-mcv="low"><b>MCV ↓ (&lt;80 fL)</b><span>Mikrositik Hipokrom</span></button>
+        <button class="algo-btn" data-mcv="normal"><b>MCV Normal (80–100 fL)</b><span>Normokrom Normositer</span></button>
+        <button class="algo-btn" data-mcv="high"><b>MCV ↑ (&gt;100 fL)</b><span>Makrositer</span></button>
+      </div>
+      <div class="algo-result" id="algoResult">Pilih salah satu kategori MCV di atas untuk melihat diagnosis banding.</div>
+    </div>
+
+    <div style="margin-top:52px;">
+      <h2 style="font-family:'IBM Plex Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); font-weight:600;">Jelajahi semua topik</h2>
+      <div class="home-grid">
+        ${TOPICS.map((t,i)=>`
+          <div class="home-card reveal" style="animation-delay:${Math.min(i*18,300)}ms" data-topic="${t.id}">
+            <div class="n">${esc(t.level)} · ${esc(CATEGORIES.find(c=>c.id===t.cat).label)}</div>
+            <h4>${esc(t.title)}</h4>
+            <p>${esc(t.sub||'')}</p>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+
+  const algoMap = {
+    low:{label:'MCV ↓ — Anemia Hipokrom Mikrositer', ids:['adb','apk','thalassemia','sideroblastik']},
+    normal:{label:'MCV Normal — Anemia Normokrom Normositer', ids:['aiha','g6pd','ckd-anemia','aplastik']},
+    high:{label:'MCV ↑ — Anemia Makrositer', ids:['b12','b9']},
+  };
+  $$('.algo-btn').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      $$('.algo-btn').forEach(x=>x.classList.remove('picked'));
+      b.classList.add('picked');
+      const key = b.dataset.mcv;
+      const data = algoMap[key];
+      const chips = data.ids.map(id=>{
+        const t = findTopic(id);
+        return `<span class="chip" data-topic="${id}">${esc(t.title)}</span>`;
+      }).join('');
+      $('#algoResult').innerHTML = `<div class="rlabel">${esc(data.label)}</div>Diagnosis banding yang perlu dipertimbangkan: <div class="chips">${chips}</div>`;
+      $$('#algoResult .chip').forEach(c=>c.addEventListener('click', ()=>goTopic(c.dataset.topic)));
+    });
+  });
+
+  $$('.home-card').forEach(c=>c.addEventListener('click', ()=>goTopic(c.dataset.topic)));
+}
+
+/* ---------- Topic view ---------- */
+function renderSectionList(items){
+  return `<ul>${items.map(li=>`<li>${li}</li>`).join('')}</ul>`;
+}
+function renderSection(sec){
+  let inner = '';
+  if(sec.list) inner += renderSectionList(sec.list);
+  if(sec.sub){
+    sec.sub.forEach(s=>{
+      inner += `<div class="sub-h">${esc(s.t)}</div>${renderSectionList(s.list)}`;
+    });
+  }
+  return `<div class="section-block reveal"><h2>${esc(sec.h)}</h2>${inner}</div>`;
+}
+function renderTable(tbl){
+  return `<div class="section-block reveal"><h2>${esc(tbl.title)}</h2>
+    <table class="data-tbl"><thead><tr>${tbl.head.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead>
+    <tbody>${tbl.rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+
+function goTopic(id, push){
+  state.view='topic'; state.topicId=id;
+  if(push!==false){ history.pushState({view:'topic', topicId:id}, '', '#'+id); }
+  setActiveModeButtons();
+  const t = findTopic(id);
+  const cat = CATEGORIES.find(c=>c.id===t.cat);
+  const idx = TOPICS.indexOf(t);
+  const prev = TOPICS[idx-1], next = TOPICS[idx+1];
+
+  viewRoot.innerHTML = `
+  <div class="content-wrap">
+    <div class="crumbs reveal">
+      <span>${esc(cat.group ? cat.group : 'Hematologi')}</span>
+      <span class="sep">/</span>
+      <span>${esc(cat.label)}</span>
+    </div>
+    <div class="topic-head reveal">
+      <h1>${esc(t.title)}</h1>
+      <span class="badge-level">Kompetensi ${esc(t.level)}</span>
+    </div>
+    <div class="topic-sub reveal">${esc(t.sub||'')}</div>
+    <button class="mark-btn ${state.done.has(id)?'done':''}" id="markBtn">
+      <span class="dotc"></span>
+      <span id="markBtnLabel">${state.done.has(id)?'Sudah dipelajari':'Tandai sudah dipelajari'}</span>
+    </button>
+
+    ${(t.sections||[]).map(renderSection).join('')}
+    ${t.images ? `<div class="topic-images reveal">${t.images.map(im=>`
+      <div class="topic-image-card">
+        <img src="${esc(im.src)}" alt="${esc(im.alt||im.caption||'')}" loading="lazy">
+        <div class="cap">${esc(im.caption||'')}</div>
+      </div>`).join('')}</div>` : ''}
+    ${t.diagram ? `<div class="section-block reveal"><h2>${esc(t.diagram.title||'Skema / Algoritma')}</h2><div class="flowcard">${t.diagram.note?`<div class="fnote">${esc(t.diagram.note)}</div>`:''}${t.diagram.html}</div></div>` : ''}
+    ${t.mnemonic ? `<div class="callout mnemonic reveal"><div class="clabel">Mnemonic — ${esc(t.mnemonic.label)}</div>${esc(t.mnemonic.text)}</div>` : ''}
+    ${t.table ? renderTable(t.table) : ''}
+    ${t.extra ? `<div class="extra-wrap reveal">
+      <div class="extra-wrap-head"><span class="tag">+ Referensi Tambahan</span><b>Pendalaman Klinis</b></div>
+      <div class="extra-wrap-note">Wawasan tambahan di luar materi PPT — dari literatur kedokteran standar, untuk memperkaya pemahaman.</div>
+      ${t.extra.map(e=>`<div class="extra-block"><h3>${esc(e.h)}</h3><ul>${e.list.map(li=>`<li>${li}</li>`).join('')}</ul></div>`).join('')}
+    </div>` : ''}
+
+    <div class="topic-nav">
+      ${prev ? `<button class="tn-btn prev" data-topic="${prev.id}"><div class="lbl">← Sebelumnya</div><div class="ttl">${esc(prev.title)}</div></button>` : '<div></div>'}
+      ${next ? `<button class="tn-btn next" data-topic="${next.id}"><div class="lbl">Selanjutnya →</div><div class="ttl">${esc(next.title)}</div></button>` : '<div></div>'}
+    </div>
+  </div>`;
+
+  $('#markBtn').addEventListener('click', ()=>{
+    if(state.done.has(id)) state.done.delete(id); else state.done.add(id);
+    saveProgress();
+    goTopic(id, false);
+    renderNavTree($('#searchInput').value);
+  });
+  $$('.tn-btn[data-topic]').forEach(b=>b.addEventListener('click', ()=>goTopic(b.dataset.topic)));
+
+  renderNavTree($('#searchInput').value);
+  window.scrollTo({top:0, behavior:'instant'});
+}
+</script>
+<script>
+/* ---------- Quiz view ---------- */
+function quizScoreSoFar(){
+  return state.quizAnswers.reduce((n,a)=> n + (a && a.correct ? 1 : 0), 0);
+}
+function quizAnsweredCount(){
+  return state.quizAnswers.reduce((n,a)=> n + (a ? 1 : 0), 0);
+}
+
+function startQuiz(push, forceRestart){
+  state.view='quiz'; state.topicId=null;
+  const saved = forceRestart ? null : loadQuizProgress();
+  if(saved){
+    state.quizIdx = saved.quizIdx;
+    state.quizAnswers = saved.quizAnswers;
+  } else {
+    state.quizIdx = 0;
+    state.quizAnswers = new Array(QUIZ.length).fill(null);
+    clearQuizProgress();
+  }
+  if(push!==false){ history.pushState({view:'quiz'}, '', '#quiz'); }
+  setActiveModeButtons();
+  renderQuizQuestion();
+  renderNavTree($('#searchInput').value);
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+function renderQuizQuestion(){
+  const q = QUIZ[state.quizIdx];
+  const total = QUIZ.length;
+  const letters = ['A','B','C','D','E'];
+  const already = state.quizAnswers[state.quizIdx]; // {chosen, correct} or null
+  const isLast = state.quizIdx===total-1;
+  const allAnswered = quizAnsweredCount()===total;
+
+  viewRoot.innerHTML = `
+  <div class="quiz-shell">
+    <div class="quiz-top">
+      <span class="quiz-count mono">SOAL ${state.quizIdx+1} / ${total}</span>
+      <div class="quiz-progress-track"><div class="quiz-progress-fill" style="width:${(state.quizIdx)/total*100}%"></div></div>
+      <span class="quiz-count mono" id="quizScoreLabel">SKOR ${quizScoreSoFar()}</span>
+    </div>
+    <div class="qcard reveal">
+      <div class="vignette">${esc(q.vignette)}</div>
+      <div class="question">${esc(q.question)}</div>
+      <div id="optsWrap">
+        ${q.options.map((opt,i)=>`
+          <div class="opt${already ? ' disabled' : ''}${already && i===q.answer ? ' correct' : ''}${already && !already.correct && i===already.chosen ? ' wrong' : ''}${already && i!==q.answer && i!==already.chosen ? ' dim' : ''}" data-i="${i}">
+            <div class="lt">${letters[i]}</div>
+            <div>${esc(opt)}</div>
+          </div>`).join('')}
+      </div>
+      <div class="qexplain${already ? ' show' : ''}" id="qexplain"><b>Pembahasan.</b> ${q.explain}</div>
+      <div class="qnext-row" style="justify-content:space-between;">
+        <button class="btn-ghost" id="qPrevBtn" ${state.quizIdx===0 ? 'disabled' : ''}>← Soal Sebelumnya</button>
+        <button class="btn-primary" id="qNextBtn" ${already ? '' : 'disabled'}>${isLast ? 'Lihat Hasil' : 'Soal Berikutnya →'}</button>
+      </div>
+    </div>
+  </div>`;
+
+  if(!already){
+    $$('.opt').forEach(optEl=>{
+      optEl.addEventListener('click', ()=>{
+        if(state.quizAnswers[state.quizIdx]) return;
+        const chosen = parseInt(optEl.dataset.i,10);
+        const correct = chosen===q.answer;
+        state.quizAnswers[state.quizIdx] = {chosen, correct};
+        saveQuizProgress();
+        $$('.opt').forEach(o=>{
+          o.classList.add('disabled');
+          const i = parseInt(o.dataset.i,10);
+          if(i===q.answer) o.classList.add('correct');
+          else if(i===chosen) o.classList.add('wrong');
+          else o.classList.add('dim');
+        });
+        $('#qexplain').classList.add('show');
+        $('#qNextBtn').disabled = false;
+        $('#quizScoreLabel').textContent = `SKOR ${quizScoreSoFar()}`;
+      });
+    });
+  }
+
+  $('#qPrevBtn').addEventListener('click', ()=>{
+    if(state.quizIdx>0){
+      state.quizIdx--;
+      saveQuizProgress();
+      renderQuizQuestion();
+      window.scrollTo({top:0, behavior:'instant'});
+    }
+  });
+
+  $('#qNextBtn').addEventListener('click', ()=>{
+    if(!state.quizAnswers[state.quizIdx]) return;
+    if(!isLast){
+      state.quizIdx++;
+      saveQuizProgress();
+      renderQuizQuestion();
+      window.scrollTo({top:0, behavior:'instant'});
+    } else {
+      renderQuizResult();
+    }
+  });
+}
+
+function renderQuizResult(){
+  const total = QUIZ.length;
+  const score = quizScoreSoFar();
+  const pct = Math.round(score/total*100);
+  let msg = 'Terus berlatih, sedikit lagi!';
+  if(pct>=80) msg = 'Mantap — pemahamanmu sudah kuat.';
+  else if(pct>=60) msg = 'Bagus, tinjau ulang topik yang masih salah.';
+  clearQuizProgress();
+  viewRoot.innerHTML = `
+  <div class="quiz-shell">
+    <div class="qcard quiz-result reveal">
+      <div class="quiz-count mono">HASIL KUIS</div>
+      <div class="score">${score}<span>/${total}</span></div>
+      <p style="color:var(--muted); font-size:14px;">${msg}</p>
+      <div style="display:flex; gap:10px; justify-content:center; margin-top:22px; flex-wrap:wrap;">
+        <button class="btn-primary" id="retryBtn">Ulangi Kuis</button>
+        <button class="btn-ghost" id="homeBtn">Kembali ke Beranda</button>
+      </div>
+    </div>
+  </div>`;
+  $('#retryBtn').addEventListener('click', ()=> startQuiz(true, true));
+  $('#homeBtn').addEventListener('click', ()=> renderHome());
+}
+
+/* ---------- Mode toggle / sidebar wiring ---------- */
+function setActiveModeButtons(){
+  $('#btnModeBelajar').classList.toggle('active', state.view!=='quiz');
+  $('#btnModeQuiz').classList.toggle('active', state.view==='quiz');
+}
+$('#btnModeBelajar').addEventListener('click', ()=>{ if(state.view==='quiz') renderHome(); });
+$('#sbBrandHome').addEventListener('click', ()=>{ renderHome(); closeSidebarMobile(); });
+$('#resetProgressBtn').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  if(confirm('Reset semua progres belajar (topik yang sudah ditandai selesai)? Tindakan ini tidak bisa dibatalkan.')){
+    state.done.clear();
+    saveProgress();
+    renderNavTree($('#searchInput').value);
+    if(state.view==='topic') goTopic(state.topicId, false);
+  }
+});
+$('#btnModeQuiz').addEventListener('click', startQuiz);
+
+$('#searchInput').addEventListener('input', (e)=>{
+  renderNavTree(e.target.value);
+});
+
+/* Mobile sidebar */
+const sidebarEl = $('#sidebar'), overlayEl = $('#sbOverlay');
+function openSidebarMobile(){ sidebarEl.classList.add('open'); overlayEl.classList.add('show'); }
+function closeSidebarMobile(){ sidebarEl.classList.remove('open'); overlayEl.classList.remove('show'); }
+$('#hamburgerBtn').addEventListener('click', openSidebarMobile);
+overlayEl.addEventListener('click', closeSidebarMobile);
+
+/* Browser back/forward support */
+window.addEventListener('popstate', (e)=>{
+  const st = e.state;
+  if(!st || st.view==='home'){ renderHome(false); }
+  else if(st.view==='topic' && findTopic(st.topicId)){ goTopic(st.topicId, false); }
+  else if(st.view==='quiz'){ startQuiz(false); }
+  else { renderHome(false); }
+  closeSidebarMobile();
+});
+
+/* Init */
+loadProgress();
+$('#quizCountLabel').textContent = QUIZ.length;
+renderNavTree('');
+const initialHash = decodeURIComponent(location.hash.replace('#',''));
+if(initialHash && findTopic(initialHash)){
+  history.replaceState({view:'topic', topicId:initialHash}, '', '#'+initialHash);
+  goTopic(initialHash, false);
+} else if(initialHash === 'quiz'){
+  history.replaceState({view:'quiz'}, '', '#quiz');
+  startQuiz(false);
+} else {
+  history.replaceState({view:'home'}, '', '#');
+  renderHome(false);
+}
+</script>
+</body>
+</html>
