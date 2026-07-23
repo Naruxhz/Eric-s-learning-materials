@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Infeksi Tropis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root{
+        --bg:#F1F0E6;
+        --bg-panel:#FFFFFF;
+        --ink:#1B1F17;
+        --muted:#6B6F5F;
+        --line:#DDDCC7;
+        --red:#2F6E4E;
+        --red-deep:#1F4F38;
+        --red-tint:#E3EFE6;
+        --teal:#1F6E77;
+        --teal-tint:#E1EFF0;
+        --amber:#C1791B;
+        --amber-tint:#FBEBD2;
+        --shadow: 0 1px 2px rgba(27,31,23,0.06), 0 8px 24px rgba(27,31,23,0.05);
+        --radius: 10px;
+      }
+      *{box-sizing:border-box;}
+      html,body{margin:0;padding:0;}
+      body{
+        background:var(--bg);
+        color:var(--ink);
+        font-family:'IBM Plex Sans', sans-serif;
+        -webkit-font-smoothing:antialiased;
+        line-height:1.5;
+      }
+      h1,h2,h3,h4{
+        font-family:'Fraunces', serif;
+        font-weight:600;
+        margin:0;
+        letter-spacing:-0.01em;
+      }
+      .mono{font-family:'IBM Plex Mono', monospace;}
+      ::selection{background:var(--red-tint); color:var(--red-deep);}
+      a{color:inherit;}
+      button{font-family:inherit;}
+
+      /* ---------- App shell ---------- */
+      #app{display:flex; min-height:100vh;}
+
+      /* Sidebar */
+      #sidebar{
+        width:290px;
+        flex-shrink:0;
+        background:var(--bg-panel);
+        border-right:1px solid var(--line);
+        height:100vh;
+        position:sticky;
+        top:0;
+        overflow-y:auto;
+        padding:20px 14px 40px;
+      }
+      .sb-brand{
+        display:flex; align-items:center; gap:10px;
+        padding:6px 8px 18px;
+        border-bottom:1px solid var(--line);
+        margin-bottom:14px;
+        transition:opacity .15s ease;
+      }
+      .sb-brand:hover{opacity:0.7;}
+      .sb-brand .cell{
+        width:34px;height:34px;border-radius:50%;
+        background:radial-gradient(circle at 32% 30%, #4f9970, var(--red-deep) 70%);
+        box-shadow: inset 0 -3px 6px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.15);
+        flex-shrink:0;
+      }
+      .sb-brand .t1{font-size:17px; line-height:1.1;}
+      .sb-brand .t2{font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-top:2px;}
+      .watermark{
+        font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--muted); opacity:0.55;
+        text-align:right; margin:-8px 4px 14px 0; letter-spacing:0.02em;
+      }
+
+      .search-box{
+        display:flex; align-items:center; gap:8px;
+        background:var(--bg);
+        border:1px solid var(--line);
+        border-radius:8px;
+        padding:8px 10px;
+        margin-bottom:16px;
+      }
+      .search-box input{
+        border:none; background:transparent; outline:none;
+        font-size:13.5px; width:100%; color:var(--ink); font-family:inherit;
+      }
+      .search-box svg{flex-shrink:0; opacity:0.5;}
+
+      .mode-toggle{
+        display:flex; background:var(--bg); border:1px solid var(--line);
+        border-radius:8px; padding:3px; margin-bottom:18px; gap:3px;
+      }
+      .mode-toggle button{
+        flex:1; border:none; background:transparent; padding:8px 6px;
+        border-radius:6px; font-size:12.5px; font-weight:600; color:var(--muted);
+        cursor:pointer; transition:all .15s ease;
+      }
+      .mode-toggle button.active{background:var(--red); color:#fff; box-shadow:var(--shadow);}
+
+      .nav-cat{margin-bottom:4px;}
+      .nav-cat-head{
+        display:flex; align-items:center; justify-content:space-between;
+        padding:9px 8px; cursor:pointer; border-radius:7px;
+        font-size:13px; font-weight:600;
+        user-select:none;
+      }
+      .nav-cat-head:hover{background:var(--bg);}
+      .nav-cat-head .chev{transition:transform .18s ease; opacity:0.5;}
+      .nav-cat-head .badge-count{
+        font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted);
+        background:var(--bg); border:1px solid var(--line); border-radius:20px;
+        padding:1px 7px; margin-left:6px;
+      }
+      .nav-cat.open .chev{transform:rotate(90deg);}
+      .nav-list{max-height:0; overflow:hidden; transition:max-height .25s ease;}
+      .nav-cat.open .nav-list{max-height:1200px;}
+      .nav-item{
+        display:flex; align-items:center; gap:8px;
+        padding:7px 8px 7px 22px; font-size:13px; cursor:pointer;
+        border-radius:7px; color:var(--muted); position:relative;
+      }
+      .nav-item:hover{background:var(--bg); color:var(--ink);}
+      .nav-item.active{background:var(--red-tint); color:var(--red-deep); font-weight:600;}
+      .nav-item .dot{width:5px;height:5px;border-radius:50%; background:currentColor; opacity:0.5; flex-shrink:0;}
+      .nav-item .check{
+        margin-left:auto; width:14px; height:14px; border-radius:50%;
+        border:1.5px solid var(--line); flex-shrink:0;
+      }
+      .nav-item .check.done{background:var(--teal); border-color:var(--teal);}
+
+      .sb-progress{
+        margin-top:20px; padding:12px; background:var(--bg); border-radius:8px; border:1px solid var(--line);
+      }
+      .sb-progress .lbl{font-size:11px; color:var(--muted); display:flex; justify-content:space-between; margin-bottom:6px;}
+      .sb-progress .bar{height:6px; background:var(--line); border-radius:4px; overflow:hidden;}
+      .sb-progress .fill{height:100%; background:linear-gradient(90deg, var(--teal), #164e55); border-radius:4px; transition:width .3s ease;}
+      .sb-progress-foot{
+        display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:10px;
+      }
+      .sb-progress-foot span{font-size:10px; color:var(--muted); opacity:0.8;}
+      .sb-progress-foot button{
+        border:none; background:transparent; color:var(--muted); font-size:10.5px; font-weight:600;
+        cursor:pointer; text-decoration:underline; padding:0; flex-shrink:0;
+      }
+      .sb-progress-foot button:hover{color:var(--red);}
+
+      /* Main */
+      #main{flex:1; min-width:0;}
+      .topbar{
+        position:sticky; top:0; z-index:5;
+        background:rgba(241,239,233,0.88); backdrop-filter:blur(8px);
+        border-bottom:1px solid var(--line);
+        padding:14px 40px; display:none; align-items:center; gap:10px;
+      }
+      .hamburger{display:none; border:1px solid var(--line); background:#fff; border-radius:8px; width:36px; height:36px; align-items:center; justify-content:center; cursor:pointer;}
+
+      .content-wrap{max-width:880px; margin:0 auto; padding:56px 40px 120px;}
+    </style>
+  </head>
+  <body>
+    <style>
+      /* ---------- Hero (home view) ---------- */
+      .hero{padding-bottom:12px;}
+      .hero .eyebrow{
+        font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.12em;
+        text-transform:uppercase; color:var(--red); display:flex; align-items:center; gap:8px; margin-bottom:14px;
+      }
+      .hero .eyebrow::before{content:""; width:20px; height:1px; background:var(--red);}
+      .hero h1{font-size:clamp(34px,5vw,52px); line-height:1.02;}
+      .hero h1 em{font-style:italic; color:var(--red);}
+      .hero p.lede{font-size:16.5px; color:var(--muted); max-width:560px; margin-top:16px;}
+      .hero-stats{display:flex; gap:28px; margin-top:30px; flex-wrap:wrap;}
+      .hero-stats .stat b{font-family:'Fraunces',serif; font-size:28px; display:block;}
+      .hero-stats .stat span{font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em;}
+
+      /* Signature: MCV algorithm widget */
+      .algo-widget{
+        margin-top:40px; background:var(--bg-panel); border:1px solid var(--line); border-radius:14px;
+        padding:28px 28px 24px; box-shadow:var(--shadow);
+      }
+      .algo-widget h3{font-size:16px; margin-bottom:4px;}
+      .algo-widget .sub{font-size:12.5px; color:var(--muted); margin-bottom:20px;}
+      .algo-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;}
+      .algo-btn{
+        flex:1; min-width:150px; text-align:left; border:1.5px solid var(--line); background:var(--bg);
+        border-radius:9px; padding:12px 14px; cursor:pointer; transition:all .15s ease;
+      }
+      .algo-btn b{display:block; font-size:13.5px; font-family:'IBM Plex Mono',monospace;}
+      .algo-btn span{font-size:11.5px; color:var(--muted);}
+      .algo-btn:hover{border-color:var(--red); background:var(--red-tint);}
+      .algo-btn.picked{border-color:var(--red); background:var(--red-tint); box-shadow:inset 0 0 0 1px var(--red);}
+      .algo-result{
+        margin-top:16px; padding:16px 18px; border-radius:10px; background:var(--teal-tint);
+        border:1px solid #c2dcdd; font-size:13.5px; min-height:20px;
+      }
+      .algo-result .rlabel{font-size:10.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--teal); font-weight:600; margin-bottom:6px;}
+      .algo-result .chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;}
+      .chip{
+        background:#fff; border:1px solid var(--line); padding:5px 11px; border-radius:20px; font-size:12.5px;
+        font-family:'IBM Plex Mono', monospace; cursor:pointer;
+      }
+      .chip:hover{border-color:var(--teal); color:var(--teal);}
+
+      .home-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:14px; margin-top:44px;}
+      .home-card{
+        background:var(--bg-panel); border:1px solid var(--line); border-radius:12px; padding:18px;
+        cursor:pointer; transition:all .15s ease;
+      }
+      .home-card:hover{transform:translateY(-2px); box-shadow:var(--shadow); border-color:#cfc9ba;}
+      .home-card .n{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--red); margin-bottom:8px;}
+      .home-card h4{font-size:15.5px;}
+      .home-card p{font-size:12.5px; color:var(--muted); margin-top:6px;}
+
+      /* ---------- Topic page ---------- */
+      .crumbs{font-size:12px; color:var(--muted); margin-bottom:14px; display:flex; align-items:center; gap:6px;}
+      .crumbs .sep{opacity:0.5;}
+      .topic-head{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:6px;}
+      .topic-head h1{font-size:clamp(28px,4vw,40px);}
+      .badge-level{
+        font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; color:#fff;
+        background:var(--red); border-radius:6px; padding:4px 9px; flex-shrink:0; margin-top:6px;
+        white-space:nowrap;
+      }
+      .topic-sub{color:var(--muted); font-size:14.5px; margin-bottom:8px;}
+      .mark-btn{
+        display:inline-flex; align-items:center; gap:7px; border:1.5px solid var(--line); background:#fff;
+        padding:8px 14px; border-radius:8px; font-size:12.5px; font-weight:600; cursor:pointer; margin:18px 0 8px;
+        color:var(--muted);
+      }
+      .mark-btn.done{border-color:var(--teal); background:var(--teal-tint); color:var(--teal);}
+      .mark-btn .dotc{width:9px;height:9px;border-radius:50%; border:1.5px solid currentColor;}
+      .mark-btn.done .dotc{background:var(--teal);}
+
+      .section-block{margin-top:30px;}
+      .section-block h2{
+        font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--red);
+        font-family:'IBM Plex Mono', monospace; font-weight:600;
+        display:flex; align-items:center; gap:10px; margin-bottom:14px;
+      }
+      .section-block h2::after{content:""; flex:1; height:1px; background:var(--line);}
+      .section-block ul{margin:0; padding-left:20px;}
+      .section-block li{margin-bottom:7px; font-size:14.5px;}
+      .section-block p{font-size:14.5px; margin:0 0 10px;}
+      .section-block .sub-h{font-weight:600; font-size:14px; margin-top:14px; margin-bottom:6px; font-family:'Fraunces',serif;}
+
+      .extra-wrap{margin-top:34px; border-top:2px dashed var(--line); padding-top:26px;}
+      .extra-wrap-head{display:flex; align-items:center; gap:8px; margin-bottom:4px;}
+      .extra-wrap-head .tag{
+        font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:700; letter-spacing:0.06em;
+        color:#fff; background:var(--teal); padding:3px 9px; border-radius:20px; text-transform:uppercase;
+      }
+      .extra-wrap-head b{font-family:'Fraunces',serif; font-size:16px;}
+      .extra-wrap-note{font-size:12px; color:var(--muted); margin-bottom:18px;}
+      .extra-block{margin-top:22px;}
+      .extra-block h3{
+        font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--teal);
+        font-family:'IBM Plex Mono', monospace; font-weight:600; display:flex; align-items:center; gap:10px; margin-bottom:10px;
+      }
+      .extra-block h3::after{content:""; flex:1; height:1px; background:var(--line);}
+      .extra-block ul{margin:0; padding-left:20px;}
+      .extra-block li{margin-bottom:7px; font-size:14px;}
+
+      .topic-images{display:flex; gap:14px; flex-wrap:wrap; margin:18px 0;}
+      .topic-image-card{
+        background:var(--bg-panel); border:1px solid var(--line); border-radius:12px;
+        overflow:hidden; width:200px; flex-shrink:0; box-shadow:var(--shadow);
+      }
+      .topic-image-card img{display:block; width:100%; height:auto;}
+      .topic-image-card .cap{padding:9px 11px; font-size:11.5px; color:var(--muted); line-height:1.4;}
+      @media (max-width:640px){ .topic-image-card{width:100%;} }
+
+      .callout{
+        border-radius:10px; padding:16px 18px; margin:14px 0; font-size:13.5px; border:1px solid;
+      }
+      .callout.mnemonic{background:var(--amber-tint); border-color:#e3ca9a;}
+      .callout.mnemonic .clabel{font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--amber); font-weight:700; margin-bottom:6px;}
+      .callout.key{background:var(--red-tint); border-color:#a8cdb5;}
+      .callout.key .clabel{font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--red-deep); font-weight:700; margin-bottom:6px;}
+
+      table.data-tbl{width:100%; border-collapse:collapse; margin:14px 0; font-size:13px;}
+      table.data-tbl th, table.data-tbl td{border:1px solid var(--line); padding:9px 11px; text-align:left; vertical-align:top;}
+      table.data-tbl th{background:var(--bg); font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.04em; color:var(--muted);}
+      table.data-tbl tr:nth-child(even) td{background:#fbfaf7;}
+
+      .topic-nav{display:flex; justify-content:space-between; margin-top:56px; padding-top:22px; border-top:1px solid var(--line); gap:14px;}
+      .tn-btn{flex:1; border:1px solid var(--line); background:#fff; border-radius:10px; padding:14px 16px; cursor:pointer; max-width:48%;}
+      .tn-btn .lbl{font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em;}
+      .tn-btn .ttl{font-family:'Fraunces',serif; font-size:15px; margin-top:3px;}
+      .tn-btn.next{text-align:right; margin-left:auto;}
+
+      /* ---------- Quiz ---------- */
+      .quiz-shell{max-width:680px; margin:0 auto; padding:56px 40px 100px;}
+      .quiz-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:26px;}
+      .quiz-progress-track{height:6px; background:var(--line); border-radius:4px; flex:1; margin:0 16px; overflow:hidden;}
+      .quiz-progress-fill{height:100%; background:var(--red); border-radius:4px; transition:width .3s ease;}
+      .quiz-count{font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--muted); white-space:nowrap;}
+      .qcard{background:var(--bg-panel); border:1px solid var(--line); border-radius:14px; padding:28px; box-shadow:var(--shadow);}
+      .qcard .vignette{font-size:15px; line-height:1.65; margin-bottom:20px;}
+      .qcard .question{font-weight:600; font-size:15px; margin-bottom:18px; font-family:'Fraunces',serif;}
+      .opt{
+        display:flex; gap:12px; align-items:flex-start; padding:13px 14px; border:1.5px solid var(--line);
+        border-radius:9px; margin-bottom:10px; cursor:pointer; font-size:14px; transition:all .12s ease;
+      }
+      .opt:hover{border-color:#c9a; background:var(--red-tint);}
+      .opt .lt{
+        width:24px;height:24px; border-radius:50%; border:1.5px solid var(--line); flex-shrink:0;
+        display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600;
+        font-family:'IBM Plex Mono',monospace;
+      }
+      .opt.correct{border-color:var(--teal); background:var(--teal-tint);}
+      .opt.correct .lt{background:var(--teal); border-color:var(--teal); color:#fff;}
+      .opt.wrong{border-color:var(--red); background:var(--red-tint);}
+      .opt.wrong .lt{background:var(--red); border-color:var(--red); color:#fff;}
+      .opt.disabled{cursor:default;}
+      .opt.disabled:hover{background:none;}
+      .opt.dim{opacity:0.55;}
+
+      .qexplain{margin-top:16px; padding:15px 16px; background:var(--bg); border-radius:9px; font-size:13.5px; border-left:3px solid var(--teal); display:none;}
+      .qexplain.show{display:block;}
+      .qexplain b{color:var(--teal);}
+      .qnext-row{display:flex; justify-content:flex-end; margin-top:18px;}
+      .btn-primary{
+        background:var(--red); color:#fff; border:none; padding:11px 22px; border-radius:8px;
+        font-weight:600; font-size:13.5px; cursor:pointer;
+      }
+      .btn-primary:disabled{opacity:0.35; cursor:not-allowed;}
+      .btn-ghost{background:transparent; border:1.5px solid var(--line); padding:11px 22px; border-radius:8px; font-weight:600; font-size:13.5px; cursor:pointer;}
+      .btn-ghost:disabled{opacity:0.35; cursor:not-allowed;}
+
+      .quiz-result{text-align:center; padding:40px 20px;}
+      .quiz-result .score{font-family:'Fraunces',serif; font-size:64px; margin:14px 0;}
+      .quiz-result .score span{font-size:28px; color:var(--muted);}
+
+      /* ---------- Flow / algorithm diagrams (from PPT schemes) ---------- */
+      .flowcard{
+        background:var(--bg-panel); border:1px solid var(--line); border-radius:12px;
+        padding:22px 22px 20px; margin-top:14px;
+      }
+      .flowcard .fnote{font-size:12px; color:var(--muted); margin-bottom:16px;}
+      .fstep{
+        display:flex; align-items:center; gap:12px; margin-bottom:10px;
+      }
+      .fstep .fbox{
+        background:var(--bg); border:1.5px solid var(--line); border-radius:9px; padding:10px 14px;
+        font-size:13px; font-weight:600; flex-shrink:0;
+      }
+      .fstep .farrow{color:var(--muted); font-size:15px; flex-shrink:0;}
+      .fstep .fresult{font-size:13px; color:var(--muted);}
+      .fsplit{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:10px 0 4px;}
+      .fsplit.three{grid-template-columns:1fr 1fr 1fr;}
+      .fbranch{
+        border:1.5px solid var(--line); border-radius:10px; padding:14px 15px; background:var(--bg);
+      }
+      .fbranch.red{border-color:#a8cdb5; background:var(--red-tint);}
+      .fbranch.teal{border-color:#a8cfd2; background:var(--teal-tint);}
+      .fbranch.amber{border-color:#e3ca9a; background:var(--amber-tint);}
+      .fbranch .flabel{
+        font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em;
+        color:var(--muted); margin-bottom:6px; font-weight:600;
+      }
+      .fbranch.red .flabel{color:var(--red-deep);}
+      .fbranch.teal .flabel{color:var(--teal);}
+      .fbranch.amber .flabel{color:var(--amber);}
+      .fbranch .fhead{font-family:'Fraunces',serif; font-size:15px; margin-bottom:6px;}
+      .fbranch ul{margin:0; padding-left:16px;}
+      .fbranch li{font-size:12.5px; margin-bottom:4px;}
+      .fbranch p{font-size:12.5px; margin:0;}
+      .fdivider{
+        display:flex; align-items:center; gap:8px; margin:16px 0 10px; font-size:11px;
+        color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; font-family:'IBM Plex Mono',monospace;
+      }
+      .fdivider::before, .fdivider::after{content:""; flex:1; height:1px; background:var(--line);}
+      .fseq{counter-reset:fseq; margin-top:6px;}
+      .fseq-item{
+        counter-increment:fseq; display:flex; gap:14px; padding:12px 0; border-top:1px solid var(--line);
+      }
+      .fseq-item:first-child{border-top:none;}
+      .fseq-item .fnum{
+        width:26px; height:26px; border-radius:50%; background:var(--red); color:#fff; flex-shrink:0;
+        display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
+      }
+      .fseq-item .fbody b{display:block; font-size:13.5px; margin-bottom:3px;}
+      .fseq-item .fbody span{font-size:12.5px; color:var(--muted);}
+      @media (max-width:640px){
+        .fsplit, .fsplit.three{grid-template-columns:1fr;}
+      }
+
+      /* ---------- Scroll reveal ---------- */
+      .reveal{opacity:0; transform:translateY(10px); animation:rise .5s ease forwards;}
+      @keyframes rise{to{opacity:1; transform:none;}}
+
+      @media (max-width:880px){
+        #sidebar{position:fixed; left:0; top:0; z-index:50; transform:translateX(-100%); transition:transform .25s ease; box-shadow:0 0 40px rgba(0,0,0,0.25); width:280px;}
+        #sidebar.open{transform:translateX(0);}
+        .sb-overlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:40;}
+        .sb-overlay.show{display:block;}
+        .topbar{display:flex;}
+        .hamburger{display:flex;}
+        .content-wrap, .quiz-shell{padding:32px 20px 90px;}
+        .algo-row{flex-direction:column;}
+        .topic-nav{flex-direction:column;}
+        .tn-btn{max-width:100%;}
+      }
+      @media (prefers-reduced-motion: reduce){
+        .reveal{animation:none; opacity:1; transform:none;}
+      }
+    </style>
+    <div class="sb-overlay" id="sbOverlay"></div>
+    <div id="app">
+      <aside id="sidebar">
+        <div class="sb-brand" id="sbBrandHome" style="cursor:pointer;">
+          <div class="cell"></div>
+          <div>
+            <div class="t1">Infeksi Tropis</div>
+            <div class="t2">Atlas Belajar · UKMPPD</div>
+          </div>
+        </div>
+        <div class="watermark">by Naruxhz</div>
+        <div class="search-box">
+          <svg
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            id="searchInput"
+            placeholder="Cari topik, gejala, tatalaksana…"
+            autocomplete="off"
+          />
+        </div>
+        <div class="mode-toggle">
+          <button id="btnModeBelajar" class="active">Belajar</button>
+          <button id="btnModeQuiz">
+            Kuis (<span id="quizCountLabel">28</span>)
+          </button>
+        </div>
+        <nav id="navTree"></nav>
+        <div class="sb-progress">
+          <div class="lbl">
+            <span>Progres belajar</span><span id="progressLabel">0 / 24</span>
+          </div>
+          <div class="bar">
+            <div class="fill" id="progressFill" style="width:0%"></div>
+          </div>
+          <div class="sb-progress-foot">
+            <span>Tersimpan otomatis di browser ini</span>
+            <button id="resetProgressBtn" type="button">Reset</button>
+          </div>
+        </div>
+      </aside>
+
+      <main id="main">
+        <div class="topbar">
+          <button class="hamburger" id="hamburgerBtn">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+          <b style="font-family:'Fraunces',serif;">Infeksi Tropis</b>
+        </div>
+        <div id="viewRoot"></div>
+      </main>
+    </div>
+    <script>
+      /* =========================================================
+         DATA — bersumber dari Complete Class Materi Infeksi Tropis,
+         dr. Yovita (Batch Februari 2025)
+         ========================================================= */
+      const CATEGORIES = [
+        {id:'hiv', label:'HIV & Infeksi Oportunistik', group:null},
+        {id:'lepto', label:'Leptospirosis', group:null},
+        {id:'tifoid', label:'Demam Tifoid', group:null},
+        {id:'malaria', label:'Malaria', group:null},
+        {id:'dengue', label:'Demam Dengue', group:null},
+        {id:'cacing', label:'Infeksi Cacing (Helmintiasis)', group:null},
+        {id:'filariasis', label:'Filariasis', group:null},
+        {id:'sepsis', label:'Sepsis', group:null},
+      ];
+
+      const TOPICS = [
+      // ---------------- HIV ----------------
+      {
+        id:'hiv', cat:'hiv', level:'4A/3A', title:'HIV — Etiologi & Stadium Klinis',
+        sub:'Infeksi virus yang menyerang sistem imun (sel CD4), menular lewat cairan tubuh tertentu.',
+        sections:[
+          {h:'Patofisiologi Singkat', list:['HIV (Human Immunodeficiency Virus) menginfeksi dan menghancurkan sel limfosit T CD4 — sel yang berperan sebagai "komandan" sistem imun yang mengoordinasikan respons terhadap infeksi. Seiring waktu, jumlah CD4 terus menurun sehingga tubuh kehilangan kemampuan melawan infeksi yang biasanya mudah dikendalikan oleh orang sehat (infeksi oportunistik).','AIDS (Acquired Immunodeficiency Syndrome) adalah kumpulan gejala/penyakit yang muncul akibat kerusakan sistem imun oleh HIV pada stadium lanjut — jadi AIDS bukan nama virusnya, melainkan kondisi klinis yang ditimbulkan HIV setelah imunitas sangat rendah.']},
+          {h:'Transmisi', list:['Menular melalui cairan tubuh tertentu: darah, muntahan, semen, sekresi vagina, ASI, dan pus (nanah).','Keringat, air mata, air liur, dan urin TIDAK menularkan HIV — poin penting yang sering jadi jebakan soal, karena banyak yang mengira kontak sehari-hari (berjabat tangan, berbagi alat makan) berisiko menular, padahal virus tidak cukup pekat pada cairan-cairan tersebut.','Tiga jalur transmisi utama: paparan darah/produk darah yang terinfeksi, transmisi seksual, dan transmisi perinatal (ibu ke anak saat kehamilan/persalinan/menyusui).']},
+          {h:'Stadium Infeksi (Perjalanan Penyakit)', list:['Serokonversi: fase awal infeksi saat tubuh mulai membentuk antibodi terhadap HIV — disebut juga "window period", periode sekitar 6 bulan pertama pasca infeksi di mana virus sudah ada tapi antibodi belum cukup terbentuk untuk terdeteksi tes standar.','Asimptomatik: belum ada tanda/gejala HIV, dan belum terjadi supresi sistem imun yang bermakna — jumlah CD4 relatif masih terjaga.','Simptomatik: mulai muncul tanda/gejala infeksi HIV, seiring supresi sistem imun yang semakin nyata (CD4 mulai turun signifikan).','AIDS: stadium akhir (end-stage), ditandai infeksi oportunistik yang muncul karena sistem imun sudah sangat lemah untuk melawannya.']},
+          {h:'Fase Infeksi Akut vs Kronis', sub:[
+            {t:'Infeksi HIV Akut (awal/primer)', list:['Dapat asimtomatik, atau muncul sebagai "acute retroviral syndrome" — gejala menyerupai flu (flu-like syndrome): demam, nyeri telan, limfadenopati, diare, nyeri kepala, nyeri sendi-otot.','Periode serokonversi/"window period" terjadi di fase ini — antibodi anti-HIV baru mulai terdeteksi setelah infeksi (dalam 6 bulan pertama pasca infeksi), sehingga tes serologi bisa memberi hasil negatif palsu bila diperiksa terlalu dini.']},
+            {t:'Infeksi HIV Kronis', list:['Viral load meningkat tajam dan CD4 count menurun tajam secara progresif seiring waktu tanpa terapi.','Dapat asimtomatik untuk waktu lama, atau simptomatik dengan kondisi non-AIDS-defining (belum termasuk kriteria AIDS, tapi sudah menunjukkan gangguan imun).']},
+            {t:'AIDS', list:['Ditegakkan bila pasien HIV memiliki CD4 <200 ATAU sudah muncul kondisi AIDS-defining conditions (infeksi oportunistik spesifik) — kriteria kedua ini berlaku terlepas dari berapa pun jumlah CD4 saat itu.']},
+          ]},
+          {h:'Stadium Klinis WHO', sub:[
+            {t:'Stadium Klinis 1', list:['Tidak ada gejala.','Limfadenopati generalisata persisten.']},
+            {t:'Stadium Klinis 2', list:['Penurunan BB sedang tanpa sebab jelas (<10% dari perkiraan BB atau BB sebelumnya).','Infeksi saluran napas berulang (sinusitis, tonsilitis, otitis media, faringitis).','Herpes zoster, ulkus mulut berulang, kelitis angularis, ruam kulit gatal di lengan/tungkai, dermatitis seboroik, infeksi jamur kuku (onikomikosis).']},
+            {t:'Stadium Klinis 3', list:['Penurunan BB banyak tanpa sebab jelas (>10% dari perkiraan BB atau BB sebelumnya).','Diare kronis tanpa sebab jelas >1 bulan; demam intermiten/menetap tanpa sebab jelas >1 bulan.','Kandidiasis mulut berulang, Oral Hairy Leukoplakia pada lidah, tuberkulosis paru.','Infeksi bakteri berat (pneumonia, empiema, meningitis, piomiositis, infeksi tulang/sendi, bakteremia); stomatitis/gingivitis/periodontitis nekrotikan ulseratif akut.','Anemia (<8 g/dL), neutropenia (<500/µL), dan/atau trombositopenia kronis (<50.000/µL) yang tak jelas penyebabnya.']},
+            {t:'Stadium Klinis 4 (AIDS)', list:['HIV Wasting Syndrome, Pneumonia Pneumocystis (jiroveci), pneumonia bakteri berat berulang.','Infeksi herpes simpleks kronis (orolabial, genital, anorektal >1 bulan, atau viseral manapun); kandidiasis esofagal/trakea/bronkus/paru; tuberkulosis ekstraparu; sarkoma Kaposi.','Penyakit Cytomegalovirus (retinitis/infeksi organ lain selain hati-limpa-KGB); toksoplasmosis SSP; ensefalopati HIV; kriptokokus ekstraparu (termasuk meningitis).','Infeksi Mycobacterium non-tuberculosis diseminata; leukoensefalopati multifokal progresif; kriptosporidiosis & isosporiasis kronis; mikosis profunda (histoplasmosis, koksidioidomikosis).','Septikemia berulang (termasuk Salmonella non-tifoid); limfoma (serebral/non-Hodgkin); karsinoma serviks invasif; leishmaniasis atipikal diseminata; nefropati/kardiomiopati simptomatik terkait HIV.']},
+          ]},
+          {h:'Membedakan Oral Thrush vs Hairy Leukoplakia', list:['Keduanya sama-sama muncul sebagai plak putih di rongga mulut pada pasien HIV, tapi penyebab dan cara membedakannya berbeda jauh — sering jadi jebakan soal karena tampilannya mirip sekilas.']},
+        ],
+        table:{title:'Oral Thrush vs Hairy Leukoplakia', head:['Aspek','Oral Thrush (Candidiasis)','Hairy Leukoplakia'],
+          rows:[
+            ['Penyebab','Infeksi jamur oportunistik Candida albicans','Lesi prekanker, sering terkait infeksi EBV pada pasien HIV'],
+            ['Populasi','Bayi, imunokompromais (HIV), pasien kemo/radioterapi','Terutama infeksi EBV dan HIV'],
+            ['Lokasi & tampilan','Plak putih pada mukosa buccal, palatum, lidah, orofaring','Lateral lidah, palatum, mukosa buccal — plak putih hairy/feathery dengan peninggian'],
+            ['Nyeri','Dapat nyeri','Tidak nyeri'],
+            ['Bisa dilepas dari mukosa?','Ya, dapat dilepaskan dari permukaan mukosa','Tidak dapat dilepaskan dari permukaan mukosa'],
+            ['Pemeriksaan','KOH → pseudohifa (+), yeast (+)','Diagnosis klinis, dikaitkan status EBV/HIV'],
+          ]}
+      },
+      {
+        id:'hiv-penunjang', cat:'hiv', level:'4A/3A', title:'HIV — Pemeriksaan Penunjang & Strategi Tes',
+        sub:'Serologi bertingkat (3 strategi) untuk memastikan diagnosis, plus PCR untuk kasus khusus.',
+        sections:[
+          {h:'Jenis Pemeriksaan', list:['Serologi — EIA/ELISA (lebih superior dibanding rapid test dari segi akurasi) dan Rapid Test, keduanya mendeteksi antibodi terhadap HIV.','PCR — digunakan pada neonatus (karena antibodi ibu masih ada di darah bayi sehingga serologi tidak akurat) atau pada hasil pemeriksaan serologi yang inkonklusif/indeterminate.','CD4 dan Viral Load — bukan untuk skrining/diagnosis awal, melainkan untuk monitoring perjalanan penyakit dan respons terapi.']},
+          {h:'3 Strategi Pemeriksaan HIV', list:['Konsep dasarnya: makin tinggi risiko/makin penting kepastian diagnosisnya, makin banyak reagen yang dipakai secara berjenjang — supaya hasil positif benar-benar meyakinkan sebelum pasien diberi label diagnosis HIV.']},
+        ],
+        table:{title:'3 Strategi Pemeriksaan HIV', head:['Strategi','Tujuan','Jumlah Reagen'],
+          rows:[
+            ['Strategi I','Pemeriksaan darah untuk donor atau transplantasi','1 reagen (A1)'],
+            ['Strategi II','Studi epidemiologi, skrining acak (mis. ANC, IMS)','2 reagen (A1 dan A2)'],
+            ['Strategi III','Diagnosis individu (mis. pada suspek bergejala)','3 reagen (A1, A2, A3)'],
+          ]},
+      },
+      {
+        id:'hiv-tatalaksana', cat:'hiv', level:'4A/3A', title:'HIV — Tatalaksana ARV & Profilaksis',
+        sub:'Kombinasi ARV seumur hidup, diberikan tanpa memandang jumlah CD4.',
+        sections:[
+          {h:'Prinsip Terapi ARV', list:['ARV kombinasi diberikan kepada SEMUA pasien terkonfirmasi HIV tanpa memandang jumlah CD4 — berbeda dari pedoman lama yang menunggu CD4 turun ke ambang tertentu, prinsip terkini adalah "test and treat" karena terapi dini terbukti menekan progresivitas penyakit dan menurunkan risiko penularan.','Regimen dasar: 2 NRTI + 1 NNRTI.']},
+          {h:'ARV Lini Pertama Dewasa', list:['Paduan pilihan: TDF (Tenofovir) + 3TC/FTC (Lamivudin/Emtricitabine) + EFV (Efavirenz), tersedia dalam bentuk KDT (Kombinasi Dosis Tetap) — dikenal sebagai TELE (Tenofovir-Lamivudin-Efavirenz), memudahkan kepatuhan karena cukup 1 tablet/hari.','Paduan alternatif: AZT (Zidovudine) + 3TC + EFV (atau NVP/Nevirapine), atau TDF + 3TC + NVP.','Regimen anak: menggunakan Zidovudine sebagai bagian dari terapinya.']},
+          {h:'Efek Samping ARV', list:['Tenofovir (TDF): disfungsi tubulus renal, Sindrom Fanconi, penurunan densitas tulang, asidosis laktat, hepatomegali dengan steatosis, eksaserbasi Hepatitis B.','Lamivudin (3TC): neuropati perifer (jarang), lipoatrofi/lipodistrofi, asidosis laktat, hepatomegali dengan steatosis.','Zidovudin (AZT): anemia, neutropenia berat, miopati, lipoatrofi/lipodistrofi, intoleransi saluran cerna, asidosis laktat, hepatomegali dengan steatosis.','Nevirapin (NVP): hepatotoksik, hipersensitivitas obat.','Efavirenz (EFV): toksisitas SSP, hepatotoksik, kejang, hipersensitivitas, ginekomastia.','Stavudin, Didanosin: neuropati perifer.']},
+          {h:'TB dan HIV (Kemenkes 2016)', list:['Berlaku untuk semua anak <5 tahun tanpa melihat stadium klinis WHO dan berapapun jumlah CD4.','Pengobatan TB harus dimulai lebih dahulu, kemudian obat ARV diberikan dalam 2–8 minggu sejak mulai obat TB, TANPA menghentikan terapi TB — prinsip ini penting karena memulai ARV terlalu cepat pada pasien dengan beban kuman TB tinggi berisiko memicu IRIS (Immune Reconstitution Inflammatory Syndrome), reaksi inflamasi berlebihan akibat sistem imun yang pulih mendadak.','Pada ODHA+TB dengan CD4 <50 sel/mm³, ARV harus dimulai lebih cepat, yaitu dalam 2 minggu setelah mulai pengobatan TB — karena risiko kematian akibat imunosupresi berat lebih mengkhawatirkan dibanding risiko IRIS pada kondisi ini.','Untuk ODHA+TB dengan meningitis kriptokokus, ARV baru dimulai setelah 5 minggu pengobatan kriptokokus — karena IRIS pada meningitis kriptokokus bisa fatal (edema serebri berat), sehingga infeksi jamurnya perlu dikendalikan dulu sebelum sistem imun "dibangunkan" kembali oleh ARV.']},
+          {h:'Profilaksis Infeksi Oportunistik (Dewasa)', list:['Profilaksis Kotrimoksazol — indikasi: stadium klinis 3 atau 4, CD4 ≤200/mm³, atau koinfeksi TB; dosis 960 mg per oral per hari.','Profilaksis Isoniazid (INH) — indikasi: dewasa dengan HIV tanpa TB aktif, atau anak <5 tahun; dosis dewasa 600 mg/hari selama 6 bulan, anak 10 mg/kgBB/hari selama 6 bulan.']},
+          {h:'Profilaksis Bayi dari Ibu HIV Positif', list:['Semua bayi yang lahir dari ibu HIV — baik yang diberi ASI eksklusif maupun susu formula — harus diberi Zidovudin sejak hari pertama (usia 12 jam), selama 6 minggu, karena ketidakpatuhan adalah penyebab utama kegagalan pencegahan penularan.','Dosis Zidovudin/AZT: bayi cukup bulan 4 mg/kgBB/12 jam selama 6 minggu; bayi prematur <30 minggu 2 mg/kgBB/12 jam selama 4 minggu lalu 2 mg/kgBB/8 jam selama 2 minggu; bayi prematur 30–35 minggu 2 mg/kgBB/12 jam selama 2 minggu pertama, lalu 2 mg/kgBB/8 jam selama 2 minggu, diikuti 4 mg/kgBB/12 jam selama 2 minggu.','Diagnosis HIV pada bayi/anak <18 bulan menggunakan PCR HIV DNA (metode rekomendasi, dilakukan sesegera mungkin 4–6 minggu; bila bayi mendapat ASI, PCR dilakukan setelah ASI dihentikan minimal 6 minggu) — bukan serologi, karena antibodi ibu yang ditransfer ke bayi bisa memberi hasil positif palsu hingga usia 18 bulan.','Bila pada minggu ke-6 diagnosis HIV belum dapat disingkirkan, kotrimoksazol profilaksis dilanjutkan sampai usia 12 bulan atau sampai dinyatakan HIV negatif.']},
+          {h:'Jenis Layanan Terkait HIV', list:['VCT (Voluntary Counseling & Testing): tes sukarela individu untuk mengetahui status HIV, disertai konseling.','PITC (Provider Initiated Testing and Counseling): tes atas inisiatif/rekomendasi petugas kesehatan.','PPTCT (Prevention of Parent to Child Transmission): layanan khusus untuk orang tua (terutama ibu hamil) yang terinfeksi HIV, untuk mencegah penularan ke anak.','CST (Care Support and Treatment): dukungan berkelanjutan bagi orang yang telah berstatus HIV positif.']},
+        ]
+      },
+      // ---------------- LEPTOSPIROSIS ----------------
+      {
+        id:'leptospirosis', cat:'lepto', level:'4A/3B', title:'Leptospirosis',
+        sub:'Infeksi spiroket Leptospira, ditularkan lewat urin tikus yang mencemari air/tanah/lumpur.',
+        sections:[
+          {h:'Definisi & Epidemiologi', list:['Leptospirosis adalah penyakit infeksius akibat infeksi spiroket genus Leptospira.','Leptospira hidup subur di daerah dengan sanitasi buruk, wilayah persawahan, air kotor, lumpur, dan tanah lembab — urin tikus (reservoir utama) mencemari lingkungan tersebut, dan manusia terinfeksi lewat kontak kulit/mukosa yang terluka dengan air/tanah yang terkontaminasi.','Leptospira sering tumbuh bersamaan dengan virus Dengue, sehingga daerah endemik Dengue sering berbarengan dengan daerah endemik Leptospira — kedua penyakit ini penting menjadi diagnosis banding satu sama lain pada pasien demam pasca banjir.']},
+          {h:'Manifestasi Klinis', list:['Demam dan nyeri otot sebagai gejala inti.','Pemeriksaan fisik: injeksi konjungtiva (mata merah tanpa sekret, khas leptospirosis), jaundice, oliguria, perdarahan spontan, trombositopenia, nyeri perut, dan nyeri otot gastroknemius (betis) — nyeri tekan betis ini merupakan tanda yang sangat sering ditanyakan dan cukup spesifik untuk leptospirosis dibanding demam infeksi lain.']},
+          {h:'Fase Penyakit', sub:[
+            {t:'Fase 1 — Septikemia (4–7 hari)', list:['Demam tinggi, nyeri kepala, nyeri otot, nyeri sendi.','Dapat terjadi proteinuria dan peningkatan kreatinin.','Organisme dapat terdeteksi langsung dalam darah pada fase ini; uji serologi biasanya masih negatif karena antibodi belum terbentuk cukup.']},
+            {t:'Fase 2 — Imun', list:['Mulai terbentuk antibodi IgM terhadap Leptospira.','Terdapat periode 1–3 hari bebas gejala, sebelum kemudian timbul gejala susunan saraf pusat (SSP).','Organisme pada fase ini terdeteksi di urin (bukan lagi di darah).']},
+          ]},
+          {h:'Weil\'s Syndrome (Icteric Leptospirosis)', list:['Merupakan bentuk leptospirosis berat, ditandai ikterus berat disertai gagal ginjal (dapat muncul hematuria dan oliguria), perdarahan saluran cerna dan paru, hingga syok — inilah yang membedakan leptospirosis "ringan" dari "berat" dalam menentukan pilihan antibiotik dan rute pemberiannya.']},
+          {h:'Pemeriksaan Penunjang', list:['Laboratorium rutin: leukosit normal atau meningkat, peningkatan enzim transaminase liver, peningkatan ureum-kreatinin, peningkatan bilirubin, trombositopenia, proteinuria, piuria, mikrohematuria — gambaran yang mencerminkan keterlibatan multi-organ (hati, ginjal, sistem koagulasi).','Kultur: dapat mengonfirmasi diagnosis, namun prosesnya lama, mahal, dan tidak semua laboratorium bisa melakukannya. Sampel darah & CSF positif dalam 10 hari pertama gejala, sementara urin baru positif setelah hari ke-7 gejala (sesuai perpindahan organisme dari darah ke urin antara fase septikemia dan fase imun). Visualisasi bakteri memakai dark field microscopy atau fluorescent microscopy.','Serologi — lebih sering dipakai untuk konfirmasi diagnosis dalam praktik klinis dibanding kultur: MAT (Microscopic Agglutination Test) adalah gold standard di antara semua tes serologi, mendeteksi antibodi anti-leptospira yang baru terdeteksi setelah 1 minggu, dinyatakan positif bila titer >1:200 (pemeriksaan tunggal) atau >1:100 (pemeriksaan serial), dan lebih spesifik lagi bila titer meningkat ≥4 kali antara spesimen fase akut dan konvalesen. IgM ELISA dapat terdeteksi lebih awal, dalam 3–5 hari sakit.']},
+          {h:'Tatalaksana', list:['Leptospirosis ringan (rawat jalan, oral): Doksisiklin 2×100 mg (7 hari), atau Ampisilin 4×500–750 mg (7 hari), atau Amoxicillin 4×500 mg (7 hari).','Leptospirosis berat (rawat inap, IV): Penisilin G 1,5 juta unit/6 jam (7 hari), atau Ampisilin 1 g/6 jam (7 hari), atau Amoxicillin 1 g/6 jam (7 hari), atau Ceftriaxone 1 g/hari (7 hari), atau Cefotaxim 1 g/6 jam (7 hari).','Kemoprofilaksis: Doksisiklin 200 mg/minggu, dimulai 1–2 hari sebelum dan selama periode paparan, untuk orang berisiko tinggi (mis. petugas yang bekerja di area banjir/persawahan).','Catatan penting: pada ibu hamil, hindari Doksisiklin (kontraindikasi kehamilan karena efek pada pertumbuhan tulang & gigi janin) — pilih golongan penisilin/sefalosporin sebagai gantinya.']},
+        ]
+      },
+      // ---------------- DEMAM TIFOID ----------------
+      {
+        id:'demam-tifoid', cat:'tifoid', level:'4A', title:'Demam Tifoid',
+        sub:'Penyakit sistemik akut akibat Salmonella typhi/paratyphi, dengan pola demam step-ladder yang khas.',
+        sections:[
+          {h:'Definisi & Etiologi', list:['Demam tifoid adalah penyakit sistemik akut yang disebabkan infeksi kuman Salmonella typhi atau Salmonella paratyphi.','Bakteri ini gram negatif, berflagel, dan tidak berspora. S. typhi memiliki 3 macam antigen: antigen O (somatik), antigen H (flagela), dan antigen Vi (kapsul) — ketiga antigen ini menjadi dasar berbagai pemeriksaan serologi seperti tes Widal.']},
+          {h:'Manifestasi Klinis per Minggu', sub:[
+            {t:'Minggu 1', list:['Demam dengan pola "step-ladder" — suhu meningkat bertahap tiap hari menyerupai anak tangga, bukan langsung tinggi sejak awal.','Nyeri kepala, nyeri perut, konstipasi (lebih sering pada dewasa) atau diare (lebih sering pada anak, klasik digambarkan sebagai "pea soup diarrhea").','Rose spot dapat muncul — bercak kemerahan kecil di kulit abdomen, namun sulit terlihat pada ras kaukasia (dan juga pada kulit gelap seperti masyarakat Indonesia).']},
+            {t:'Minggu 2', list:['Demam menjadi terus-menerus (kontinu, bukan lagi bertahap).','Bradikardia relatif — nadi tidak meningkat sebanding dengan derajat demamnya, tanda klasik yang cukup spesifik untuk tifoid.','Lidah kotor dengan tepi hiperemis disertai tremor ("typhoid tongue").','Nyeri perut, hepatomegali (dapat ditemukan pada sekitar 50% kasus), dan splenomegali.']},
+            {t:'Minggu 3', list:['Fase paling berisiko komplikasi: perdarahan usus, perforasi usus (akibat nekrosis plak Peyer di ileum terminal tempat bakteri berkumpul), meningitis tifosa, hepatitis tifosa, kolesistitis, dan lain-lain.']},
+          ]},
+          {h:'Cara Penularan — "5F"', list:['Food (makanan), Fingers (jari tangan yang tidak higienis), Fomites (benda-benda yang terkontaminasi), Fly (lalat sebagai vektor mekanis), dan Feces (feses penderita/carrier sebagai sumber utama) — kelima jalur ini menggambarkan siklus fecal-oral penyebaran demam tifoid, sehingga edukasi higiene dan sanitasi menjadi kunci pencegahan.']},
+          {h:'Pemeriksaan Penunjang', list:['Baku emas: isolasi organisme lewat kultur, media empedu — namun waktu pengambilan sampel berbeda tiap minggu perjalanan penyakit karena lokasi bakteri berpindah: minggu 1 sampel darah dan sumsum tulang (bakteremia awal), minggu 2 sampel feses, minggu 3 sampel urin — diringkas mnemonic "DFU" (Darah, Feses, Urin) sesuai urutan minggunya.','Tes Widal — dilakukan di akhir minggu 1, mendeteksi reaksi antara antibodi aglutinin serum penderita terhadap antigen O (somatik) dan H (flagela); kenaikan titer O 1:320 atau kenaikan 4 kali lipat antara pemeriksaan mendukung diagnosis demam tifoid. Sensitivitas 64–74%, spesifisitas 76–83% — cukup moderate, sehingga rentan hasil positif/negatif palsu terutama di daerah endemis tinggi (titer dasar populasi sudah tinggi).','Tubex-TF — mendeteksi IgM terhadap antigen O9 (spesifik untuk Salmonella serogroup D, termasuk S. typhi). Sensitivitas dan spesifisitas bervariasi antar studi (100%/100% hingga 78%/94% hingga 91,2%/82,3%). Nilai skor >4 dinyatakan positif demam tifoid, dan >6 merupakan indikasi kuat demam tifoid — nilai ambang ini sering ditanyakan di soal.']},
+          {h:'Tatalaksana', list:['Bed rest total, hindari beraktivitas terlalu banyak — untuk mencegah komplikasi seperti perforasi usus akibat aktivitas fisik berlebih saat plak Peyer sedang rapuh.','Simptomatik: antipiretik, antiemetik sesuai keluhan.','Diet: menjaga kecukupan asupan cairan (oral maupun parenteral), diet bergizi seimbang dengan konsistensi lunak, cukup kalori dan protein, namun rendah serat — serat kasar dihindari karena berisiko mengiritasi/melukai mukosa usus yang sedang meradang dan rapuh akibat infeksi.','Antibiotik lini pertama: Fluoroquinolone — Ciprofloxacin 2×500 mg (7–14 hari), Ofloxacin 2×400 mg (7–14 hari), atau Norfloxacin 2×400 mg (14 hari).','Antibiotik lini kedua: Cephalosporin generasi 3 — Ceftriaxone 3–4 gram/hari (3–5 hari), atau Cefixime 20 mg/kg/hari (7–14 hari).','Kelompok khusus: anak — Kloramfenikol 50–100 mg/kg/hari dibagi 4 dosis selama 14 hari (fluoroquinolone dihindari pada anak karena potensi mengganggu pertumbuhan kartilago); ibu hamil — Ampicillin, Amoxicillin, atau Ceftriaxone (fluoroquinolone dan kloramfenikol dihindari pada kehamilan).']},
+        ],
+        mnemonic:{label:'MED+EASY — Pilihan Antibiotik', text:'"DeCi Anak Malam" — Dewasa: Ciprofloxacin (fluoroquinolone). Anak: Kloramfenikol. (Malam = mengingatkan kloramfenikol sering dikaitkan risiko gray baby syndrome/aplastik, jadi hati-hati dosis pada anak).'}
+      },
+      // ---------------- MALARIA ----------------
+      {
+        id:'malaria', cat:'malaria', level:'4A', title:'Malaria',
+        sub:'Infeksi parasit Plasmodium yang menyerang eritrosit, ditularkan nyamuk Anopheles betina.',
+        sections:[
+          {h:'Definisi & Epidemiologi', list:['Malaria adalah penyakit infeksi parasit yang disebabkan Plasmodium, menyerang eritrosit manusia.','Di Indonesia, daerah endemis malaria meliputi Kalimantan, Sulawesi Tengah hingga Utara, Maluku, Papua, Lombok, NTT, dan Sumatra bagian selatan — riwayat perjalanan/tinggal di wilayah-wilayah ini menjadi kunci kecurigaan diagnosis.','Patogen: Plasmodium falciparum, P. vivax, P. ovale, P. malariae, dan P. knowlesi. Vektor: nyamuk Anopheles sp. betina.']},
+          {h:'Manifestasi Klinis', list:['Trias malaria klasik: menggigil → demam tinggi → berkeringat, terjadi berulang mengikuti siklus pecahnya skizon dari eritrosit yang terinfeksi (skizogoni eritrositik) — pola berulang inilah yang menjelaskan mengapa demam malaria bersifat periodik/siklik, bukan terus-menerus.','Riwayat yang penting digali: riwayat sakit malaria sebelumnya, riwayat berkunjung ke daerah endemis, dan riwayat tinggal di daerah endemis malaria.']},
+          {h:'Morfologi & Karakteristik per Spesies', list:['Setiap spesies Plasmodium memiliki masa inkubasi, siklus demam, dan tanda khas pada apusan darah tepi yang berbeda — informasi ini krusial karena menentukan jenis obat antimalaria dan durasi terapi (khususnya kebutuhan primakuin untuk membasmi hipnozoit hati pada P. vivax/ovale).']},
+        ],
+        table:{title:'Perbandingan 4 Spesies Plasmodium', head:['Aspek','P. falciparum','P. vivax','P. ovale','P. malariae'],
+          rows:[
+            ['Masa inkubasi (hari)','9–14 (rerata 12)','12–17 (rerata 15)','16–18 (rerata 17)','18–40 (rerata 28)'],
+            ['Siklus demam','Tidak beraturan (malaria tropikana)','48 jam (malaria tertiana)','50 jam (malaria tertiana)','72 jam (malaria kuartana)'],
+            ['Eritrosit terinfeksi','Ukuran normal','Lebih besar, pucat','Lebih besar, oval','Ukuran normal'],
+            ['Tanda khas (stippling)','Maurer\'s spots','Schüffner\'s dots','James dot','Ziemann\'s dots'],
+            ['Bentuk tropozoit','Ring form kecil, accolé ring','Ameboid, ring','—','Bentuk pita (band form), rectangular'],
+            ['Bentuk gametosit','Bulan sabit / pisang / sosis (khas!)','Sferis','Sferis','Sferis'],
+          ]},
+      },
+      {
+        id:'malaria-tatalaksana', cat:'malaria', level:'4A', title:'Malaria — Tatalaksana & Profilaksis',
+        sub:'ACT sebagai lini pertama, dengan tambahan primakuin sesuai spesies.',
+        sections:[
+          {h:'Prinsip Umum', list:['Semua jenis malaria diterapi dengan ACT (Artemisinin-based Combination Therapy) selama 3 hari sebagai lini pertama — contoh kombinasi ACT: dihidroartemisinin + piperakuin (DHP) atau artesunat + amodiakuin (Program Nasional Indonesia), artemeter + lumefantrine, atau artesunat + meflokuin.','Primakuin ditambahkan sebagai gametosidal (membunuh gametosit, mencegah penularan lanjut lewat nyamuk) dan pada P. vivax/ovale juga berfungsi hipnozoitosidal (membasmi bentuk dorman di hati yang menjadi sumber relaps) — inilah alasan durasi primakuin berbeda antar spesies.']},
+          {h:'Regimen per Spesies', list:['P. falciparum: ACT (3 hari) + Primakuin dosis tunggal (0,75 mg/kgBB) — karena falciparum tidak memiliki fase hipnozoit hati, primakuin cukup dosis tunggal untuk efek gametosidal saja.','P. vivax / P. ovale: ACT (3 hari) + Primakuin 14 hari (0,25 mg/kg/hari) — durasi lebih panjang karena harus membasmi hipnozoit hati yang berpotensi menyebabkan relaps berulang bila tidak dieradikasi tuntas. Bila relaps, primakuin dosis ditingkatkan (0,5 mg/kg/hari, 14 hari).','P. malariae: ACT (3 hari) saja, tanpa primakuin — karena tidak memiliki fase hipnozoit hati (serupa falciparum) dan tidak memerlukan gametosidal tambahan seperti pada falciparum.']},
+          {h:'Regimen Kelompok Khusus', list:['Malaria falsiparum lini kedua (bila lini pertama gagal): Kina (Quinine) + Primakuin + (Doksisiklin/Tetrasiklin).','Ibu hamil trimester 1: Kina + Klindamisin (7 hari) — kina dipilih karena relatif lebih aman di trimester awal dibanding artemisinin yang datanya masih terbatas untuk periode organogenesis; klindamisin menggantikan doksisiklin/tetrasiklin yang kontraindikasi pada kehamilan.','Ibu hamil trimester 2–3: DHP (3 hari) — pada trimester ini ACT sudah lebih dianggap aman.','Primakuin KONTRAINDIKASI pada ibu hamil dan anak — karena berisiko menyebabkan hemolisis berat, terutama pada individu dengan defisiensi G6PD yang skriningnya sulit dilakukan cepat di lapangan.']},
+          {h:'Non-ACT & Efek Samping', list:['Klorokuin: sudah banyak resisten di berbagai daerah, sehingga tidak lagi jadi pilihan utama.','Kina dosis 200 mg: relatif aman untuk ibu hamil, namun perlu diwaspadai efek samping hipoglikemia, hipotensi, dan gangguan telinga (tinnitus/tuli sementara — dikenal sebagai cinchonism).']},
+          {h:'Profilaksis Malaria (untuk pelancong ke daerah endemis)', list:['Daerah sensitif klorokuin: Klorokuin 2 tablet (500 mg)/minggu, dimulai 1–2 minggu sebelum paparan hingga 4 minggu setelah kembali.','Daerah resisten klorokuin (termasuk Indonesia): Doksisiklin 100 mg/hari (1–2 hari sebelum hingga 4 minggu setelah paparan; kontraindikasi anak <8 tahun dan ibu hamil), ATAU Meflokuin 250 mg/minggu (2 minggu sebelum hingga 4 minggu setelah; menjadi lini pertama untuk ibu hamil dan dapat diberikan pada anak), ATAU Atovaquone 250 mg/Proguanil 100 mg per hari (1–2 hari sebelum hingga 7 hari setelah paparan; dapat diberikan pada ibu hamil dan anak).']},
+        ]
+      },
+      {
+        id:'malaria-serebral', cat:'malaria', level:'3B', title:'Malaria Serebral',
+        sub:'Komplikasi malaria falsiparum berat dengan penurunan kesadaran — kegawatdaruratan medis.',
+        sections:[
+          {h:'Definisi & Diagnosis', list:['Malaria serebral ditegakkan bila ditemukan Plasmodium falciparum stadium aseksual pada apusan darah, DISERTAI minimal SATU tanda klinis atau laboratorium tanda bahaya berikut — jadi bukan sekadar parasitemia falciparum saja, melainkan harus disertai bukti keterlibatan organ vital.']},
+          {h:'Manifestasi Klinis (Tanda Bahaya)', list:['Perubahan kesadaran (GCS <11) — inilah yang secara spesifik disebut "malaria serebral".','Kelemahan otot generalisata (tidak bisa duduk/berjalan tanpa bantuan).','Kejang berulang (lebih dari 2 episode dalam 24 jam).','Distres pernapasan.','Gagal sirkulasi atau syok: CRT >3 detik, tekanan sistolik <80 mmHg (pada anak <70 mmHg).','Jaundice (bilirubin >3 mg/dL disertai kepadatan parasit >100.000/µL).','Hemoglobinuria (dikenal sebagai "black water fever" — urin berwarna gelap seperti teh/cola akibat hemolisis masif).','Perdarahan spontan abnormal.','Edema paru (dikonfirmasi radiologi, atau saturasi O2 <92%).']},
+          {h:'Gambaran Laboratorium (Tanda Bahaya)', list:['Hipoglikemia (gula darah <40 mg%) — dapat terjadi akibat konsumsi glukosa oleh parasit sekaligus efek obat antimalaria tertentu (kina).','Asidosis metabolik (bikarbonat <15 mmol/L).','Anemia berat (Hb <5 g% untuk daerah endemis tinggi, atau <7 g% untuk daerah endemis sedang-rendah — ambangnya berbeda karena penduduk daerah endemis tinggi umumnya sudah lebih adaptif terhadap anemia kronik akibat infeksi berulang).','Hiperparasitemia (parasit >2% eritrosit atau >100.000 parasit/mm³ di daerah endemis rendah; atau >5% eritrosit atau >100.000 parasit/mm³ di daerah endemis tinggi).','Hiperlaktemia (asam laktat >5 mmol/L), hemoglobinuria, dan gangguan fungsi ginjal (kreatinin serum >3 mg%).']},
+          {h:'Tatalaksana', list:['Di Puskesmas (fasilitas primer): Artesunat IM 3–4 mg/kgBB — sebagai stabilisasi awal sebelum rujukan ke fasilitas yang lebih lengkap, karena malaria serebral adalah kegawatdaruratan yang butuh terapi cepat sebelum pasien sempat dirujuk.','Di Rumah Sakit: Artesunat IV 2,4 mg/kgBB, diberikan hingga pasien sadar kembali — artesunat IV merupakan terapi pilihan utama malaria berat karena kerja cepat dan terbukti menurunkan mortalitas dibanding kina IV pada studi-studi besar.']},
+        ],
+        diagram:{title:'Alur Cepat Membedakan Diagnosis Banding Demam + Penurunan Kesadaran', note:'Tiga skenario UKMPPD yang sering tertukar: malaria serebral, meningitis TB, dan sindrom neurosistiserkosis — kuncinya pada riwayat perjalanan & gambaran penunjang.', html:`
+          <div class="fsplit three">
+            <div class="fbranch red">
+              <div class="flabel">Malaria Serebral</div>
+              <div class="fhead">Riwayat daerah endemis</div>
+              <p>Demam periodik + penurunan kesadaran (GCS&lt;11), apusan darah: gametosit bentuk pisang/bulan sabit (P. falciparum).</p>
+            </div>
+            <div class="fbranch teal">
+              <div class="flabel">Meningitis TB</div>
+              <div class="fhead">Onset subakut-kronik</div>
+              <p>Riwayat kontak TB, penurunan kesadaran bertahap, kaku kuduk, LCS: pleositosis limfositik, protein tinggi, glukosa rendah.</p>
+            </div>
+            <div class="fbranch amber">
+              <div class="flabel">Neurosistiserkosis</div>
+              <div class="fhead">Riwayat makan babi/T. solium</div>
+              <p>Kejang fokal/umum berulang, nyeri kepala kronik, CT/MRI: lesi kistik multipel di otak.</p>
+            </div>
+          </div>`}
+      },
+      // ---------------- DEMAM DENGUE ----------------
+      {
+        id:'demam-dengue', cat:'dengue', level:'4A/3B', title:'Demam Dengue',
+        sub:'Infeksi virus Dengue oleh nyamuk Aedes aegypti — spektrum dari demam ringan hingga syok.',
+        sections:[
+          {h:'Etiologi', list:['Vektor: nyamuk Aedes aegypti betina (aktif menggigit terutama pagi–sore hari, berbeda dari Anopheles vektor malaria yang aktif malam hari).','Virus Dengue memiliki 4 serotipe (DENV-1 hingga DENV-4) — infeksi oleh satu serotipe memberi imunitas seumur hidup terhadap serotipe tersebut, namun tidak melindungi terhadap serotipe lain, bahkan infeksi sekunder oleh serotipe berbeda justru berisiko menimbulkan gejala yang lebih berat (lihat teori antibody-dependent enhancement di bagian pemeriksaan penunjang).']},
+          {h:'Spektrum Manifestasi Klinis', list:['Demam Dengue (Dengue Fever/DF) — bentuk paling ringan.','Demam Berdarah Dengue (Dengue Haemorrhagic Fever/DHF) — mencakup grade I dan II, ditandai bukti kebocoran plasma.','Dengue Shock Syndrome (DSS) — mencakup grade III dan IV, DHF yang sudah disertai kegagalan sirkulasi/syok.']},
+          {h:'Manifestasi Klinis DF', list:['Dapat asimtomatis pada sebagian kasus.','Demam tinggi (38–39°C), nyeri kepala, nyeri di belakang mata (retro-orbital pain — cukup khas untuk dengue), nyeri sendi dan otot, mual-muntah.','Ruam (rash) makulopapular di dada, punggung, dan daerah fleksor lengan-kaki.']},
+          {h:'Diagnosis Klinis — 3 Tingkat Keparahan', list:['Dengue Fever: demam, nyeri kepala, mialgia, artralgia, rash, manifestasi perdarahan ringan — tanpa bukti kebocoran plasma.','Dengue Haemorrhagic Fever: demam akut, kontinu, tinggi selama 2–7 hari, disertai manifestasi perdarahan (uji tourniquet positif, petekie, gusi berdarah, perdarahan saluran cerna), hepatomegali, dan mulai tampak tanda syok.','Expanded Dengue Syndrome: sudah menyebabkan kerusakan organ (liver, ginjal, otak, jantung) akibat syok hipovolemia berkepanjangan — bentuk paling berat dan mengancam nyawa.']},
+          {h:'Uji Diaskopi', list:['Merupakan uji blanchability (pemucatan) pada kulit, dilakukan dengan menekan lesi kulit menggunakan benda transparan seperti kaca objek.','Berguna membedakan eritema (akibat vasodilatasi pembuluh darah — akan memucat saat ditekan) dengan petekie/purpura (akibat ekstravasasi eritrosit ke jaringan — TIDAK memucat saat ditekan, karena darahnya sudah keluar dari pembuluh, bukan sekadar melebar).','Interpretasi: (+) warna merah menghilang saat ditekan → eritema. (–) warna merah tidak menghilang → petekie/purpura, atau telangiektasis.']},
+          {h:'Pemeriksaan Penunjang', list:['Tes tourniquet (Rumple Leede) — manset tensimeter dipertahankan di lengan dengan tekanan di antara sistolik dan diastolik selama 5 menit; hasil positif bila terdapat ≥10 petekie pada area 2,5×2,5 cm, menunjukkan tanda perdarahan/fragilitas kapiler.','Serologi: Rapid test NS1 (non-structural protein 1, dideteksi lebih awal karena merupakan bagian dari virus itu sendiri, bukan respons antibodi), RT-PCR, dan ELISA IgM-IgG anti-Dengue.','Interpretasi IgM-IgG: IgM(+)/IgG(–) → infeksi primer. IgM(+)/IgG(+) → infeksi sekunder. IgM(–)/IgG(+) → pernah terinfeksi (di masa lalu). IgM(–)/IgG(–) → tidak ada infeksi.','Teori Secondary Heterologous Infection: DHF berat dapat terjadi bila seseorang sebelumnya pernah terinfeksi satu serotipe Dengue, lalu terinfeksi kembali oleh serotipe yang berbeda — antibodi dari infeksi pertama tidak menetralkan virus serotipe baru secara sempurna, malah membentuk kompleks yang mempermudah virus masuk ke sel (antibody-dependent enhancement), memicu respons imun berlebihan yang justru memperparah kebocoran plasma. Gejala paling berat cenderung terjadi bila infeksi kedua oleh serotipe paling virulen, yaitu DEN-2.']},
+          {h:'Alur Pemeriksaan Sesuai Hari Sakit', list:['Sebelum hari ke-5: isolasi virus, NS1, atau RT-PCR — pada fase ini virus/antigen virus masih beredar cukup untuk terdeteksi langsung.','Hari ke-5: NS1, RT-PCR, atau IgM-IgG.','Setelah hari ke-5: IgM-IgG — pada fase ini virus/antigennya sudah mulai bersih dari sirkulasi, sehingga deteksi beralih mengandalkan respons antibodi tubuh.']},
+        ],
+        table:{title:'Klasifikasi DF/DHF WHO 2021', head:['Klasifikasi','Grade','Tanda & Gejala','Laboratorium'],
+          rows:[
+            ['Dengue tanpa warning signs','DF','Demam + 2 dari: nyeri kepala, nyeri retro-orbital, mialgia, artralgia/nyeri tulang, rash, manifestasi perdarahan; tanpa bukti kebocoran plasma','Leukopenia (<5.000/mm³), trombositopenia (<150.000/mm³), Ht meningkat 5–10%'],
+            ['Dengue dengan warning signs','DHF I','Demam + manifestasi perdarahan (tourniquet test +) + bukti kebocoran plasma','Trombosit <100.000/mm³; Ht meningkat >20%'],
+            ['','DHF II','Seperti Grade I + perdarahan spontan','Trombosit <100.000/mm³; Ht meningkat >20%'],
+            ['Severe Dengue','DHF III','Seperti Grade I/II + kegagalan sirkulasi (nadi lemah, tekanan nadi sempit <20mmHg, hipotensi, gelisah)','Trombosit <100.000/mm³; Ht meningkat >20%'],
+            ['','DHF IV','Seperti Grade III + syok berat dengan TD dan nadi tidak terukur','Trombosit <100.000/mm³; Ht meningkat >20%'],
+          ]}
+      },
+      {
+        id:'fluid-overload', cat:'dengue', level:'3B', title:'Fluid Overload pada Dengue',
+        sub:'Komplikasi tersering DSS akibat resusitasi cairan yang tidak sesuai algoritma.',
+        sections:[
+          {h:'Definisi', list:['Fluid overload merupakan komplikasi tersering dari Dengue Shock Syndrome (DSS) — pemberian cairan seharusnya sesuai algoritma dan bertujuan menjaga perfusi tetap adekuat, TIDAK asal diberikan sebanyak-banyaknya, karena kebocoran plasma pada DSS bersifat sementara (biasanya membaik dalam 24–48 jam) sehingga cairan berlebih yang diberikan akan "terjebak" di ruang ekstravaskular begitu kebocoran plasma mereda.']},
+          {h:'Etiologi (Faktor Risiko Terjadinya Fluid Overload)', list:['Pemberian cairan IV yang berlebihan pada saat fase kritis, saat kapiler sedang sangat permeabel sehingga cairan yang diberikan justru banyak bocor ke jaringan interstisial alih-alih tetap di intravaskular.','Kesalahan penggunaan cairan kristaloid hipotonik seperti NaCl 0,45% — cairan hipotonik tidak ideal untuk resusitasi syok karena distribusinya cepat keluar dari ruang intravaskular.','Penggunaan volume cairan IV yang terlalu besar tanpa evaluasi berkala.','Pemberian cairan IV yang terlalu lama, misalnya tetap diteruskan meskipun tanda kebocoran plasma sudah membaik — inilah kesalahan tersering, karena begitu fase kritis terlewati (biasanya ditandai Ht mulai turun/stabil dan diuresis membaik), rate cairan harus segera diturunkan bertahap.']},
+          {h:'Manifestasi Klinis', sub:[
+            {t:'Manifestasi Awal', list:['Kelopak mata bengkak.','Takipnea, dispnea ringan.','Distensi abdomen, asites.','Peningkatan tekanan vena jugularis.']},
+            {t:'Manifestasi Akhir (lebih berat)', list:['Distres pernapasan hingga impending respiratory failure (gagal napas yang mengancam).','Ronki basah basal (tanda edema paru).','Agitasi, hipoksia.']},
+          ]},
+          {h:'Pemeriksaan Penunjang', list:['AGDA (analisis gas darah arteri), laktat serum, EKG — menilai dampak sistemik dari kelebihan cairan dan gangguan perfusi yang menyertainya.','Foto polos dada: dapat ditemukan kardiomegali, efusi pleura, dan gambaran edema paru klasik berupa "bat\'s wings" (opasitas perihilar bilateral menyerupai sayap kelelawar) dengan atau tanpa Kerley B lines (garis-garis halus di lapangan paru bawah akibat penebalan septa interlobular oleh cairan).']},
+          {h:'Tatalaksana', list:['Berikan oksigen untuk mengatasi hipoksia.','Segera turunkan rate cairan menjadi 1 cc/kgBB/jam bila tidak tersedia koloid — langkah pertama dan paling sederhana untuk menghentikan penambahan volume lebih lanjut.','Ganti kristaloid menjadi koloid bila tersedia — berikan Dextran 40 sebanyak 10 cc/kgBB bolus, maksimal 30 cc/kgBB/hari; koloid dipilih karena memiliki tekanan onkotik lebih tinggi sehingga lebih efektif menarik cairan kembali ke intravaskular dibanding menambah kristaloid.','Bila terjadi edema paru, berikan Furosemide 1 mg/kgBB/dosis untuk membantu mengeluarkan cairan berlebih lewat diuresis.','Evaluasi ketat setiap 15 menit — bila tidak membaik, ulangi pemberian furosemid dengan dosis dinaikkan menjadi 2 mg/kgBB/dosis.','Ukur volume urin secara ketat — bila oliguria menetap meski sudah dikoreksi, ini menunjukkan tanda-tanda gagal ginjal akut, dan perlu dipertimbangkan tindakan dialisis.']},
+        ]
+      },
+      // ---------------- INFEKSI CACING ----------------
+      {
+        id:'infeksi-cacing-overview', cat:'cacing', level:'4A', title:'Infeksi Cacing — Pengantar & Klasifikasi',
+        sub:'Helminthiasis dibagi menjadi Nematoda (cacing gilig) dan Platyhelminthes (cacing pipih: Trematoda & Cestoda).',
+        sections:[
+          {h:'Klasifikasi Besar Helminths', list:['Nematoda (cacing gilig/bulat) — dibagi lagi menjadi kelompok Tissue (menyerang jaringan, contoh: Onchocerca, Brugia, Wuchereria, Dracunculus, Loa loa, Trichinella, Toxocara) dan kelompok GI (menyerang saluran cerna, contoh: Ascaris, Strongyloides, Trichuris, Enterobius, Hookworms, Trichinella).','Platyhelminthes (cacing pipih) — dibagi menjadi Trematoda (cacing daun/pipih tak bersegmen, dengan kelompok Tissue: Schistosoma, Paragonimus, Fasciola; dan kelompok GI: Clonorchis, Opisthorchis, Fasciola, Heterophyes) dan Cestoda (cacing pita bersegmen, dengan kelompok Tissue: Echinococcus, Cysticercosis, Coenurosis; dan kelompok Intestinal: Taenia saginata, Taenia solium, Diphyllobothrium latum, Hymenolepis nana).','Cara berpikir cepat untuk soal UKMPPD: identifikasi dulu golongan besarnya dari bentuk telur/morfologi, baru persempit ke spesies berdasarkan gejala klinis dan riwayat paparan (makan daging mentah, jalan tanpa alas kaki, kontak air tawar, dll).']},
+        ]
+      },
+      {
+        id:'nematoda', cat:'cacing', level:'4A', title:'Nematoda (Cacing Gilig)',
+        sub:'Ascaris, Hookworm, Trichuris, Enterobius, Strongyloides — kelompok cacing usus tersering.',
+        sections:[
+          {h:'Askariasis (Ascaris lumbricoides)', list:['Stadium infektif: telur cacing (tertelan lewat makanan/tangan terkontaminasi).','Manifestasi klinis: dapat asimtomatik; dapat keluar cacing dewasa saat BAB (sering jadi keluhan utama yang membawa pasien berobat); Sindrom Loeffler (sesak napas akibat migrasi larva melalui paru, memicu reaksi hipersensitivitas); nyeri perut, mual-muntah, anoreksia, diare; pada infestasi berat dapat menyebabkan ileus obstruktif (massa cacing menyumbat usus) dan malnutrisi pada anak.','Pemeriksaan penunjang: feses rutin, dijumpai telur dengan dinding tebal 2–3 lapis, bergerigi, berisi unsegmented ovum.']},
+          {h:'Hookworm / Cacing Tambang (Ancylostoma duodenale & Necator americanus)', list:['Faktor risiko: tidak memakai alas kaki — larva filariform menembus kulit kaki yang kontak langsung dengan tanah terkontaminasi.','Stadium infektif: larva filariform (berbeda dari Ascaris/Trichuris yang stadium infektifnya telur).','Manifestasi klinis: ground itch (gatal di kulit tempat penetrasi larva), mual-muntah, anoreksia, nyeri abdomen; anemia (gejala 5L — lemah, letih, lesu, lunglai, lalai) akibat cacing dewasa menghisap darah dari mukosa usus secara kronik, menyebabkan perdarahan saluran cerna kronik; gangguan nutrisi.','Pemeriksaan penunjang: feses rutin (Harada Mori test untuk kultur larva), dijumpai telur dengan sitoplasma jernih berisi segmented ovum.']},
+          {h:'Strongiloidiasis (Strongyloides stercoralis)', list:['Stadium infektif: larva filariform (serupa hookworm), namun unik karena Strongyloides dapat menyelesaikan siklus hidup penuh di dalam tubuh manusia (autoinfeksi) tanpa perlu keluar ke lingkungan — inilah yang membuat infeksinya bisa bertahan bertahun-tahun bahkan tanpa paparan ulang.','Manifestasi klinis: ground itch, larva currens (garis kemerahan yang bergerak cepat di kulit, khas Strongyloides), pruritus dan urtikaria bila kronik; nyeri abdomen atas akibat duodenitis, mual-muntah, anoreksia, diare.','Hyperinfection syndrome: komplikasi serius berupa diseminasi larva ke dalam darah dan SSP, terutama terjadi pada pasien imunokompromais (mis. pengguna kortikosteroid jangka panjang) — penting diwaspadai sebelum memberi imunosupresan pada pasien dengan riwayat tinggal di daerah endemis.','Pemeriksaan penunjang: dijumpai larva rhabditiform pada pemeriksaan feses, Harada Mori filter test, atau agar plate culture (metode paling sensitif).']},
+          {h:'Trikuriasis (Trichuris trichiura)', list:['Faktor risiko: makan tanpa cuci tangan.','Stadium infektif: telur cacing.','Manifestasi klinis: dapat asimtomatik; diare dengan mukus dan/atau darah; prolaps rekti (pada infestasi berat, terutama anak); kolitis.','Pemeriksaan penunjang: feses rutin, dijumpai telur berbentuk tempayan dengan 2 operkulum (knob) di ujung atas dan bawah.']},
+          {h:'Enterobiasis (Enterobius vermicularis)', list:['Faktor risiko: makan tanpa cuci tangan, sering pada anak usia sekolah karena penularan mudah antarteman (fecal-oral dan autoinfeksi lewat garukan).','Stadium infektif: telur cacing.','Manifestasi klinis: dapat asimtomatik; pruritus nokturna (gatal di sekitar anus terutama malam hari, saat cacing betina keluar untuk bertelur) hingga mengganggu tidur anak.','Pemeriksaan penunjang: dijumpai telur pada pemeriksaan anal swab / Graham scotch adhesive tape (dilakukan pagi hari sebelum mandi/BAB, karena telur diletakkan di perianal malam sebelumnya), telur berbentuk oval bikonkaf dengan dinding asimetris berisi larva cacing (menyerupai huruf D).']},
+        ],
+        mnemonic:{label:'Enterobiasis — "GaBur MaRi"', text:'Gatal dubur malam hari — kunci mengingat gejala khas Enterobius vermicularis. Trikuriasis — "3T": Trichuris, Tempayan (bentuk telur), Turun (prolaps recti).'}
+      },
+      {
+        id:'trematoda', cat:'cacing', level:'4A', title:'Trematoda (Cacing Daun)',
+        sub:'Schistosoma dan Fasciola — cacing pipih tak bersegmen, umumnya butuh siput sebagai hospes perantara.',
+        sections:[
+          {h:'Skistosomiasis (Schistosoma mansoni, S. haematobium, S. japonicum)', list:['Stadium infektif: serkaria (bentuk larva yang keluar dari siput air tawar dan mampu menembus kulit manusia yang kontak dengan air).','Manifestasi klinis bervariasi tergantung spesies dan fase: penetrasi kulit oleh serkaria dapat menyebabkan ruam gatal ("swimmer\'s itch") setelah berenang di air tawar; sindrom schistosomiasis akut (demam Katayama) muncul beberapa minggu pasca infeksi berat; schistosomiasis intestinal (S. japonicum, S. mansoni, kadang S. haematobium): nyeri perut kronis/intermiten, nafsu makan turun, diare, bila berat dapat timbul ulkus kolon kronik, perdarahan usus, dan anemia defisiensi besi; genitourinary schistosomiasis (S. haematobium): hematuria mikroskopik/makroskopik, piuria, hematospermia, disuria, obstruksi leher kandung kemih, hidronefrosis, gagal ginjal, hingga peningkatan risiko kanker kandung kemih.','Pemeriksaan penunjang: dijumpai telur di tinja atau urin lewat mikroskop (tergantung spesies — S. haematobium khas ditemukan di urin karena bersarang di kandung kemih, sementara mansoni/japonicum di tinja karena bersarang di usus); dapat pula dideteksi antigen schistosoma atau DNA schistosoma dalam darah/urin/tinja, atau antibodi lewat serologi.']},
+          {h:'Fasciolosis (Fasciola hepatica, Fasciola/Fasciolopsis buski)', list:['Stadium infektif: metaserkaria (biasanya tertelan lewat tanaman air seperti selada air yang terkontaminasi).','Manifestasi klinis F. hepatica: fase akut — demam, nyeri perut kanan atas, hepatomegali, kadang ikterik; fase kronik — dapat asimtomatik, atau nyeri kanan atas, hepatomegali, mual-muntah, wasting, ikterik, diare, kolik bilier, kolangitis, kolelitiasis (karena cacing dewasa hidup di duktus biliaris); fasioliasis faringeal/sindrom Halzoun — terjadi akibat makan liver mentah, menimbulkan gangguan saluran napas atas seperti batuk, nyeri tenggorok, edema laring, faringitis, bahkan sufokasi (tersedak/tercekik).','Manifestasi klinis Fasciolopsis buski (hidup di usus halus, bukan hati): asimtomatik, anoreksia, mual-muntah, diare, nyeri abdomen, malabsorpsi, anemia dan defisiensi vitamin B12, obstruksi usus, hingga perforasi pada kasus berat.','Pemeriksaan penunjang: dijumpai telur pada feses/aspirasi cairan duodenum atau empedu (F. hepatica), atau cacing dewasa/telur dalam tinja (F. buski); gambaran telur kedua spesies serupa — lonjong dengan satu operkulum.']},
+        ],
+        mnemonic:{label:'Skistosomiasis — "4S"', text:'Schistosoma · Spina (duri pada telur) · Sulawesi (endemis S. japonicum di Indonesia) · Serkaria (stadium infektif).'}
+      },
+      {
+        id:'cestoda', cat:'cacing', level:'4A', title:'Cestoda (Cacing Pita)',
+        sub:'Taenia saginata dan Taenia solium — T. solium berisiko menyebabkan neurosistiserkosis.',
+        sections:[
+          {h:'Taeniasis (Taenia saginata & Taenia solium)', list:['Cara penularan: Taeniasis (infeksi cacing pita dewasa di usus) terjadi bila manusia makan daging (sapi untuk T. saginata, babi untuk T. solium) mentah/kurang matang yang mengandung sistiserkus — stadium infektif untuk taeniasis. Sistiserkosis (infeksi larva di jaringan tubuh, termasuk otak) terjadi bila manusia tertelan TELUR cacing (misalnya lewat makanan terkontaminasi feses penderita taeniasis) — stadium infektif untuk sistiserkosis berbeda dari taeniasis.','Manifestasi klinis taeniasis: dapat asimtomatik, mual, anoreksia, nyeri epigastrium, urtikaria, nyeri kepala.','Neurosistiserkosis — HANYA disebabkan oleh Taenia solium (babi), TIDAK oleh T. saginata (sapi) — poin krusial yang sering diujikan. Manifestasinya: kejang fokal, fokal dengan generalisata parsial, atau kejang umum; nyeri kepala menyerupai migrain atau tension type headache; defisit neurokognitif; peningkatan tekanan intrakranial (TIK); hidrosefalus (akibat kista mengganggu aliran cairan serebrospinal).','Pemeriksaan penunjang: diagnosis taeniasis umumnya ditegakkan dengan identifikasi telur atau proglotid dalam tinja — telur kedua spesies sulit dibedakan (berstruktur radial dengan 6 kait di dalamnya, berisi onkosfer dan embriosfer), namun proglotidnya dapat dibedakan: T. saginata memiliki proglotid gravid dengan cabang lebih banyak dibanding T. solium.']},
+        ],
+        mnemonic:{label:'Ingat', text:'Neurosistiserkosis HANYA bisa disebabkan oleh Taenia solium (babi) — bukan Taenia saginata (sapi).'}
+      },
+      {
+        id:'terapi-cacing', cat:'cacing', level:'4A', title:'Terapi Infeksi Cacing',
+        sub:'Ringkasan obat cacing per golongan dan spesies.',
+        sections:[
+          {h:'Terapi Trematoda', list:['Praziquantel 10 mg/kg dosis tunggal — obat pilihan untuk hampir seluruh infeksi trematoda (Schistosoma, Fasciola, dll).']},
+          {h:'Terapi Cestoda', list:['Albendazole 2×400 mg selama 8–30 hari — obat pilihan untuk infeksi cestoda yang berpotensi fatal, khususnya neurosistiserkosis akibat Taenia solium (durasi panjang diperlukan karena harus menembus sawar darah-otak dan membasmi kista di jaringan otak).','Praziquantel 10 mg/kg dosis tunggal — obat pilihan untuk Hymenolepiasis dan Taeniasis (infeksi cacing dewasa di usus, bukan neurosistiserkosis).']},
+          {h:'Terapi Nematoda per Spesies', list:[]},
+        ],
+        table:{title:'Pilihan Obat Nematoda', head:['Spesies','Lini Pertama','Alternatif 1','Alternatif 2'],
+          rows:[
+            ['Enterobius vermicularis','Pyrantel pamoate 10 mg/kg (maks 1g, dosis tunggal)','Mebendazole 500 mg dosis tunggal','Albendazole 400 mg dosis tunggal'],
+            ['Trichuris trichiura','Mebendazole 2×100 mg (3 hari) atau 600 mg dosis tunggal','Albendazole 1×400 mg (3 hari)','—'],
+            ['Ascaris lumbricoides','Albendazole 400 mg dosis tunggal','Mebendazole 2×100 mg (3 hari)','Pyrantel pamoate (untuk hamil) 10 mg/kg, maks 1g dosis tunggal'],
+            ['Ancylostoma duodenale','Albendazole 400 mg dosis tunggal','Mebendazole 2×100 mg (3 hari)','Pyrantel pamoate 10 mg/kg, maks 1g dosis tunggal'],
+          ]},
+        mnemonic:{label:'Mnemonic Obat Nematoda', text:'"AL A N" — Albendazole untuk Ascaris & Necator (hookworm). "ME T OX" — Mebendazole untuk Trichuris & Oxyuris (nama lain Enterobius).'}
+      },
+      // ---------------- FILARIASIS ----------------
+      {
+        id:'filariasis', cat:'filariasis', level:'4A', title:'Filariasis',
+        sub:'Infeksi cacing filaria pada sistem limfatik — kronisnya menyebabkan elephantiasis.',
+        sections:[
+          {h:'Etiologi & Vektor', list:['Penyebab: Wuchereria bancrofti, Brugia malayi, Brugia timori.','Vektor: nyamuk Culex (perkotaan), juga dapat ditularkan Anopheles/Aedes (perdesaan, tergantung spesies filaria) — bentuk infektif yang ditularkan adalah larva stadium III (L3).']},
+          {h:'Manifestasi Klinis', list:['Fase akut: adenolimfangitis akut (demam disertai limfadenopati yang nyeri, akibat reaksi inflamasi terhadap cacing dewasa/larva yang mati di pembuluh limfe), atau demam filarial (demam tanpa limfangitis/limfadenopati).','Fase kronik: limfedema akibat kerusakan dan obstruksi kronis pembuluh limfatik oleh cacing dewasa yang hidup bertahun-tahun di sana — bila berlanjut, berkembang menjadi elephantiasis (pembengkakan masif dan penebalan kulit, khas pada tungkai/skrotum).','Wuchereria bancrofti sering menyebabkan gangguan limfatik di area genital (khas: edema skrotum) selain limfedema tungkai yang bisa sampai ke lipat paha — berbeda dari Brugia malayi/timori yang limfedemanya umumnya tidak sampai sejauh itu (tidak sampai paha).']},
+          {h:'Diagnosis', list:['Ditemukannya mikrofilaria dalam darah, diperiksa pada MALAM HARI (pukul 22.00–02.00) menggunakan pewarnaan Giemsa pada apusan darah tepi — waktu pengambilan sampel ini sangat penting dan sering ditanyakan, karena mikrofilaria filaria limfatik (terutama W. bancrofti) memiliki periodisitas nokturna, yaitu jumlahnya di darah tepi memuncak pada malam hari mengikuti pola aktivitas vektor nyamuknya yang juga menggigit malam hari.']},
+          {h:'Membedakan Spesies pada Apusan Darah', list:['Ketiga spesies dibedakan lewat karakteristik selubung (sheath), susunan inti tubuh mikrofilaria, cephalic space (rasio panjang:lebar ujung kepala), dan ada/tidaknya inti di ujung ekor (nukleus terminal).']},
+        ],
+        table:{title:'Karakteristik Mikrofilaria per Spesies', head:['Spesies','Vektor Khas','Karakteristik'],
+          rows:[
+            ['Wuchereria bancrofti','Culex (kota); Anopheles/Aedes (desa)','Terbungkus selubung hialin; nukleus tubuh tersebar merata & teratur; cephalic space 1:1; nukleus tidak mencapai ujung posterior (nukleus terminal negatif)'],
+            ['Brugia malayi','Mansonia, Anopheles','Nukleus tubuh padat, tidak tersebar merata (seperti bertumpuk); cephalic space 2:1; nukleus terminal positif (2 inti terpisah di ujung ekor)'],
+            ['Brugia timori','Anopheles','Nukleus tubuh padat, tidak tersebar merata; cephalic space 3:1; nukleus terminal positif (2 inti terpisah)'],
+          ]},
+        diagram:{title:'Pola Limfedema: Bancrofti vs Brugia', html:`
+          <div class="fsplit">
+            <div class="fbranch red">
+              <div class="flabel">Wuchereria bancrofti</div>
+              <div class="fhead">Limfedema sampai lipat paha</div>
+              <p>Dapat disertai edema skrotum — sering menyebabkan gangguan limfatik di area genital.</p>
+            </div>
+            <div class="fbranch teal">
+              <div class="flabel">Brugia malayi & Brugia timori</div>
+              <div class="fhead">Limfedema tidak sampai paha</div>
+              <p>Umumnya terbatas pada tungkai bawah, tanpa keterlibatan genital seperti pada bancrofti.</p>
+            </div>
+          </div>`}
+      },
+      {
+        id:'filariasis-tatalaksana', cat:'filariasis', level:'4A', title:'Filariasis — Terapi & Profilaksis',
+        sub:'DEC sebagai andalan utama, ditambah pembedahan untuk sekuel elephantiasis.',
+        sections:[
+          {h:'Terapi', list:['Dietilkarbamazin (DEC) 6 mg/kgBB selama 12 hari — bekerja sebagai makrofilarisida sekaligus mikrofilarisida, artinya membunuh baik cacing dewasa maupun mikrofilaria yang beredar di darah.','Penting dipahami: DEC dapat mengeradikasi mikrofilaria dan cacing dewasa, TETAPI TIDAK dapat menyembuhkan perubahan anatomi yang sudah terjadi pada elephantiasis — karena kerusakan pembuluh limfatik akibat obstruksi kronik bersifat permanen, sehingga terapi obat hanya efektif mencegah perburukan lebih lanjut, bukan mengembalikan anatomi yang sudah rusak.','Pembedahan — untuk mengatasi sekuel/komplikasi anatomis yang sudah terlanjur terjadi: aspirasi hidrokel, limfangioplasti, prosedur jembatan limfe (lymphatic bridging), eksisi radikal dan graft kulit, serta bedah mikrolimfatik.']},
+          {h:'Profilaksis (Program Eliminasi Filariasis)', list:['DEC 6 mg/kgBB dosis tunggal DAN Albendazole 400 mg dosis tunggal per tahun, ATAU','Ivermectin 150–200 mcg/kg dosis tunggal DAN Albendazole 400 mg dosis tunggal per tahun — kombinasi ini diberikan secara massal (mass drug administration) di daerah endemis sebagai strategi eliminasi filariasis limfatik jangka panjang.']},
+        ]
+      },
+      // ---------------- SEPSIS ----------------
+      {
+        id:'sepsis', cat:'sepsis', level:'3B', title:'Sepsis & Syok Sepsis',
+        sub:'Disregulasi sistem imun terhadap infeksi yang menyebabkan disfungsi organ — kegawatdaruratan dengan mortalitas tinggi.',
+        sections:[
+          {h:'Definisi', list:['Sepsis adalah keadaan mengancam jiwa yang disebabkan oleh respons inflamasi tubuh yang berlebihan terhadap suatu infeksi — bukan infeksinya sendiri yang langsung mematikan, melainkan respons imun tubuh sendiri yang menjadi tidak terkendali dan justru merusak organ-organ vital (disregulasi imun).']},
+          {h:'Etiologi', list:['Infeksi, paling sering disebabkan oleh bakteri — sumber tersering meliputi pneumonia, abses intra-abdomen, dan pielonefritis.']},
+          {h:'Klasifikasi (Sepsis-3, 2016)', list:['Sepsis: disregulasi sistem imun terhadap infeksi yang menyebabkan disfungsi organ.','Syok Sepsis: sepsis yang sudah menyebabkan gangguan sirkulasi dan metabolik, ditandai dua kriteria berikut secara bersamaan — hipotensi persisten yang memerlukan vasopressor untuk mempertahankan MAP (Mean Arterial Pressure) >65 mmHg, DAN asidosis laktat dengan kadar laktat >18 mg/dL (>2 mmol/L) meski sudah mendapat resusitasi cairan adekuat.']},
+          {h:'Disfungsi Organ (Poin Penilaian)', list:['Respirasi: penurunan rasio PaO2/FiO2.','Kardiovaskular: hipotensi/kebutuhan vasopressor.','Hematologi: penurunan jumlah platelet (trombositopenia akibat koagulopati konsumtif).','Hepar: peningkatan bilirubin.','SSP: penurunan GCS (kesadaran).','Ginjal: peningkatan kreatinin, oliguria.','Ketujuh domain ini menjadi dasar perhitungan skor SOFA, alat ukur standar untuk menilai derajat disfungsi organ pada sepsis.']},
+          {h:'Skoring', sub:[
+            {t:'qSOFA (quick SOFA)', list:['Tujuan: mengidentifikasi risiko sepsis pada pasien DI LUAR ICU (skrining cepat di IGD/bangsal biasa) — praktis karena tidak butuh hasil laboratorium, hanya tanda vital dan kesadaran.','Komponen (masing-masing bernilai 1 poin): GCS <15, RR >22×/menit, TDS (tekanan darah sistolik) <100 mmHg.','Interpretasi: skor 0–1 = risiko rendah sepsis; skor 2–3 = risiko tinggi sepsis, perlu evaluasi lanjut segera.']},
+            {t:'SOFA (Sequential Organ Failure Assessment)', list:['Tujuan: menilai risiko mortalitas pada pasien DI ICU, dengan menghitung skor dari 6 sistem organ (respirasi, koagulasi, hepar, kardiovaskular, SSP, renal), masing-masing diberi skor 0–4 berdasar derajat gangguannya.','Sepsis ditegakkan bila terdapat bukti/suspek infeksi DISERTAI peningkatan skor SOFA ≥2 poin dari baseline.','Korelasi skor SOFA total dengan mortalitas: skor 0–6 → mortalitas <10%; skor 7–9 → 15–20%; skor 10–12 → 40–50%; skor 13–14 → 50–60%; skor 15 → >80%; skor 15–24 → >90% — menggambarkan bagaimana risiko kematian meningkat tajam seiring makin banyak organ yang gagal berfungsi.']},
+          ]},
+          {h:'Manifestasi Klinis', list:['Gangguan sistem organ: SSP (gangguan kesadaran), kardiovaskular (hipotensi), koagulopati (petekie dan purpura akibat DIC), hepar (ikterus), ginjal (oliguria), respirasi (dispnea dan ARDS).','Gejala khas syok sepsis: MAP <65 mmHg, akral dingin dengan CRT memanjang, dan edema generalisata (akibat kebocoran kapiler sistemik yang menyertai respons inflamasi berat).']},
+          {h:'Pemeriksaan Penunjang', list:['Kultur darah (idealnya diambil SEBELUM pemberian antibiotik, untuk mengidentifikasi patogen penyebab tanpa terganggu efek antibiotik yang sudah masuk).','Laktat serum — penanda perfusi jaringan dan keparahan syok.','Darah lengkap: tampak leukositosis; dapat dijumpai trombositopenia akibat koagulopati.','Pemeriksaan fungsi organ untuk mengidentifikasi disfungsi: ginjal (peningkatan BUN dan kreatinin), hepar (hiperbilirubinemia, peningkatan SGPT/SGOT), koagulasi (peningkatan D-dimer dan aPTT).','Pencitraan sesuai kecurigaan sumber infeksi: rontgen paru (bila dicurigai pneumonia), USG abdomen (pemeriksaan awal kecurigaan infeksi intra-abdomen), CT-scan (untuk menemukan patologi secara lebih pasti bila USG tidak konklusif).']},
+        ],
+        diagram:{title:'Surviving Sepsis Campaign — Hour-1 Bundle', note:'5 hal yang harus dilakukan dalam 1 jam pertama begitu sepsis dicurigai — kecepatan bertindak berkorelasi langsung dengan angka kelangsungan hidup pasien.', html:`
+          <div class="fseq">
+            <div class="fseq-item"><div class="fnum">1</div><div class="fbody"><b>Hitung kadar laktat</b><span>Sebagai penanda awal perfusi jaringan dan derajat keparahan; diulang berkala untuk menilai respons resusitasi.</span></div></div>
+            <div class="fseq-item"><div class="fnum">2</div><div class="fbody"><b>Ambil kultur darah SEBELUM antibiotik</b><span>Supaya identifikasi patogen tidak terganggu efek antibiotik yang sudah diberikan — namun jangan sampai menunda pemberian antibiotik terlalu lama demi menunggu ini.</span></div></div>
+            <div class="fseq-item"><div class="fnum">3</div><div class="fbody"><b>Berikan antibiotik empiris broad-spectrum</b><span>Secepat mungkin, disesuaikan dugaan sumber infeksi dan faktor risiko patogen resisten (lihat tabel regimen di bawah).</span></div></div>
+            <div class="fseq-item"><div class="fnum">4</div><div class="fbody"><b>Resusitasi cairan</b><span>Kristaloid 30 mL/kgBB bila hipotensi atau laktat &gt;4 mmol/L — diberikan cepat untuk mengoreksi hipovolemia relatif akibat vasodilatasi dan kebocoran kapiler.</span></div></div>
+            <div class="fseq-item"><div class="fnum">5</div><div class="fbody"><b>Mulai vasopressor bila TD tidak membaik</b><span>Target MAP &gt;65 mmHg. Norepinefrin mulai 0,05–0,15 mcg/kg/menit sebagai lini pertama; bila gagal mencapai target, tambahkan vasopressin (ADH).</span></div></div>
+          </div>`},
+        table:{title:'Pilihan Antibiotik Empiris Sepsis', head:['Dugaan Patogen','Regimen Antibiotik'],
+          rows:[
+            ['Patogen biasa (belum diketahui sumber spesifik)','Ceftriaxone'],
+            ['Kecurigaan infeksi berat/nosokomial','Meropenem atau Imipenem'],
+            ['Curiga MRSA (Methicillin-Resistant Staphylococcus aureus)','Regimen patogen biasa + Vankomisin'],
+            ['Curiga Pseudomonas','Regimen patogen biasa + Piperacilin/Tazobactam'],
+            ['Curiga kuman Anaerob','Regimen patogen biasa + Metronidazole'],
+          ]}
+      },
+      ];
+    </script>
+    <script>
+      /* =========================================================
+         QUIZ DATA — 10 soal MED+QUIZ asli dari materi kelas + tambahan
+         ========================================================= */
+      const QUIZ = [
+      {
+        vignette:'Seorang laki-laki berusia 42 tahun datang ke poli dalam dengan keluhan batuk sudah 3 bulan ini. Sudah periksa di beberapa tempat tetapi belum membaik. Pasien juga mengalami penurunan berat badan selama 2 bulan ini. Pasien aktif berhubungan seksual dengan beberapa pasangan. Pada pemeriksaan lab didapatkan Hb 10, Hct 30, trombosit 200.000, leukosit 7.000, pemeriksaan HIV A1, A2, A3 didapatkan reaktif, BTA sputum +++.',
+        question:'Tatalaksana yang tepat untuk pasien di atas adalah?',
+        options:['Berikan obat HIV 6 bulan lalu berikan OAT secara bertahap','Berikan OAT 6 bulan lalu berikan obat HIV secara bertahap','OAT dan ARV diberikan dalam waktu bersamaan pada awal terapi','OAT dimulai lebih dahulu, obat ARV diberikan dalam 2-8 minggu sejak mulai obat TB dengan menghentikan terapi TB','OAT dimulai lebih dahulu, obat ARV diberikan dalam 2-8 minggu sejak mulai obat TB tanpa menghentikan terapi TB'],
+        answer:4,
+        explain:'Pada koinfeksi TB-HIV, pengobatan TB harus dimulai lebih dahulu, kemudian obat ARV diberikan dalam <b>2–8 minggu sejak mulai obat TB TANPA menghentikan terapi TB</b> — prinsip ini mencegah risiko IRIS (Immune Reconstitution Inflammatory Syndrome) akibat pemulihan sistem imun yang terlalu cepat saat beban kuman TB masih tinggi.'
+      },
+      {
+        vignette:'Seorang laki-laki berusia 25 tahun datang ke puskesmas dengan keluhan demam sejak 8 hari yang lalu disertai nyeri otot seluruh badan dan mual. Beberapa waktu sebelum keluhan muncul, wilayah tempat tinggal pasien sempat terendam banjir, dan sekarang banyak tetangga yang mengeluhkan hal serupa. Pada pemeriksaan fisik didapatkan TD 100/80, HR 80, RR 20, suhu 38,7°C, nyeri tekan gastrocnemius +/+.',
+        question:'Apakah tatalaksana yang tepat untuk pasien pada kasus ini?',
+        options:['Tatalaksana simptomatik','Rehidrasi cairan','Mebendazole','Acyclovir','Amoksisilin'],
+        answer:4,
+        explain:'Demam pasca banjir dengan nyeri tekan gastrocnemius (betis) khas untuk <b>Leptospirosis</b>. Tatalaksana leptospirosis ringan salah satunya adalah <b>Amoksisilin 4×500 mg selama 7 hari</b> (alternatif lain: Doksisiklin atau Ampisilin).'
+      },
+      {
+        vignette:'Seorang laki-laki berusia 27 tahun datang ke puskesmas dengan keluhan demam sejak 10 hari yang lalu. Demam awalnya dirasa meningkat ketika malam hari, namun 2 hari ini demam dirasakan terus menerus. Pasien juga mengeluhkan sempat BAB cair disertai mual. Pada pemeriksaan fisik didapatkan TD 100/70, HR 100, RR 20, suhu 38,7°C, lidah kotor, nyeri tekan epigastrium.',
+        question:'Pemeriksaan gold standard yang bisa dilakukan untuk pasien di atas adalah?',
+        options:['Kultur darah','Microscopic Agglutination Test','Tubex test','Widal','Kultur feses'],
+        answer:0,
+        explain:'Gambaran demam step-ladder yang menjadi kontinu, lidah kotor, dan nyeri epigastrium mengarah ke <b>Demam Tifoid</b>. Baku emas diagnosis demam tifoid adalah <b>isolasi organisme lewat kultur</b> — kultur darah menjadi sampel klasik yang paling sering disebut sebagai gold standard, terutama pada minggu-minggu awal perjalanan penyakit.'
+      },
+      {
+        vignette:'Seorang laki-laki berusia 30 tahun datang ke puskesmas dengan keluhan demam hilang timbul sejak 2 minggu disertai menggigil dan keringat dingin. Demam hilang timbul dengan periode bebas demam selama 3 hari. Sudah berobat berkali-kali tetapi belum membaik. Pasien sempat tinggal selama 1 minggu di daerah Maluku sebelum keluhan timbul. Pada pemeriksaan fisik didapatkan TD 100/70, HR 90, RR 22, suhu 38,0°C.',
+        question:'Gambaran khas yang dapat ditemukan pada pemeriksaan apusan darah?',
+        options:['Maurer\'s spots','Schüffner\'s dots','James dot','Ziemann\'s dots','Accolé rings'],
+        answer:3,
+        explain:'Periode bebas demam selama 3 hari (interval 72 jam) menunjukkan pola <b>malaria kuartana (P. malariae)</b>. Tanda khas pada apusan darah tepi untuk P. malariae adalah <b>Ziemann\'s dots</b>.'
+      },
+      {
+        vignette:'Seorang laki-laki berusia 35 tahun datang diantar keluarga ke IGD RS dengan penurunan kesadaran. Sempat kejang beberapa kali saat di rumah dan perjalanan menuju RS. Sejak 1 minggu yang lalu pasien mengeluh nyeri kepala disertai demam hilang timbul semenjak pulang dari pulau Nias. Pada pemeriksaan fisik didapatkan E2V3M4, TD 100/70, HR 100, RR 22, suhu 39°C. Pemeriksaan apusan darah tepi didapatkan adanya gambaran seperti pisang.',
+        question:'Diagnosis pasien di atas?',
+        options:['Meningitis bakterial','Meningoensefalitis TB','Sindrom neurosistiserkosis','Status epileptikus','Malaria serebral'],
+        answer:4,
+        explain:'Penurunan kesadaran, kejang berulang, riwayat perjalanan ke daerah endemis malaria, disertai gametosit berbentuk pisang (khas Plasmodium falciparum) pada apusan darah tepi menegakkan diagnosis <b>Malaria Serebral</b>.'
+      },
+      {
+        vignette:'Seorang laki-laki berusia 20 tahun dibawa keluarganya ke IGD RS dengan keluhan lemas karena mual muntah tiap makan dan minum. Pasien demam tinggi sejak 3 hari ini, sudah minum obat tetapi belum membaik. Pada pemeriksaan fisik dijumpai TD 100/70, HR 100, RR 22, suhu 40°C, akral hangat. Pemeriksaan laboratorium didapatkan Hb 11, Hct 45, trombosit 50.000, leukosit 5.000, NS1 reaktif.',
+        question:'Tatalaksana yang tepat pada pasien ini adalah?',
+        options:['Rehidrasi cairan 7cc/kg 15 menit','Rehidrasi cairan 7cc/kg 30 menit','Rehidrasi cairan 7cc/kg 60 menit','Rehidrasi cairan 10cc/kg 30 menit','Rehidrasi cairan 10cc/kg 60 menit'],
+        answer:2,
+        explain:'Pasien menunjukkan tanda DHF dengan warning signs (trombositopenia, Ht meningkat, NS1 reaktif) namun BELUM syok (akral hangat, TD masih normal dengan tekanan nadi cukup lebar) — sehingga bukan DSS yang butuh bolus cepat. Sesuai pedoman cairan kristaloid awal <b>5–7 mL/kgBB/jam</b>, opsi yang paling mendekati adalah <b>7cc/kg diberikan dalam 60 menit (1 jam)</b>.'
+      },
+      {
+        vignette:'Seorang anak laki-laki berusia 5 tahun datang diantar orang tua ke puskesmas dengan keluhan nyeri perut dan sering BAB cair. Beberapa kali ibu sempat melihat adanya cacing putih besar yang keluar dari dubur anak saat BAB. Pada pemeriksaan TTV didapatkan dalam batas normal.',
+        question:'Etiologi penyebab keluhan pada kasus ini?',
+        options:['Ascaris lumbricoides','Ancylostoma duodenale','Ancylostoma caninum','Enterobius vermicularis','Trichuris trichiura'],
+        answer:0,
+        explain:'Cacing dewasa berukuran besar dan berwarna putih yang keluar saat BAB, disertai nyeri perut dan diare, merupakan gambaran klasik <b>Ascaris lumbricoides</b> — cacing gilig terbesar yang dapat terlihat langsung dengan mata telanjang di tinja.'
+      },
+      {
+        vignette:'Seorang anak perempuan berusia 7 tahun datang ke praktek dokter dengan keluhan gatal di bagian dubur terutama ketika malam hari, hingga menjadi sulit tidur. Pada pemeriksaan fisik didapatkan TD 90/70, HR 100, RR 20, suhu 37,3°C.',
+        question:'Tatalaksana yang tepat untuk pasien adalah?',
+        options:['Albendazole 400 mg 3 hari','Mebendazole 500 mg 3 hari','Pirantel pamoat 10 mg/kg dosis tunggal','Praziquantel 10 mg/kg dosis tunggal','Praziquantel 60 mg/kg dosis tunggal'],
+        answer:2,
+        explain:'Gatal dubur yang memberat pada malam hari ("GaBur MaRi") adalah gejala khas <b>Enterobiasis (Enterobius vermicularis)</b>. Tatalaksananya adalah <b>Pirantel pamoat 10 mg/kg dosis tunggal</b> (maksimal 1 gram) — pilihan lain seperti Mebendazole dan Albendazole untuk Enterobius juga diberikan dosis TUNGGAL, bukan 3 hari.'
+      },
+      {
+        vignette:'Seorang pasien perempuan berusia 44 tahun datang ke puskesmas dengan keluhan bengkak pada kaki kiri hingga ke lutut sejak kurang lebih 3 bulan ini. Pada awal gejala pasien sempat merasa tidak enak badan. Tetangga pasien ada yang mengalami hal serupa. Pada pemeriksaan fisik didapatkan TTV dalam batas normal, edema non-pitting pedis-knee sinistra. Dokter akan melakukan pemeriksaan apusan darah tepi.',
+        question:'Waktu yang tepat untuk pengambilan sampel darah adalah?',
+        options:['Pukul 06.00–10.00 pagi hari','Pukul 10.00–14.00 siang hari','Pukul 14.00–18.00 sore hari','Pukul 18.00–22.00 malam hari','Pukul 22.00–02.00 malam hari'],
+        answer:4,
+        explain:'Edema non-pitting kronik tungkai mengarah pada <b>Filariasis</b>. Mikrofilaria memiliki periodisitas nokturna, sehingga sampel darah untuk pemeriksaan apusan darah tepi harus diambil pada <b>pukul 22.00–02.00 malam hari</b>, saat jumlah mikrofilaria di darah tepi mencapai puncaknya.'
+      },
+      {
+        vignette:'Seorang laki-laki berusia 80 tahun dibawa ke IGD RS dengan keluhan penurunan kesadaran. Pasien demam sejak 1 minggu yang lalu disertai penurunan nafsu makan. Riwayat tensi tinggi disangkal, riwayat gula disangkal. Pada pemeriksaan fisik menunjukkan E2M4V3, TD 75/40, HR 120, RR 25, suhu 38,6°C. Pemeriksaan laboratorium dijumpai Hb 10, Hct 33, leukosit 27.000, trombosit 160.000.',
+        question:'Antibiotik empiris yang dapat diberikan adalah?',
+        options:['Ampicillin','Metronidazole','Penicilin benzatin','Vankomisin','Ceftriaxone'],
+        answer:4,
+        explain:'Penurunan kesadaran, hipotensi berat (75/40), takikardia, dan leukositosis pada pasien lansia dengan demam menunjukkan <b>Syok Sepsis</b>. Antibiotik empiris untuk patogen biasa (belum ada kecurigaan spesifik MRSA/Pseudomonas/anaerob) adalah <b>Ceftriaxone</b>.'
+      },
+      {
+        vignette:'Seorang laki-laki berusia 30 tahun terdiagnosis HIV dengan CD4 45 sel/mm³ dan juga didiagnosis meningitis kriptokokus. Dokter berencana memulai terapi kriptokokus terlebih dahulu.',
+        question:'Kapan waktu yang tepat untuk memulai terapi ARV pada pasien ini?',
+        options:['Bersamaan dengan terapi kriptokokus','Dalam 2 minggu setelah mulai terapi kriptokokus','Setelah 5 minggu pengobatan kriptokokus','Setelah CD4 mencapai >200','Tidak perlu ARV karena sudah AIDS'],
+        answer:2,
+        explain:'Pada ODHA dengan meningitis kriptokokus, ARV baru dimulai <b>setelah 5 minggu pengobatan kriptokokus</b> — berbeda dari koinfeksi TB. Ini karena IRIS pada meningitis kriptokokus berisiko menyebabkan edema serebri berat yang dapat fatal, sehingga infeksi jamurnya harus dikendalikan dulu sebelum sistem imun "dibangunkan" oleh ARV.'
+      },
+      {
+        vignette:'Seorang perempuan berusia 26 tahun G2P1A0 hamil 10 minggu didiagnosis malaria falsiparum tanpa komplikasi setelah pulang dari Papua.',
+        question:'Apakah regimen tatalaksana yang paling tepat untuk pasien ini?',
+        options:['ACT + Primakuin dosis tunggal','Kina + Klindamisin selama 7 hari','DHP selama 3 hari','Klorokuin 2 tablet/minggu','Kina + Doksisiklin selama 7 hari'],
+        answer:1,
+        explain:'Pada ibu hamil trimester 1 dengan malaria falsiparum, regimen yang dipilih adalah <b>Kina + Klindamisin selama 7 hari</b> — kina relatif lebih aman di trimester awal, dan klindamisin menggantikan doksisiklin/tetrasiklin yang kontraindikasi pada kehamilan. ACT dengan DHP baru menjadi pilihan pada trimester 2–3, sementara primakuin kontraindikasi mutlak pada kehamilan.'
+      },
+      {
+        vignette:'Seorang laki-laki berusia 40 tahun mengeluh nyeri perut kanan atas, demam, dan sedikit ikterik sejak 2 minggu. Pasien memiliki kebiasaan makan lalapan selada air mentah dari kolam dekat rumahnya. Pemeriksaan feses menunjukkan telur lonjong dengan satu operkulum.',
+        question:'Apakah diagnosis yang paling mungkin?',
+        options:['Schistosomiasis','Fasciolosis','Taeniasis','Ascariasis','Strongyloidiasis'],
+        answer:1,
+        explain:'Riwayat makan tanaman air (selada air) mentah, nyeri perut kanan atas dengan ikterik, dan telur lonjong beroperkulum tunggal pada feses adalah gambaran khas <b>Fasciolosis (Fasciola hepatica)</b> — cacing dewasa hidup di duktus biliaris, stadium infektifnya adalah metaserkaria yang menempel pada tanaman air.'
+      },
+      {
+        vignette:'Seorang anak laki-laki berusia 10 tahun dibawa ke RS dengan keluhan kejang fokal berulang sejak 2 bulan, disertai nyeri kepala kronik. Keluarga memiliki kebiasaan mengonsumsi daging babi setengah matang. CT-scan kepala menunjukkan lesi kistik multipel.',
+        question:'Apakah diagnosis yang paling mungkin mendasari kejang pada pasien ini?',
+        options:['Neurosistiserkosis akibat Taenia saginata','Neurosistiserkosis akibat Taenia solium','Malaria serebral','Toksoplasmosis serebral','Ensefalitis akibat Schistosoma japonicum'],
+        answer:1,
+        explain:'Kejang fokal berulang dan lesi kistik multipel di otak pada anak dengan riwayat konsumsi daging babi mengarah ke <b>Neurosistiserkosis akibat Taenia solium</b>. Penting diingat: neurosistiserkosis HANYA disebabkan oleh Taenia solium (babi), TIDAK oleh Taenia saginata (sapi).'
+      },
+      {
+        vignette:'Seorang laki-laki berusia 55 tahun dirawat dengan sepsis akibat pneumonia. Skor SOFA pasien saat ini adalah 11.',
+        question:'Berapakah perkiraan angka mortalitas pasien berdasarkan skor SOFA tersebut?',
+        options:['<10%','15–20%','40–50%','50–60%','>80%'],
+        answer:2,
+        explain:'Skor SOFA 10–12 berkorelasi dengan angka mortalitas sekitar <b>40–50%</b> — menggambarkan bahwa makin tinggi skor SOFA (makin banyak organ yang gagal berfungsi), makin tinggi pula risiko kematian pasien.'
+      },
+      {
+        vignette:'Seorang laki-laki berusia 33 tahun datang ke IGD dengan keluhan sesak napas yang memberat sejak 6 jam terakhir. Tiga hari sebelumnya pasien dirawat karena Dengue Shock Syndrome dan sudah mendapat resusitasi cairan intensif. Pemeriksaan fisik: kelopak mata bengkak, ronki basah basal bilateral, distensi abdomen. Foto polos dada menunjukkan gambaran "bat\'s wings".',
+        question:'Apakah tatalaksana awal yang paling tepat untuk kondisi pasien ini?',
+        options:['Tambah kecepatan infus kristaloid','Berikan oksigen dan turunkan rate cairan menjadi 1cc/kgBB/jam','Berikan transfusi PRC segera','Lakukan dialisis emergensi','Berikan antibiotik broad-spectrum'],
+        answer:1,
+        explain:'Gambaran klinis (kelopak mata bengkak, ronki basah basal, distensi abdomen) dan radiologis ("bat\'s wings") menunjukkan <b>fluid overload</b> pasca resusitasi DSS. Tatalaksana awal adalah <b>berikan oksigen dan segera turunkan rate cairan menjadi 1cc/kgBB/jam</b> bila koloid tidak tersedia, sebelum mempertimbangkan furosemide bila sudah ada edema paru nyata.'
+      },
+      {
+        vignette:'Seorang laki-laki berusia 28 tahun datang untuk skrining HIV rutin sebagai syarat donor darah. Hasil pemeriksaan reagen pertama (A1) non-reaktif.',
+        question:'Apakah interpretasi hasil pemeriksaan pada pasien ini?',
+        options:['Positif HIV','Negatif HIV','Indeterminate, perlu reagen A2','Perlu diulang dengan PCR','Perlu strategi III'],
+        answer:1,
+        explain:'Untuk tujuan donor darah, digunakan Strategi I (1 reagen saja, A1). Bila hasil A1 non-reaktif, pasien dinyatakan <b>negatif HIV</b> — tidak perlu lanjut ke reagen berikutnya karena tujuan skrining donor cukup dengan satu reagen sensitif.'
+      },
+      {
+        vignette:'Seorang perempuan berusia 29 tahun G1P0A0 hamil 32 minggu didiagnosis leptospirosis ringan.',
+        question:'Apakah antibiotik yang harus DIHINDARI pada pasien ini?',
+        options:['Amoxicillin','Ampisilin','Doksisiklin','Penicillin G','Ceftriaxone'],
+        answer:2,
+        explain:'<b>Doksisiklin harus dihindari pada ibu hamil</b> karena berisiko mengganggu pertumbuhan tulang dan gigi janin (deposit pada jaringan yang sedang terkalsifikasi serta risiko diskolorasi gigi permanen). Golongan penisilin/sefalosporin (Amoxicillin, Ampisilin, Penicillin G, Ceftriaxone) menjadi pilihan yang lebih aman pada kehamilan.'
+      },
+      {
+        vignette:'Seorang laki-laki berusia 45 tahun datang dengan keluhan demam dan nyeri sendi setelah pulang dari daerah endemis malaria 3 minggu lalu. Pemeriksaan apusan darah tepi menunjukkan eritrosit terinfeksi berukuran lebih besar dan pucat dibanding eritrosit normal, dengan bintik Schüffner.',
+        question:'Berapakah durasi pemberian primakuin yang tepat untuk pasien ini?',
+        options:['Dosis tunggal saja','3 hari','7 hari','14 hari','Tidak memerlukan primakuin'],
+        answer:3,
+        explain:'Eritrosit membesar-pucat dengan Schüffner\'s dots menunjukkan infeksi <b>Plasmodium vivax</b>. Karena P. vivax memiliki fase hipnozoit di hati yang berpotensi menyebabkan relaps, primakuin diberikan selama <b>14 hari</b> (0,25 mg/kg/hari) untuk mengeradikasi hipnozoit tersebut, berbeda dari P. falciparum yang cukup primakuin dosis tunggal.'
+      },
+      {
+        vignette:'Seorang laki-laki berusia 38 tahun mengeluh gatal di kulit tungkai setelah berenang di danau saat liburan 2 minggu lalu. Saat ini pasien mengeluh nyeri perut dan diare intermiten. Pemeriksaan feses menunjukkan telur lonjong dengan duri lateral.',
+        question:'Apakah kemungkinan spesies penyebab keluhan pasien ini?',
+        options:['Schistosoma mansoni','Schistosoma haematobium','Fasciola hepatica','Taenia solium','Ascaris lumbricoides'],
+        answer:0,
+        explain:'Riwayat kontak air tawar (danau) disertai gatal kulit ("swimmer\'s itch"), gejala intestinal, dan telur dengan duri LATERAL (di bagian samping, bukan di ujung terminal) mengarah ke <b>Schistosoma mansoni</b> — telur S. haematobium memiliki duri di ujung terminal, sedangkan S. japonicum durinya rudimenter/hampir tidak terlihat.'
+      },
+      ];
+    </script>
+    <script>
+      /* =========================================================
+         APP LOGIC
+         ========================================================= */
+      const state = {
+        view:'home',        // home | topic | quiz
+        topicId:null,
+        done:new Set(),
+        quizIdx:0,
+        quizAnswers:[],      // array parallel to QUIZ: null (unanswered) or {chosen, correct}
+      };
+
+      /* ---------- Progress persistence (localStorage) ---------- */
+      const PROGRESS_KEY = 'hematologi-progress-v1';
+      function loadProgress(){
+        try{
+          const raw = localStorage.getItem(PROGRESS_KEY);
+          if(!raw) return;
+          const parsed = JSON.parse(raw);
+          if(Array.isArray(parsed.done)) state.done = new Set(parsed.done);
+        }catch(e){ console.warn('Gagal memuat progres tersimpan:', e); }
+      }
+      function saveProgress(){
+        try{
+          localStorage.setItem(PROGRESS_KEY, JSON.stringify({ done:[...state.done] }));
+        }catch(e){ console.warn('Gagal menyimpan progres:', e); }
+      }
+
+      const QUIZ_PROGRESS_KEY = 'hematologi-quiz-progress-v1';
+      function loadQuizProgress(){
+        try{
+          const raw = localStorage.getItem(QUIZ_PROGRESS_KEY);
+          if(!raw) return null;
+          const parsed = JSON.parse(raw);
+          if(!Array.isArray(parsed.quizAnswers) || parsed.quizAnswers.length!==QUIZ.length) return null;
+          return parsed;
+        }catch(e){ console.warn('Gagal memuat progres kuis:', e); return null; }
+      }
+      function saveQuizProgress(){
+        try{
+          localStorage.setItem(QUIZ_PROGRESS_KEY, JSON.stringify({ quizIdx:state.quizIdx, quizAnswers:state.quizAnswers }));
+        }catch(e){ console.warn('Gagal menyimpan progres kuis:', e); }
+      }
+      function clearQuizProgress(){
+        try{ localStorage.removeItem(QUIZ_PROGRESS_KEY); }catch(e){}
+      }
+
+      const $ = sel => document.querySelector(sel);
+      const $$ = sel => Array.from(document.querySelectorAll(sel));
+      const viewRoot = $('#viewRoot');
+
+      function esc(s){ return (s+'').replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+      function findTopic(id){ return TOPICS.find(t=>t.id===id); }
+      function topicsInCat(catId){ return TOPICS.filter(t=>t.cat===catId); }
+
+      /* ---------- Sidebar / Nav tree ---------- */
+      function renderNavTree(filter){
+        const q = (filter||'').trim().toLowerCase();
+        const groups = {};
+        CATEGORIES.forEach(c=>{
+          const group = c.group || '__solo__';
+          if(!groups[group]) groups[group] = [];
+          groups[group].push(c);
+        });
+
+        let html = '';
+        Object.keys(groups).forEach(groupKey=>{
+          const cats = groups[groupKey];
+          cats.forEach(cat=>{
+            let topics = topicsInCat(cat.id);
+            if(q){
+              topics = topics.filter(t =>
+                t.title.toLowerCase().includes(q) ||
+                (t.sub||'').toLowerCase().includes(q) ||
+                JSON.stringify(t.sections||[]).toLowerCase().includes(q)
+              );
+            }
+            if(q && topics.length===0) return;
+            const isOpen = !!q || cat.id === (findTopic(state.topicId)||{}).cat;
+            const label = groupKey!=='__solo__' ? `${groupKey} · ${cat.label}` : cat.label;
+            html += `<div class="nav-cat ${isOpen?'open':''}" data-cat="${cat.id}">
+              <div class="nav-cat-head">
+                <span>${esc(label)}</span>
+                <span style="display:flex;align-items:center;">
+                  <span class="badge-count">${topics.length}</span>
+                  <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                </span>
+              </div>
+              <div class="nav-list">
+                ${topics.map(t=>`
+                  <div class="nav-item ${t.id===state.topicId?'active':''}" data-topic="${t.id}">
+                    <span class="dot"></span>
+                    <span>${esc(t.title)}</span>
+                    <span class="check ${state.done.has(t.id)?'done':''}"></span>
+                  </div>`).join('')}
+              </div>
+            </div>`;
+          });
+        });
+        $('#navTree').innerHTML = html;
+
+        $$('.nav-cat-head').forEach(h=>{
+          h.addEventListener('click', ()=>{
+            h.closest('.nav-cat').classList.toggle('open');
+          });
+        });
+        $$('.nav-item').forEach(it=>{
+          it.addEventListener('click', ()=>{
+            goTopic(it.dataset.topic);
+            closeSidebarMobile();
+          });
+        });
+        updateProgress();
+      }
+
+      function updateProgress(){
+        $('#progressLabel').textContent = `${state.done.size} / ${TOPICS.length}`;
+        $('#progressFill').style.width = (state.done.size/TOPICS.length*100)+'%';
+      }
+
+      /* ---------- Home / Hero view ---------- */
+      function renderHome(push){
+        state.view='home'; state.topicId=null;
+        if(push!==false){ history.pushState({view:'home'}, '', '#'); }
+        setActiveModeButtons();
+        const mikro = topicsInCat('anemia-mikro'), normo = topicsInCat('anemia-normo'), makro = topicsInCat('anemia-makro');
+        viewRoot.innerHTML = `
+        <div class="content-wrap">
+          <div class="hero reveal">
+            <div class="eyebrow">By Naruxhz</div>
+            <h1>Peta <em>Infeksi Tropis</em><br>untuk UKMPPD.</h1>
+            <p class="lede"> masih In Development aowkwkwwk.</p>
+            <div class="hero-stats">
+              <div class="stat"><b>${TOPICS.length}</b><span>Topik Klinis</span></div>
+              <div class="stat"><b>${QUIZ.length}</b><span>Soal Latihan</span></div>
+              <div class="stat"><b>10</b><span>Kategori</span></div>
+            </div>
+          </div>
+
+          <div style="margin-top:52px;">
+            <h2 style="font-family:'IBM Plex Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); font-weight:600;">Jelajahi semua topik</h2>
+            <div class="home-grid">
+              ${TOPICS.map((t,i)=>`
+                <div class="home-card reveal" style="animation-delay:${Math.min(i*18,300)}ms" data-topic="${t.id}">
+                  <div class="n">${esc(t.level)} · ${esc(CATEGORIES.find(c=>c.id===t.cat).label)}</div>
+                  <h4>${esc(t.title)}</h4>
+                  <p>${esc(t.sub||'')}</p>
+                </div>`).join('')}
+            </div>
+          </div>
+        </div>`;
+
+        const algoMap = {
+          low:{label:'MCV ↓ — Anemia Hipokrom Mikrositer', ids:['adb','apk','thalassemia','sideroblastik']},
+          normal:{label:'MCV Normal — Anemia Normokrom Normositer', ids:['aiha','g6pd','ckd-anemia','aplastik']},
+          high:{label:'MCV ↑ — Anemia Makrositer', ids:['b12','b9']},
+        };
+        $$('.algo-btn').forEach(b=>{
+          b.addEventListener('click', ()=>{
+            $$('.algo-btn').forEach(x=>x.classList.remove('picked'));
+            b.classList.add('picked');
+            const key = b.dataset.mcv;
+            const data = algoMap[key];
+            const chips = data.ids.map(id=>{
+              const t = findTopic(id);
+              return `<span class="chip" data-topic="${id}">${esc(t.title)}</span>`;
+            }).join('');
+            $('#algoResult').innerHTML = `<div class="rlabel">${esc(data.label)}</div>Diagnosis banding yang perlu dipertimbangkan: <div class="chips">${chips}</div>`;
+            $$('#algoResult .chip').forEach(c=>c.addEventListener('click', ()=>goTopic(c.dataset.topic)));
+          });
+        });
+
+        $$('.home-card').forEach(c=>c.addEventListener('click', ()=>goTopic(c.dataset.topic)));
+      }
+
+      /* ---------- Topic view ---------- */
+      function renderSectionList(items){
+        return `<ul>${items.map(li=>`<li>${li}</li>`).join('')}</ul>`;
+      }
+      function renderSection(sec){
+        let inner = '';
+        if(sec.list) inner += renderSectionList(sec.list);
+        if(sec.sub){
+          sec.sub.forEach(s=>{
+            inner += `<div class="sub-h">${esc(s.t)}</div>${renderSectionList(s.list)}`;
+          });
+        }
+        return `<div class="section-block reveal"><h2>${esc(sec.h)}</h2>${inner}</div>`;
+      }
+      function renderTable(tbl){
+        return `<div class="section-block reveal"><h2>${esc(tbl.title)}</h2>
+          <table class="data-tbl"><thead><tr>${tbl.head.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead>
+          <tbody>${tbl.rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+      }
+
+      function goTopic(id, push){
+        state.view='topic'; state.topicId=id;
+        if(push!==false){ history.pushState({view:'topic', topicId:id}, '', '#'+id); }
+        setActiveModeButtons();
+        const t = findTopic(id);
+        const cat = CATEGORIES.find(c=>c.id===t.cat);
+        const idx = TOPICS.indexOf(t);
+        const prev = TOPICS[idx-1], next = TOPICS[idx+1];
+
+        viewRoot.innerHTML = `
+        <div class="content-wrap">
+          <div class="crumbs reveal">
+            <span>${esc(cat.group ? cat.group : 'Infeksi Tropis')}</span>
+            <span class="sep">/</span>
+            <span>${esc(cat.label)}</span>
+          </div>
+          <div class="topic-head reveal">
+            <h1>${esc(t.title)}</h1>
+            <span class="badge-level">Kompetensi ${esc(t.level)}</span>
+          </div>
+          <div class="topic-sub reveal">${esc(t.sub||'')}</div>
+          <button class="mark-btn ${state.done.has(id)?'done':''}" id="markBtn">
+            <span class="dotc"></span>
+            <span id="markBtnLabel">${state.done.has(id)?'Sudah dipelajari':'Tandai sudah dipelajari'}</span>
+          </button>
+
+          ${(t.sections||[]).map(renderSection).join('')}
+          ${t.images ? `<div class="topic-images reveal">${t.images.map(im=>`
+            <div class="topic-image-card">
+              <img src="${esc(im.src)}" alt="${esc(im.alt||im.caption||'')}" loading="lazy">
+              <div class="cap">${esc(im.caption||'')}</div>
+            </div>`).join('')}</div>` : ''}
+          ${t.diagram ? `<div class="section-block reveal"><h2>${esc(t.diagram.title||'Skema / Algoritma')}</h2><div class="flowcard">${t.diagram.note?`<div class="fnote">${esc(t.diagram.note)}</div>`:''}${t.diagram.html}</div></div>` : ''}
+          ${t.mnemonic ? `<div class="callout mnemonic reveal"><div class="clabel">Mnemonic — ${esc(t.mnemonic.label)}</div>${esc(t.mnemonic.text)}</div>` : ''}
+          ${t.table ? renderTable(t.table) : ''}
+          ${t.extra ? `<div class="extra-wrap reveal">
+            <div class="extra-wrap-head"><span class="tag">+ Referensi Tambahan</span><b>Pendalaman Klinis</b></div>
+            <div class="extra-wrap-note">Wawasan tambahan di luar materi PPT — dari literatur kedokteran standar, untuk memperkaya pemahaman.</div>
+            ${t.extra.map(e=>`<div class="extra-block"><h3>${esc(e.h)}</h3><ul>${e.list.map(li=>`<li>${li}</li>`).join('')}</ul></div>`).join('')}
+          </div>` : ''}
+
+          <div class="topic-nav">
+            ${prev ? `<button class="tn-btn prev" data-topic="${prev.id}"><div class="lbl">← Sebelumnya</div><div class="ttl">${esc(prev.title)}</div></button>` : '<div></div>'}
+            ${next ? `<button class="tn-btn next" data-topic="${next.id}"><div class="lbl">Selanjutnya →</div><div class="ttl">${esc(next.title)}</div></button>` : '<div></div>'}
+          </div>
+        </div>`;
+
+        $('#markBtn').addEventListener('click', ()=>{
+          if(state.done.has(id)) state.done.delete(id); else state.done.add(id);
+          saveProgress();
+          goTopic(id, false);
+          renderNavTree($('#searchInput').value);
+        });
+        $$('.tn-btn[data-topic]').forEach(b=>b.addEventListener('click', ()=>goTopic(b.dataset.topic)));
+
+        renderNavTree($('#searchInput').value);
+        window.scrollTo({top:0, behavior:'instant'});
+      }
+    </script>
+    <script>
+      /* ---------- Quiz view ---------- */
+      function quizScoreSoFar(){
+        return state.quizAnswers.reduce((n,a)=> n + (a && a.correct ? 1 : 0), 0);
+      }
+      function quizAnsweredCount(){
+        return state.quizAnswers.reduce((n,a)=> n + (a ? 1 : 0), 0);
+      }
+
+      function startQuiz(push, forceRestart){
+        state.view='quiz'; state.topicId=null;
+        const saved = forceRestart ? null : loadQuizProgress();
+        if(saved){
+          state.quizIdx = saved.quizIdx;
+          state.quizAnswers = saved.quizAnswers;
+        } else {
+          state.quizIdx = 0;
+          state.quizAnswers = new Array(QUIZ.length).fill(null);
+          clearQuizProgress();
+        }
+        if(push!==false){ history.pushState({view:'quiz'}, '', '#quiz'); }
+        setActiveModeButtons();
+        renderQuizQuestion();
+        renderNavTree($('#searchInput').value);
+        window.scrollTo({top:0, behavior:'instant'});
+      }
+
+      function renderQuizQuestion(){
+        const q = QUIZ[state.quizIdx];
+        const total = QUIZ.length;
+        const letters = ['A','B','C','D','E'];
+        const already = state.quizAnswers[state.quizIdx]; // {chosen, correct} or null
+        const isLast = state.quizIdx===total-1;
+        const allAnswered = quizAnsweredCount()===total;
+
+        viewRoot.innerHTML = `
+        <div class="quiz-shell">
+          <div class="quiz-top">
+            <span class="quiz-count mono">SOAL ${state.quizIdx+1} / ${total}</span>
+            <div class="quiz-progress-track"><div class="quiz-progress-fill" style="width:${(state.quizIdx)/total*100}%"></div></div>
+            <span class="quiz-count mono" id="quizScoreLabel">SKOR ${quizScoreSoFar()}</span>
+          </div>
+          <div class="qcard reveal">
+            <div class="vignette">${esc(q.vignette)}</div>
+            <div class="question">${esc(q.question)}</div>
+            <div id="optsWrap">
+              ${q.options.map((opt,i)=>`
+                <div class="opt${already ? ' disabled' : ''}${already && i===q.answer ? ' correct' : ''}${already && !already.correct && i===already.chosen ? ' wrong' : ''}${already && i!==q.answer && i!==already.chosen ? ' dim' : ''}" data-i="${i}">
+                  <div class="lt">${letters[i]}</div>
+                  <div>${esc(opt)}</div>
+                </div>`).join('')}
+            </div>
+            <div class="qexplain${already ? ' show' : ''}" id="qexplain"><b>Pembahasan.</b> ${q.explain}</div>
+            <div class="qnext-row" style="justify-content:space-between;">
+              <button class="btn-ghost" id="qPrevBtn" ${state.quizIdx===0 ? 'disabled' : ''}>← Soal Sebelumnya</button>
+              <button class="btn-primary" id="qNextBtn" ${already ? '' : 'disabled'}>${isLast ? 'Lihat Hasil' : 'Soal Berikutnya →'}</button>
+            </div>
+          </div>
+        </div>`;
+
+        if(!already){
+          $$('.opt').forEach(optEl=>{
+            optEl.addEventListener('click', ()=>{
+              if(state.quizAnswers[state.quizIdx]) return;
+              const chosen = parseInt(optEl.dataset.i,10);
+              const correct = chosen===q.answer;
+              state.quizAnswers[state.quizIdx] = {chosen, correct};
+              saveQuizProgress();
+              $$('.opt').forEach(o=>{
+                o.classList.add('disabled');
+                const i = parseInt(o.dataset.i,10);
+                if(i===q.answer) o.classList.add('correct');
+                else if(i===chosen) o.classList.add('wrong');
+                else o.classList.add('dim');
+              });
+              $('#qexplain').classList.add('show');
+              $('#qNextBtn').disabled = false;
+              $('#quizScoreLabel').textContent = `SKOR ${quizScoreSoFar()}`;
+            });
+          });
+        }
+
+        $('#qPrevBtn').addEventListener('click', ()=>{
+          if(state.quizIdx>0){
+            state.quizIdx--;
+            saveQuizProgress();
+            renderQuizQuestion();
+            window.scrollTo({top:0, behavior:'instant'});
+          }
+        });
+
+        $('#qNextBtn').addEventListener('click', ()=>{
+          if(!state.quizAnswers[state.quizIdx]) return;
+          if(!isLast){
+            state.quizIdx++;
+            saveQuizProgress();
+            renderQuizQuestion();
+            window.scrollTo({top:0, behavior:'instant'});
+          } else {
+            renderQuizResult();
+          }
+        });
+      }
+
+      function renderQuizResult(){
+        const total = QUIZ.length;
+        const score = quizScoreSoFar();
+        const pct = Math.round(score/total*100);
+        let msg = 'Terus berlatih, sedikit lagi!';
+        if(pct>=80) msg = 'Mantap — pemahamanmu sudah kuat.';
+        else if(pct>=60) msg = 'Bagus, tinjau ulang topik yang masih salah.';
+        clearQuizProgress();
+        viewRoot.innerHTML = `
+        <div class="quiz-shell">
+          <div class="qcard quiz-result reveal">
+            <div class="quiz-count mono">HASIL KUIS</div>
+            <div class="score">${score}<span>/${total}</span></div>
+            <p style="color:var(--muted); font-size:14px;">${msg}</p>
+            <div style="display:flex; gap:10px; justify-content:center; margin-top:22px; flex-wrap:wrap;">
+              <button class="btn-primary" id="retryBtn">Ulangi Kuis</button>
+              <button class="btn-ghost" id="homeBtn">Kembali ke Beranda</button>
+            </div>
+          </div>
+        </div>`;
+        $('#retryBtn').addEventListener('click', ()=> startQuiz(true, true));
+        $('#homeBtn').addEventListener('click', ()=> renderHome());
+      }
+
+      /* ---------- Mode toggle / sidebar wiring ---------- */
+      function setActiveModeButtons(){
+        $('#btnModeBelajar').classList.toggle('active', state.view!=='quiz');
+        $('#btnModeQuiz').classList.toggle('active', state.view==='quiz');
+      }
+      $('#btnModeBelajar').addEventListener('click', ()=>{ if(state.view==='quiz') renderHome(); });
+      $('#sbBrandHome').addEventListener('click', ()=>{ renderHome(); closeSidebarMobile(); });
+      $('#resetProgressBtn').addEventListener('click', (e)=>{
+        e.stopPropagation();
+        if(confirm('Reset semua progres belajar (topik yang sudah ditandai selesai)? Tindakan ini tidak bisa dibatalkan.')){
+          state.done.clear();
+          saveProgress();
+          renderNavTree($('#searchInput').value);
+          if(state.view==='topic') goTopic(state.topicId, false);
+        }
+      });
+      $('#btnModeQuiz').addEventListener('click', startQuiz);
+
+      $('#searchInput').addEventListener('input', (e)=>{
+        renderNavTree(e.target.value);
+      });
+
+      /* Mobile sidebar */
+      const sidebarEl = $('#sidebar'), overlayEl = $('#sbOverlay');
+      function openSidebarMobile(){ sidebarEl.classList.add('open'); overlayEl.classList.add('show'); }
+      function closeSidebarMobile(){ sidebarEl.classList.remove('open'); overlayEl.classList.remove('show'); }
+      $('#hamburgerBtn').addEventListener('click', openSidebarMobile);
+      overlayEl.addEventListener('click', closeSidebarMobile);
+
+      /* Browser back/forward support */
+      window.addEventListener('popstate', (e)=>{
+        const st = e.state;
+        if(!st || st.view==='home'){ renderHome(false); }
+        else if(st.view==='topic' && findTopic(st.topicId)){ goTopic(st.topicId, false); }
+        else if(st.view==='quiz'){ startQuiz(false); }
+        else { renderHome(false); }
+        closeSidebarMobile();
+      });
+
+      /* Init */
+      loadProgress();
+      $('#quizCountLabel').textContent = QUIZ.length;
+      renderNavTree('');
+      const initialHash = decodeURIComponent(location.hash.replace('#',''));
+      if(initialHash && findTopic(initialHash)){
+        history.replaceState({view:'topic', topicId:initialHash}, '', '#'+initialHash);
+        goTopic(initialHash, false);
+      } else if(initialHash === 'quiz'){
+        history.replaceState({view:'quiz'}, '', '#quiz');
+        startQuiz(false);
+      } else {
+        history.replaceState({view:'home'}, '', '#');
+        renderHome(false);
+      }
+    </script>
+  </body>
+</html>
