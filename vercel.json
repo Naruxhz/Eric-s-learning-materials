@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/subjects.js": {
+      "includeFiles": "**/meta.json"
+    }
+  }
+}
