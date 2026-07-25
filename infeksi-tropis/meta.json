@@ -1,7 +1,7 @@
 {
   "nama": "Infeksi Tropis",
-  "deskripsi": "HIV, Malaria, Dengue, Leptospirosis, dan seterusnya.",
-  "ikon": "🦠",
+  "deskripsi": "HIV, Leptospirosis, Demam Tifoid, Malaria, Demam Dengue, Infeksi Cacing, Filariasis, dan Sepsis.",
+  "ikon": "🦟",
   "topik": 18,
   "soal": 20,
   "warna": "teal"
