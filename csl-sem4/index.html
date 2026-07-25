@@ -85,6 +85,8 @@ button{font-family:inherit;}
 .blok-card:hover{transform:translateY(-2px); box-shadow:var(--shadow);}
 .blok-card.gastro{background:var(--rose-tint); border-color:#e0b7bd;}
 .blok-card.repro{background:var(--teal-tint); border-color:#b7d4cf;}
+.blok-card.active-blok{box-shadow:0 0 0 2px var(--ink), var(--shadow);}
+.blok-card.active-blok .bn::after{content:" · aktif"; opacity:0.7; font-weight:600;}
 .blok-card .bn{font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px; font-weight:700;}
 .blok-card.gastro .bn{color:var(--rose);}
 .blok-card.repro .bn{color:var(--teal);}
@@ -951,6 +953,10 @@ function renderHome(push){
   if(push!==false){ history.pushState({view:'home'}, '', '#'); }
   const gastroCount = TOPICS.filter(t=>t.blok==='gastro').length;
   const reproCount = TOPICS.filter(t=>t.blok==='repro').length;
+  const shown = topicsFiltered();
+  const sectionTitle = state.blokFilter==='all' ? 'Semua keterampilan'
+    : state.blokFilter==='gastro' ? 'Keterampilan Sistem Pencernaan'
+    : 'Keterampilan Reproduksi & Tumbuh Kembang';
   viewRoot.innerHTML = `
   <div class="content-wrap">
     <div class="hero reveal">
@@ -965,12 +971,12 @@ function renderHome(push){
     </div>
 
     <div class="blok-grid reveal">
-      <div class="blok-card gastro" data-blok="gastro">
+      <div class="blok-card gastro ${state.blokFilter==='gastro'?'active-blok':''}" data-blok="gastro">
         <div class="bn">Blok Gastrointestinal</div>
         <h3>Sistem Pencernaan</h3>
         <p>Pemeriksaan abdomen, hernia, NGT, dan colok dubur.</p>
       </div>
-      <div class="blok-card repro" data-blok="repro">
+      <div class="blok-card repro ${state.blokFilter==='repro'?'active-blok':''}" data-blok="repro">
         <div class="bn">Blok Reproduksi & Tumbuh Kembang</div>
         <h3>Obstetri, Ginekologi & Anak</h3>
         <p>Leopold, ginekologi, Pap smear, IVA, AKDR, APN, status gizi, DDST & KPSP.</p>
@@ -978,9 +984,12 @@ function renderHome(push){
     </div>
 
     <div style="margin-top:44px;">
-      <h2 style="font-family:'IBM Plex Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); font-weight:600;">Semua keterampilan</h2>
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+        <h2 style="font-family:'IBM Plex Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); font-weight:600;">${esc(sectionTitle)}</h2>
+        ${state.blokFilter!=='all' ? `<button id="clearBlokBtn" style="border:1px solid var(--line); background:#fff; border-radius:20px; padding:5px 12px; font-size:11.5px; font-weight:600; color:var(--muted); cursor:pointer;">Tampilkan semua ✕</button>` : ''}
+      </div>
       <div class="home-grid">
-        ${TOPICS.map((t,i)=>`
+        ${shown.map((t,i)=>`
           <div class="home-card reveal" style="animation-delay:${Math.min(i*15,260)}ms" data-topic="${t.id}">
             <div class="n">${esc(blokLabel(t.blok))}</div>
             <h4>${esc(t.title)}</h4>
@@ -989,7 +998,12 @@ function renderHome(push){
       </div>
     </div>
   </div>`;
-  $$('.blok-card').forEach(c=>c.addEventListener('click', ()=>{ setBlokFilter(c.dataset.blok); }));
+  $$('.blok-card').forEach(c=>c.addEventListener('click', ()=>{
+    const b = c.dataset.blok;
+    setBlokFilter(state.blokFilter===b ? 'all' : b);
+  }));
+  const clearBtn = $('#clearBlokBtn');
+  if(clearBtn) clearBtn.addEventListener('click', ()=> setBlokFilter('all'));
   $$('.home-card').forEach(c=>c.addEventListener('click', ()=>goTopic(c.dataset.topic)));
   renderNavTree($('#searchInput').value);
 }
