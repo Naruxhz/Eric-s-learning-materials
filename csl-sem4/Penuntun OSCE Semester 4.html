@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penuntun OSCE Semester 4 — Gastrointestinal & Reproduksi-Tumbuh Kembang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F1EFE9;
+  --bg-panel:#FFFFFF;
+  --ink:#1C1B19;
+  --muted:#6E6A62;
+  --line:#DEDACE;
+  --teal:#1E5B5E;
+  --teal-deep:#123F41;
+  --teal-tint:#E3EFEC;
+  --amber:#B9832E;
+  --amber-tint:#F8ECD8;
+  --rose:#9E2A3D;
+  --rose-tint:#F6E4E6;
+  --shadow: 0 1px 2px rgba(28,27,25,0.06), 0 8px 24px rgba(28,27,25,0.05);
+  --radius: 10px;
+  --accent: var(--teal);
+  --accent-deep: var(--teal-deep);
+  --accent-tint: var(--teal-tint);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans', sans-serif;-webkit-font-smoothing:antialiased;line-height:1.55;}
+h1,h2,h3,h4{font-family:'Fraunces', serif;font-weight:600;margin:0;letter-spacing:-0.01em;}
+.mono{font-family:'IBM Plex Mono', monospace;}
+::selection{background:var(--accent-tint); color:var(--accent-deep);}
+a{color:inherit;}
+button{font-family:inherit;}
+
+#app{display:flex; min-height:100vh;}
+
+/* Sidebar */
+#sidebar{width:300px;flex-shrink:0;background:var(--bg-panel);border-right:1px solid var(--line);height:100vh;position:sticky;top:0;overflow-y:auto;padding:20px 14px 40px;}
+.sb-brand{display:flex; align-items:center; gap:10px;padding:6px 8px 16px;border-bottom:1px solid var(--line);margin-bottom:14px;cursor:pointer;transition:opacity .15s ease;}
+.sb-brand:hover{opacity:0.7;}
+.sb-brand .cell{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 32% 30%, #2f8a8d, var(--teal-deep) 70%);box-shadow: inset 0 -3px 6px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.15);flex-shrink:0;}
+.sb-brand .t1{font-size:16px; line-height:1.15;}
+.sb-brand .t2{font-size:10px; letter-spacing:0.07em; text-transform:uppercase; color:var(--muted); margin-top:2px;}
+.watermark{font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--muted); opacity:0.55;text-align:right; margin:-8px 4px 14px 0;}
+
+.search-box{display:flex; align-items:center; gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin-bottom:16px;}
+.search-box input{border:none; background:transparent; outline:none;font-size:13.5px; width:100%; color:var(--ink); font-family:inherit;}
+.search-box svg{flex-shrink:0; opacity:0.5;}
+
+.blok-toggle{display:flex; background:var(--bg); border:1px solid var(--line);border-radius:8px; padding:3px; margin-bottom:16px; gap:3px;}
+.blok-toggle button{flex:1; border:none; background:transparent; padding:8px 5px;border-radius:6px; font-size:11.5px; font-weight:600; color:var(--muted);cursor:pointer; transition:all .15s ease;}
+.blok-toggle button.active{background:var(--accent); color:#fff; box-shadow:var(--shadow);}
+
+.nav-cat{margin-bottom:4px;}
+.nav-cat-head{display:flex; align-items:center; justify-content:space-between;padding:9px 8px; cursor:pointer; border-radius:7px;font-size:12.5px; font-weight:700; user-select:none; text-transform:uppercase; letter-spacing:0.04em; color:var(--muted);}
+.nav-cat-head:hover{background:var(--bg);}
+.nav-item{display:flex; align-items:center; gap:8px;padding:8px 8px 8px 12px; font-size:13.5px; cursor:pointer;border-radius:7px; color:var(--ink); position:relative; margin-bottom:2px;}
+.nav-item:hover{background:var(--bg);}
+.nav-item.active{background:var(--accent-tint); color:var(--accent-deep); font-weight:600;}
+.nav-item .dot{width:5px;height:5px;border-radius:50%; background:currentColor; opacity:0.5; flex-shrink:0;}
+
+/* Main */
+#main{flex:1; min-width:0;}
+.topbar{position:sticky; top:0; z-index:5;background:rgba(241,239,233,0.88); backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:14px 40px; display:none; align-items:center; gap:10px;}
+.hamburger{display:none; border:1px solid var(--line); background:#fff; border-radius:8px; width:36px; height:36px; align-items:center; justify-content:center; cursor:pointer;}
+.content-wrap{max-width:900px; margin:0 auto; padding:56px 40px 120px;}
+
+/* Hero */
+.hero{padding-bottom:12px;}
+.hero .eyebrow{font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.12em;text-transform:uppercase; color:var(--accent); display:flex; align-items:center; gap:8px; margin-bottom:14px;}
+.hero .eyebrow::before{content:""; width:20px; height:1px; background:var(--accent);}
+.hero h1{font-size:clamp(32px,4.6vw,48px); line-height:1.04;}
+.hero h1 em{font-style:italic; color:var(--accent);}
+.hero p.lede{font-size:16px; color:var(--muted); max-width:600px; margin-top:16px;}
+.hero-stats{display:flex; gap:28px; margin-top:28px; flex-wrap:wrap;}
+.hero-stats .stat b{font-family:'Fraunces',serif; font-size:26px; display:block;}
+.hero-stats .stat span{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;}
+
+.blok-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:40px;}
+@media(max-width:700px){.blok-grid{grid-template-columns:1fr;}}
+.blok-card{border-radius:14px; padding:22px; cursor:pointer; transition:all .15s ease; border:1.5px solid var(--line);}
+.blok-card:hover{transform:translateY(-2px); box-shadow:var(--shadow);}
+.blok-card.gastro{background:var(--rose-tint); border-color:#e0b7bd;}
+.blok-card.repro{background:var(--teal-tint); border-color:#b7d4cf;}
+.blok-card .bn{font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px; font-weight:700;}
+.blok-card.gastro .bn{color:var(--rose);}
+.blok-card.repro .bn{color:var(--teal);}
+.blok-card h3{font-size:20px; margin-bottom:6px;}
+.blok-card p{font-size:13px; color:var(--muted); margin:0;}
+
+.home-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; margin-top:16px;}
+.home-card{background:var(--bg-panel); border:1px solid var(--line); border-radius:12px; padding:18px;cursor:pointer; transition:all .15s ease;}
+.home-card:hover{transform:translateY(-2px); box-shadow:var(--shadow); border-color:#cfc9ba;}
+.home-card .n{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--accent); margin-bottom:8px;}
+.home-card h4{font-size:15px;}
+.home-card p{font-size:12.5px; color:var(--muted); margin-top:6px;}
+
+/* Topic page */
+.crumbs{font-size:12px; color:var(--muted); margin-bottom:14px; display:flex; align-items:center; gap:6px;}
+.crumbs .sep{opacity:0.5;}
+.topic-head{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:6px;}
+.topic-head h1{font-size:clamp(26px,3.6vw,38px);}
+.badge-blok{font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:700; color:#fff;border-radius:6px; padding:4px 9px; flex-shrink:0; margin-top:6px; white-space:nowrap;}
+.badge-blok.gastro{background:var(--rose);}
+.badge-blok.repro{background:var(--teal);}
+.topic-sub{color:var(--muted); font-size:14.5px; margin-bottom:20px;}
+
+.tabbar{display:flex; gap:4px; border-bottom:1.5px solid var(--line); margin-bottom:26px; overflow-x:auto;}
+.tabbar button{border:none; background:transparent; padding:10px 16px; font-size:13px; font-weight:600; color:var(--muted); cursor:pointer; border-bottom:2.5px solid transparent; white-space:nowrap; margin-bottom:-1.5px;}
+.tabbar button.active{color:var(--accent-deep); border-bottom-color:var(--accent);}
+.tabpane{display:none;}
+.tabpane.show{display:block;}
+
+.section-block{margin-top:26px;}
+.section-block:first-child{margin-top:0;}
+.section-block h2{font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--accent);font-family:'IBM Plex Mono', monospace; font-weight:600;display:flex; align-items:center; gap:10px; margin-bottom:12px;}
+.section-block h2::after{content:""; flex:1; height:1px; background:var(--line);}
+.section-block ul{margin:0; padding-left:20px;}
+.section-block li{margin-bottom:8px; font-size:14.5px;}
+.section-block p{font-size:14.5px; margin:0 0 10px;}
+.sub-h{font-weight:600; font-size:13.5px; margin-top:16px; margin-bottom:6px; font-family:'Fraunces',serif; color:var(--accent-deep);}
+
+.callout{border-radius:10px; padding:16px 18px; margin:14px 0; font-size:13.5px; border:1px solid;}
+.callout.mnemonic{background:var(--amber-tint); border-color:#e3caa0;}
+.callout.mnemonic .clabel{font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--amber); font-weight:700; margin-bottom:6px;}
+.callout.key{background:var(--accent-tint); border-color:#b7d4cf;}
+.callout.key .clabel{font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--accent-deep); font-weight:700; margin-bottom:6px;}
+
+table.data-tbl{width:100%; border-collapse:collapse; margin:14px 0; font-size:13px;}
+table.data-tbl th, table.data-tbl td{border:1px solid var(--line); padding:9px 11px; text-align:left; vertical-align:top;}
+table.data-tbl th{background:var(--bg); font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:0.04em; color:var(--muted);}
+table.data-tbl tr:nth-child(even) td{background:#fbfaf7;}
+
+/* Prosedur steps */
+.proc-group{margin-top:20px;}
+.proc-group-title{font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#fff; background:var(--accent); display:inline-block; padding:5px 11px; border-radius:20px; margin-bottom:10px;}
+.proc-step{display:flex; gap:12px; padding:10px 0; border-top:1px solid var(--line); font-size:14px;}
+.proc-group .proc-step:first-of-type{border-top:none;}
+.proc-step .pn{width:24px;height:24px;border-radius:50%; background:var(--bg); border:1.5px solid var(--line); flex-shrink:0;display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; color:var(--muted); margin-top:1px;}
+.proc-step .pb{flex:1;}
+.proc-step .pb .note{color:var(--rose); font-style:italic; font-size:12.5px; margin-top:4px;}
+
+/* Daftar tilik table */
+.tilik-head{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap;}
+.tilik-head .id-fields{font-size:12.5px; color:var(--muted); display:flex; gap:18px; flex-wrap:wrap;}
+.tilik-head .id-fields input{border:none; border-bottom:1px solid var(--line); background:transparent; font-family:inherit; font-size:12.5px; padding:2px 4px; width:140px;}
+.btn-mini{border:1.5px solid var(--line); background:#fff; padding:7px 13px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer;}
+.btn-mini:hover{border-color:var(--accent); color:var(--accent-deep);}
+table.tilik-tbl{width:100%; border-collapse:collapse; font-size:13px;}
+table.tilik-tbl th, table.tilik-tbl td{border:1px solid var(--line); padding:8px 10px; vertical-align:middle;}
+table.tilik-tbl th{background:var(--bg); font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; color:var(--muted);}
+table.tilik-tbl td.tn{width:34px; text-align:center; color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:12px;}
+table.tilik-tbl td.tscore{width:32px; text-align:center;}
+table.tilik-tbl tr.grp td{background:var(--accent-tint); font-weight:700; font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.04em; color:var(--accent-deep);}
+table.tilik-tbl input[type=radio]{cursor:pointer;}
+.tilik-foot{display:flex; justify-content:flex-end; gap:24px; margin-top:14px; font-size:13px; padding:12px 14px; background:var(--bg); border-radius:8px;}
+.tilik-foot b{font-family:'IBM Plex Mono',monospace; color:var(--accent-deep);}
+.tilik-legend{font-size:11.5px; color:var(--muted); margin-top:10px;}
+
+/* KPSP widget */
+.kpsp-age-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;}
+.kpsp-age-row button{border:1.5px solid var(--line); background:#fff; border-radius:20px; padding:7px 14px; font-size:12.5px; font-weight:600; cursor:pointer; color:var(--muted);}
+.kpsp-age-row button.active{background:var(--accent); border-color:var(--accent); color:#fff;}
+.kpsp-q{display:flex; gap:12px; padding:13px 0; border-top:1px solid var(--line); align-items:flex-start;}
+.kpsp-q:first-of-type{border-top:none;}
+.kpsp-q .qn{width:24px;height:24px;border-radius:50%; background:var(--bg); border:1.5px solid var(--line); flex-shrink:0;display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; color:var(--muted);}
+.kpsp-q .qt{flex:1; font-size:13.5px;}
+.kpsp-q .qa{display:flex; gap:6px; flex-shrink:0;}
+.kpsp-q .qa button{border:1.5px solid var(--line); background:#fff; border-radius:7px; padding:6px 12px; font-size:12px; font-weight:600; cursor:pointer; color:var(--muted);}
+.kpsp-q .qa button.sel-ya{background:var(--teal); border-color:var(--teal); color:#fff;}
+.kpsp-q .qa button.sel-tidak{background:var(--rose); border-color:var(--rose); color:#fff;}
+.kpsp-result{margin-top:20px; padding:18px 20px; border-radius:10px; background:var(--accent-tint); border:1px solid #b7d4cf; font-size:14px;}
+.kpsp-result .rscore{font-family:'Fraunces',serif; font-size:34px; color:var(--accent-deep);}
+.kpsp-result .rlabel{font-weight:700; margin-top:4px;}
+
+.topic-nav{display:flex; justify-content:space-between; margin-top:56px; padding-top:22px; border-top:1px solid var(--line); gap:14px;}
+.tn-btn{flex:1; border:1px solid var(--line); background:#fff; border-radius:10px; padding:14px 16px; cursor:pointer; max-width:48%;}
+.tn-btn .lbl{font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em;}
+.tn-btn .ttl{font-family:'Fraunces',serif; font-size:15px; margin-top:3px;}
+.tn-btn.next{text-align:right; margin-left:auto;}
+
+.reveal{opacity:0; transform:translateY(10px); animation:rise .4s ease forwards;}
+@keyframes rise{to{opacity:1; transform:none;}}
+
+@media (max-width:880px){
+  #sidebar{position:fixed; left:0; top:0; z-index:50; transform:translateX(-100%); transition:transform .25s ease; box-shadow:0 0 40px rgba(0,0,0,0.25); width:280px;}
+  #sidebar.open{transform:translateX(0);}
+  .sb-overlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:40;}
+  .sb-overlay.show{display:block;}
+  .topbar{display:flex;}
+  .hamburger{display:flex;}
+  .content-wrap{padding:32px 18px 90px;}
+  .topic-nav{flex-direction:column;}
+  .tn-btn{max-width:100%;}
+  table.tilik-tbl{font-size:11.5px;}
+}
+@media print{
+  #sidebar,.topbar,.tabbar,.topic-nav,.btn-mini{display:none !important;}
+  .tabpane{display:block !important;}
+  body{background:#fff;}
+}
+</style>
+</head>
+<body>
+<div class="sb-overlay" id="sbOverlay"></div>
+<div id="app">
+  <aside id="sidebar">
+    <div class="sb-brand" id="sbBrandHome">
+      <div class="cell"></div>
+      <div>
+        <div class="t1">Penuntun OSCE</div>
+        <div class="t2">Semester 4 · FK</div>
+      </div>
+    </div>
+    <div class="watermark">Gastrointestinal · Reproduksi · Tumbuh Kembang</div>
+    <div class="search-box">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="searchInput" placeholder="Cari keterampilan…" autocomplete="off">
+    </div>
+    <div class="blok-toggle">
+      <button id="btnBlokAll" class="active">Semua</button>
+      <button id="btnBlokGastro">Gastro</button>
+      <button id="btnBlokRepro">Repro & TK</button>
+    </div>
+    <nav id="navTree"></nav>
+  </aside>
+
+  <main id="main">
+    <div class="topbar">
+      <button class="hamburger" id="hamburgerBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <b style="font-family:'Fraunces',serif;">Penuntun OSCE</b>
+    </div>
+    <div id="viewRoot"></div>
+  </main>
+</div>
+<script id="kpsp-data" type="application/json">{"3 bulan": ["Pada waktu bayi telentang, apakah masing-masing lengan dan tungkai bergerak dengan mudah? Jawab TIDAK bila salah satu atau kedua tungkai atau lengan bayi bergerak tak terarah/tak terkendali.", "Pada waktu bayi telentang apakah ia melihat clan menatap wajah anda?", "Apakah bayi dapat mengeluarkan suara-suara lain (ngoceh), disamping menangis?", "Pada waktu bayi telentang, apakah ia dapat mengikuti gerakan anda dengan menggerakkan kepalanya dari kanan/kiri ke tengah?", "Pada waktu bayi telentang, apakah. ia dapat mengikuti gerakan anda dengan menggerakkan kepalanya dari satu sisi hampir sampai pada sisi yang lain?", "Pada waktu anda mengajak bayi berbicara dan tersenyum,apakah ia tersenyum kembali kepada anda?", "Pada waktu bayi telungkup di alas yang datar, apakah ia dapat mengangkat kepalanya seperti pada gambar ini?", "Pada waktu bayi telungkup di alas yang datar, apakah ia dapat mengangkat kepalanya sehingga", "Pada waktu bayi telungkup di alas yang datar, apakah ia dapat mengangkat kepalanya dengan tegak seperti pada gambar?", "Apakah bayi suka tertawa keras walau tidak digelitik atau diraba-raba?"], "6 bulan": ["Pada waktu bayi telentang, apakah ia dapat mengikuti gerakan anda dengan menggerakkan kepala sepenuhnya dari satu sisi ke sisi yang lain?", "Dapatkah bayi mempertahankan posisi kepala dalam keadaan tegak clan stabil? Jawab TIDAK bila kepala bayi cenderung jatuh ke kanan/kiri atau ke dadanya", "Sentuhkan pensil di punggung tangan atau ujung jari bayi. (**[jangan meletakkan di atas]{.underline} [telapak tangan bayi]{.underline}**). Apakah bayi dapat menggenggam pensil itu selama beberapa detik?", "Ketika bayi telungkup di alas datar, apakah ia dapat mengangkat dada dengan kedua lengannya sebagai penyangga seperti padA gambar ?", "Pernahkah bayi mengeluarkan suara gembira bernada tinggi atau memekik tetapi bukan menangis?", "Pernahkah bayi berbalik paling sedikit dua kali, dari telentang ke telungkup atau sebaliknya?", "Pernahkah anda melihat bayi tersenyurn ketika melihat mainan yang lucu, gambar atau binatang peliharaan pada saat ia bermain sendiri?", "Dapatkah bayi mengarahkan matanya pada benda kecil sebesar kacang, kismis atau uang logam? Jawab TIDAK jika ia tidak dapat mengarahkan matanya.", "Dapatkah bayi meraih mainan yang diletakkan agak jauh namun masih berada dalam jangkauan tangannya?", "Pada posisi bayi telentang, pegang kedua tangannya lalu tarik perlahan-lahan ke posisi clucluk. Dapatkah bayi mempertahankan lehernya secara kaku seperti gambar di sebelah kiri ? Jawab TIDAK bila kepala bayi jatuh kembali seperti gambar sebelah kanan."], "9 bulan": ["Pada posisi bayi telentang, pegang kedua tangannya lalu tarik perlahan-lahan ke posisi clucluk. Dapatkah bayi mempertahankan lehernya secara kaku seperti gambar di sebelah kiri ? Jawab TIDAK bila kepala bayi jatuh kembali seperti gambar sebelah kanan.", "Pernahkah anda melihat bayi memindahkan mainan atau kue kering dari satu tangan ke tangan yang lain? Benda-benda panjang seperti sendok atau kerincingan bertangkai tidak ikut dinilai.", "Tarik perhatian bayi dengan memperlihatkan selendang, sapu tangan atau serbet, kemudian jatuhkan ke lantai. Apakah bayi mencoba mencarinya? Misalnya mencari di bawah meja atau di belakang kursi?", "Apakah bayi dapat memungut dua benda seperti mainan/kue kering, dan masing-masing tangan memegang satu benda pada saat yang sama? Jawab TIDAK bila bayi tidak pernah melakukan perbuatan ini.", "Jika anda mengangkat bayi melalui ketiaknya ke posisi berdiri, dapatkah ia menyangga sebagian berat badan dengan kedua kakinya? Jawab YA bila ia mencoba berdiri dan sebagian berat badan tertumpu pada kedua kakinya.", "Dapatkah bayi memungut dengan tangannya benda-benda kecil seperti kismis, kacang-kacangan, potongan biskuit, dengan gerakan miring atau menggerapai seperti gambar ?", "Tanpa disangga oleh bantal, kursi atau dinding, dapatkah bayi duduk sendiri selama 60 detik?", "Apakah bayi dapat makan kue kering sendiri?", "Pada waktu bayi bermain sendiri dan anda diam-diam datang berdiri di belakangnya, apakah ia menengok ke belakang seperti mendengar kedatangan anda? Suara keras tidak ikut dihitung. Jawab YA hanya jika anda melihat reaksinya terhadap suara yang perlahan atau bisikan.", "Letakkan suatu mainan yang dinginkannya di luar jangkauan bayi, apakah ia mencoba mendapatkannya dengan mengulurkan lengan atau badannya?"], "12 bulan": ["Jika anda bersembunyi di belakang sesuatu/di pojok, kemudian muncui dan menghilang secara berulang-ulang di hadapan anak, apakah ia mencari anda atau mengharapkan anda muncul kembali?", "Letakkan pensil di telapak tangan bayi. Coba ambil pensil tersebut dengan perlahan-lahan. Sulitkah anda mendapatkan pensil itu kembali?", "Apakah anak dapat berdiri selama 30 detik atau lebih dengan berpegangan pada kursi/meja?", "Apakah anak dapat mengatakan 2 suku kata yang sama, misalnya: \"ma-ma\", \"da-da\" atau \"pa- pa\". Jawab YA bila ia mengeluarkan salah---satu suara tadi.", "Apakah anak dapat mengangkat badannya ke posisi berdiri tanpa bantuan anda?", "Apakah anak dapat membedakan anda dengan orang yang belum ia kenal? la akan menunjukkan sikap malu-malu atau ragu-ragu pada saat permulaan bertemu dengan orang yang belum dikenalnya.", "Apakah anak dapat mengambil Benda kecil seperti kacang atau kismis, dengan meremas di antara ibu jari dan jarinya seperti pada gambar?", "Apakah anak dapat duduk sendiri tanpa bantuan?", "Sebut 2-3 kata yang dapat ditiru oleh anak (tidak perlu kata-kata yang lengkap). Apakah ia mencoba meniru menyebutkan kata-kata tadi ?", "Tanpa bantuan, apakah anak dapat mempertemukan dua kubus kecil yang ia pegang? Kerincingan bertangkai dan tutup panel tidak ikut dinilai."], "15 bulan": ["Tanpa bantuan, apakah anak dapat mempertemukan dua kubus kecil yang ia pegang? Kerincingan bertangkai dan tutup, panci tidak ikut dinilai", "Apakah anak dapat jalan sendiri atau jalan dengan berpegangan?", "Tanpa bantuan, apakah anak dapat bertepuk tangan atau melambai-lambai? Jawab TIDAK bila ia membutuh kemandirian atau bantuan.", "Apakah anak dapat mengatakan \"papa\" ketika ia memanggil/melihat ayahnya, atau mengatakan \"mama\" jika memanggil/melihat ibunya? Jawab YA bila anak mengatakan salah satu diantaranya.", "Dapatkah anak berdiri sendiri tanpa berpegangan selama kira-kira 5 detik?", "Dapatkan anak berdiri sendiri tanpa berpegangan selama 30 detik atau lebih? Tanpa berpegangan atau menyentuh lantai, apakah anak dapat membungkuk untuk memungut mainan di lantai dan kemudian berdiri kembali?", "Apakah anak dapat menunjukkan apa yang diinginkannya tanpa menangis atau merengek? Jawab YA bila ia menunjuk, menarik atau mengeluarkan suara yang menyenangkan", "Apakah anak dapat berjalan di sepanjang ruangan tanpa jatuh atau terhuyung-huyung?", "Apakah anak dapat mengambil benda kecil seperti kacang, kismis, atau potongan biskuit dengan menggunakan ibu seperti pada gambar ini"], "18 bulan": ["Tanpa bantuan, apakah anak dapat bertepuk tangan atau melambai-lambai? Jawab TIDAK bila ia membutuhkan bantuan.", "Apakah anak dapat mengatakan \"papa\" ketika ia memanggil/melihat ayahnya, atau mengatakan \"mama\" jika memanggil/melihat ibunya?", "Apakah anak dapat berdiri sendiri tanpa berpegangan selama kira-kira 5 detik?", "Apakah anak dapat berdiri sendiri tanpa berpegangan selama 30 detik atau lebih?", "Tanpa berpegangan atau menyentuh lantai, apakah anak dapat membungkuk untuk memungut mainan di lantai clan kemudian berdiri kembali?", "Apakah anak dapat menunjukkan apa yang diinginkannya tanpa menangis atau merengek? Jawab YA bila ia menunjuk, menarik atau mengeluarkan suara yang menyenangkan.", "Apakah anak dapat berjalan di sepanjang ruangan tanpa jatuh atau terhuyung-huyung?", "Apakah anak anak dapat mengambil benda kecil seperti kacang, kismis, atau potongan biskuit dengan menggunakan ibu jari dan jari telunjuk seperti pada gambar ?", "Jika anda menggelindingkan bola ke anak, apakah ia menggelindingkan/melemparkan kembali bola pada anda?", "Apakah anak dapat memegang sendiri cangkir/gelas dan minum dari tempat tersebut tanpa tumpah?"], "21 bulan": ["Tanpa berpegangan atau menyentuh lantai, apakah anak dapat membungkuk untuk memungut mainan di lantai dan kemudian berdiri kembali?", "Apakah anak dapat menunjukkan apa yang diinginkannya tanpa menangis atau merengek? Jawab YA bila ia menunjuk, menarik atau mengeluarkan suara yang menyenangkan.", "Apakah anak dapat berjalan di sepanjang ruangan tanpa jatuh atau terhuyung-huyung?", "Apakah anak dapat mengambil benda kecil seperti kacang, kismis, atau potongan biskuit dengan menggunakan ibu jari clan jari telunjuk seperti pada gambar ?", "Jika anda menggelindingkan bola ke anak, apakah ia menggelindingkan/melemparkan kembali bola pada anda?", "Apakah anak dapat memegang sendiri cangkir/gelas clan minum dari tempat tersebut tanpa tumpah?", "Jika anda sedang melakukan pekerjaan rumah tangga, apakah anak meniru apa yang anda lakukan?", "Apakah anak dapat meletakkan satu kubus di atas Gerak halus Ya Tida kubus yang lain tanpa menjatuhkan kubus itu? Kubus yang digunakan ukuran 2.5-5.0 cm", "Apakah anak dapat mengucapkan paling sedikit 3 kata yang mempunyai arti selain \"papa\" dan \"mama\"?.", "Apakah anak dapat berjalan mundur 5 langkah atau lebih tanpa kehilangan keseimbangan? (Anda mungkin dapat melihatnya ketika anak menarik mainannya)"], "24 bulan": ["Jika anda sedang melakukan pekerjaan rumah tangga, apakah anak meniru apa yang anda lakukan?", "Apakah anak dapat meletakkan 1 buah kubus di atas kubus yang lain tanpa menjatuhkan kubus itu? Kubus yang digunakan ukuran 2.5 --- 5 cm.", "Apakah anak dapat mengucapkan paling sedikit 3 kata yang mempunyai arti selain \\\"papa\\\" clan \\\"mama\\\"?", "Apakah anak dapat berjalan mundur 5 langkah atau lebih tanpa kehilangankeseimbangan? (Anda mungkin dapat melihatnya ketika anak menarik mainannya).", "Dapatkah anak melepas pakaiannya seperti: baju, rok, atau celananya? (topi clan kaos kaki tidak ikut dinilai).", "Dapatkah anak berjalan naik tangga sendiri? Jawab YA jika ia naik tangga dengan posisi tegak atau berpegangan pada dinding atau pegangan tangga. Jawab TIDAK jika ia naik tangga dengan merangkak atau anda tidak membolehkan anak naik tangga atau anak harus berpegangan pada seseorang.", "Tanpa bimbingan, petunjuk atau bantuan anda, dapatkah anak menunjuk dengan benar paling sedikit satu bagian badannya (rambut, mata, hidung, mulut, atau bagian badan yang lain)?", "Dapatkah anak makan nasi sendiri tanpa banyak tumpah?", "Dapatkah anak membantu memungut mainannya sendiri atau membantu mengangkat piring jika diminta?", "Dapatkah anak menendang bola kecil (sebesar bola tenis) ke depan tanpa berpegangan pada apapun? Mendorong tidak ikut dinilai."], "30 bulan": ["Dapatkah anak melepas pakaiannya seperti: baju, rok, Sosialisasi & atau celananya? (topi clan kaos kaki tidak ikut dinilai)", "Dapatkah anak berjalan naik tangga sendiri? Jawab YA jika ia naik tangga dengan posisi tegak atau berpegangan pada Binding atau pegangan tangga. Jawab TIDAK jika ia naik tangga dengan merangkak atau anda tidak membolehkan anak naik tangga atau anak harus berpegangan pada seseorang.", "Tanpa bimbingan, petunjuk atau bantuan anda, dapatkah anak menunjuk dengan benar paling seclikit satu bagian badannya (rambut, mata, hidung, mulut, atau bagian badan yang lain)?", "Dapatkah anak makan nasi sendiri tanpa banyak tumpah?", "Dapatkah anak membantu memungut mainannya sendiri atau membantu mengangkat piring jika diminta?", "Dapatkah anak menendang bola kecil (sebesar bola tenis) Gerak kasar ke depan tanpa berpegangan pada apapun? Mendorong tidak ikut dinilai.", "Bila diberi pensil, apakah anak mencoret-coret kertas tanpa bantuan/petunjuk?", "Dapatkah anak meletakkan 4 buah kubus satu persatu di atas kubus yang lain tanpa menjatuhkan kubus itu? Kubus yang digunakan ukuran 2.5 -- 5 cm.", "Dapatkah anak menggunakan 2 kata pada saat berbicara seperti \"minta minum\", \"mau tidur\"? \"Terimakasih\" dan \"Dadag\" tidak ikut dinilai.", "Apakah anak dapat menyebut 2 diantara gambar-gambar ini tanpa bantuan?"], "36 bulan": ["Bila diberi pensil, apakah anak mencoret-coret kertas tanpa bantuan/petunjuk?", "Dapatkah anak meletakkan 4 buah kubus satu persatu di atas kubus yang lain tanpa menjatuhkan kubus itu? Kubus yang digunakan ukuran 2.5 -- 5 cm.", "Dapatkah anak menggunakan 2 kata pada saat berbicara seperti \"minta minum\"; \"mau tidur\"? \"Terimakasih\" dan \"Dadag\" tidak ikut dinilai.", "Apakah anak dapat menyebut 2 diantara gambar-gambar ini tanpa bantuan?", "Dapatkah anak melempar bola lurus ke arah perut atau dada anda dari jarak 1,5 meter?", "Ikuti perintah ini dengan seksama. Jangan memberi isyarat dengan telunjuk atau mata pada saat memberikan perintah berikut ini:", "Buat garis lurus ke bawah sepanjang sekurangkurangnya 2.5 cm. Suruh anak menggambar garis lain di", "Letakkan selembar kertas seukuran buku di lantai. Apakah anak dapat melompati bagian lebar kertas dengan mengangkat kedua kakinya secara bersamaan tanpa didahului lari?", "Dapatkah anak mengenakan sepatunya sendiri?", "Dapatkah anak mengayuh sepeda roda tiga sejauh sedikitnya 3 meter?"], "42 bulan": ["Dapatkah anak mengenakan sepatunya sendiri?", "Dapatkah anak mengayuh sepeda rods tiga sejauh sedikitnya 3 meter?", "Setelah makan, apakah anak mencuci clan mengeringkan tangannya dengan balk sehingga anda ticlak perlu mengulanginya?", "Suruh anak berdiri satu kaki tanpa berpegangan. Jika perlu tunjukkan caranya clan beri anak anda kesempatan melakukannya 3 kali. Dapatkah ia mempertahankan keseimbangan dalam waktu 2 detik atau lebih?", "Letakkan selembar kertas seukuran buku ini di lantai. Apakah anak dapat melompati panjang kertas ini dengan mengangkat kedua kakinya secara bersamaan tanpa didahului lari?", "Jangan membantu anak clan jangan menyebut lingkaran. Suruh anak menggambar seperti contoh ini di kertas kosong yang tersedia. Dapatkah anak menggambar lingkaran?", "Dapatkah anak meletakkan 8 buah kubus satu persatu di atas yang lain tanpa menjatuhkan kubus tersebut?", "Apakah anak dapat bermain petak umpet, ular naga atau permainan lain dimana ia ikut bermain clan mengikuti aturan bermain?", "Dapatkah anak mengenakan celana panjang, kemeja, baju atau kaos kaki tanpa di bantu? (Tidak termasuk kemandirian memasang kancing, gesper atau ikat pinggang)"], "48 bulan": ["Dapatkah anak mengayuh sepeda roda tiga sejauh sedikitnya 3 meter?", "Setelah makan, apakah anak mencuci dan mengeringkan tangannya dengan baik sehingga anda tidak perlu mengulanginya?", "Suruh anak berdiri satu kaki tanpa berpegangan. Jika perlu tunjukkan caranya dan beri anak anda kesempatan melakukannya 3 kali. Dapatkah ia mempertahankan keseimbangan dalam waktu 2 detik atau lebih?", "Letakkan selembar kertas seukuran buku ini di lantai. Apakah anak dapat melompati panjang kertas ini dengan mengangkat kedua kakinya secara bersamaan tanpa didahului lari?", "Jangan membantu anak dan jangan menyebut lingkaran. Suruh anak menggambar seperti contoh ini di kertas kosong yang tersedia. Dapatkah anak menggambar lingkaran?", "Dapatkah anak meletakkan 8 buah kubus satu persatu di atas yang lain tanpa menjatuhkan kubus tersebut?", "Apakah anak dapat bermain petak umpet, ular naga atau permainan lain dimana ia ikut bermain dan mengikuti aturan bermain?", "Dapatkah anak mengenakan celana panjang, kemeja, baju atau kaos kaki tanpa di bantu? (Tidak termasuk memasang kancing, gesper atau ikat pinggang)", "Dapatkah anak menyebutkan nama lengkapnya tanpa dibantu? Jawab TIDAK jika ia hanya menyebutkan sebagian namanya atau ucapannya sulit dimengerti."], "54 bulan": ["Dapatkah anak meletakkan 8 buah kubus satu persatu di atas yang lain tanpa menjatuhkan kubus tersebut? Kubus yang digunakan ukuran 2-5 -- 5 cm.", "Apakah anak dapat bermain petak umpet, ular naga atau permainan lain dimana ia ikut bermain dan mengikuti aturan bermain?", "Dapatkah anak mengenakan celana panjang, kemeja, baju atau kaos kaki tanpa di bantu? (Tidak termasuk memasang kancing, gesper atau ikat pinggang)", "Dapatkah anak menyebutkan nama lengkapnya tanpa dibantu? Jawab TIDAK jika ia hanya menyebut sebagian namanya atau ucapannya sulit dimengerti.", "Isi titik-titik di bawah ini dengan jawaban anak. Jangan membantu kecuali mengulangi pertanyaan.", "Apakah anak dapat mengancingkan bajunya atau pakaian boneka?", "Suruh anak berdiri satu kaki tanpa berpegangan. Jika perlu tunjukkan caranya dan beri anak ands kesempatan melakukannya 3 kali. Dapatkah ia mempertahankan keseimbangan dalam waktu 6 detik atau lebih?", "Jangan mengoreksi/membantu anak. Jangan menyebut kata \\\"lebih panjang\\\". Perlihatkan gambar kedua garis ini pada anak.", "Jangan membantu anak dan jangan memberitahu nama gambar ini, suruh anak menggambar seperti contoh ini di kertas kosong yang tersedia. Berikan 3 kali kesempatan. Apakah anak dapat menggambar seperti contoh ini?", "Ikuti perintah ini dengan seksama. Jangan memberi isyarat dengan telunjuk atau mats pads saat memberikan perintah berikut ini: \\\"Letakkan kertas ini di atas lantai\\\"."], "60 bulan": ["Isi titik-titik di bawah ini dengan jawaban anak. Jangan membantu kecuali mengulangi pertanyaan.", "Apakah anak dapat mengancingkan bajunya atau pakaian boneka?", "Suruh anak berdiri satu kaki tanpa berpegangan. Jika perlu tunjukkan caranya dan beri anak ands kesempatan melakukannya 3 kali. Dapatkah ia mempertahankan keseimbangan dalam waktu 6 detik atau lebih?", "Jangan mengoreksi/membantu anak. Jangan menyebut kata \"lebih panjang\".", "Jangan membantu anak dan jangan memberitahu nama gambar ini, suruh anak menggambar seperti contoh ini di kertas kosong yang tersedia. Berikan 3 kali kesempatan. Apakah anak dapat menggambar seperti contoh ini?", "Ikuti perintah ini dengan seksama. Jangan memberi isyarat dengan telunjuk atau mats pads saat", "Apakah anak bereaksi dengan tenang dan tidak rewel (tanpa menangis atau menggelayut pada anda) pada saat anda meninqgalkannya?", "Jangan menunjuk, membantu atau membetulkan, katakan pada anak : \"Tunjukkan segi empat merah\"", "Suruh anak melompat dengan satu kaki beberapa kali tanpa berpegangan (lompatan dengan dua kaki tidak ikut dinilai). Apakah ia dapat melompat 2-3 kali dengan satu kaki?", "Dapatkah anak sepenuhnya berpakaian sendiri tanpa bantuan?"], "66 bulan": ["Jangan membantu anak dan jangan memberitahu nama gambar ini, suruh anak menggambar seperti contoh ini di kertas kosong yang tersedia. Berikan 3 kali kesempatan. Apakah anak dapat menggambar seperti contoh ini?", "Ikuti perintah ini dengan seksama. Jangan memberi isyarat dengan telunjuk atau mats pads saat memberikan perintah berikut ini: \\\"Letakkan kertas ini di atas lantai\\\".", "Apakah anak bereaksi dengan tenang dan tidak rewel (tanpa menangis atau menggelayut pada anda) pada saat anda meninqgalkannya?", "Jangan menunjuk, membantu atau membetulkan, katakan pada anak :", "Suruh anak melompat dengan satu kaki beberapa kali tanpa berpegangan (lompatan dengan dua kaki tidak ikut dinilai). Apakah ia dapat melompat 2-3 kali dengan satu kaki?", "Dapatkah anak sepenuhnya berpakaian sendiri tanpa bantuan?", "Suruh anak menggambar di tempat kosong yang tersedia. Katakan padanya: \\\"Buatlah gambar orang\\\".", "Pada gambar orang yang dibuat pada nomor 7, dapatkah anak menggambar sedikitnya 6 bagian tubuh?", "Tulis apa yang dikatakan anak pada kalimat-kalimat yang belum selesai ini, jangan membantu kecuali mengulang pertanyaan:", "Apakah anak dapat menangkap bola kecil sebesar bola tenis/bola kasti hanya dengan menggunakan kedua tangannya? (Bola besar tidak ikut dinilai)."], "72 bulan": ["Jangan menunjuk, membantu atau membetulkan, katakan pada anak :", "Suruh anak melompat dengan satu kaki beberapa kali tanpa berpegangan (lompatan dengan dua kaki tidak ikut dinilai). Apakah ia dapat melompat 2-3 kali dengan satu kaki?", "Dapatkah anak sepenuhnya berpakaian sendiri tanpa bantuan?", "Suruh anak menggambar di tempat kosong yang tersedia. Katakan padanya: \\\"Buatlah gambar orang\\\".", "Pada gambar orang yang dibuat pads nomor 7, dapatkah anak menggambar sedikitnya 6 bagian tubuh?", "Tulis apa yang dikatakan anak pada kalimat-kalimat yang belum selesai ini, jangan membantu kecuali mengulang pertanyaan:", "Apakah anak dapat menangkap bola kecil sebesar bola tenis/bola kasti hanya dengan menggunakan kedua tangannya? (Bola besar tidak ikut dinilai).", "Suruh anak berdiri satu kaki tanpa berpegangan. Jika perlu tunjukkan caranya clan beri anak ands kesempatan melakukannya 3 kali. Dapatkah ia mempertahankan keseimbangan dalam waktu 11 detik atau lebih?", "Jangan membantu anak clan jangan memberitahu nama gambar ini, Suruh anak menggambar seperti contoh ini di kertas kosong yang tersedia- Berikan 3 kali kesempatan.", "lsi titik-titik di bawah ini dengan jawaban anak. Jangan membantu kecuali mengulangi pertanyaan sampai 3 kali bila anak menanyakannya."]}
+</script>
+<script>
+/* =========================================================
+   DATA — Penuntun CSL/OSCE Semester 4
+   Sumber: Penuntun CSL Gastrointestinal & Penuntun CSL
+   Reproduksi dan Tumbuh Kembang, FK Unpatti
+   ========================================================= */
+const BLOKS = [
+  {id:'gastro', label:'Gastrointestinal'},
+  {id:'repro', label:'Reproduksi & Tumbuh Kembang'},
+];
+
+const TOPICS = [
+// ============================================================
+// GASTROINTESTINAL
+// ============================================================
+{
+  id:'abdomen', blok:'gastro', title:'Pemeriksaan Fisik Abdomen',
+  sub:'Inspeksi, auskultasi, perkusi, dan palpasi abdomen — termasuk tanda asites dan pemeriksaan apendisitis.',
+  tujuan:['Melakukan persiapan penderita dengan benar sebelum pemeriksaan (penjelasan alat, manfaat, risiko, kerahasiaan, keamanan, hak penderita).',
+    'Mengetahui bagian-bagian lapangan pemeriksaan fisik abdomen (9 regio).',
+    'Melakukan pemeriksaan fisik abdomen yang benar: inspeksi, auskultasi, palpasi, dan perkusi.',
+    'Mengetahui hasil pemeriksaan fisik abdomen yang normal dan abnormal.'],
+  teori:[
+    {h:'Topografi Abdomen', list:[
+      'Dua garis horizontal (ujung bawah costae X kanan-kiri, dan crista iliaca kanan-kiri) serta dua garis linea medioclavicularis membentuk <b>9 regio</b>: hipokondrium kanan, epigastrium, hipokondrium kiri, lumbalis kanan, umbilikus, lumbalis kiri, inguinalis kanan, hipogastrik, inguinalis kiri.',
+      'Hati: epigastrium & hipokondrium kanan. Lambung: epigastrium. Limpa: hipokondrium kiri. Kandung empedu: perbatasan epigastrium-hipokondrium kanan. Appendiks: titik Mc Burney (1/3 jarak SIAS kanan ke umbilikus).',
+    ]},
+    {h:'Empat Komponen Pemeriksaan', list:[
+      '<b>Inspeksi</b> — pelebaran vena (bendungan vena portal/cava superior), striae (kehamilan, Cushing).',
+      '<b>Auskultasi</b> — ada/tidaknya peristaltik usus, gerakan cairan, bising pembuluh darah.',
+      '<b>Palpasi</b> — lokasi, pembesaran organ, konsistensi, permukaan, tepi, pulsasi, nyeri tekan. Murphy sign untuk kolesistitis; ballotement untuk pembesaran ginjal (bimanual). Pembesaran limpa dinilai dengan <b>Schuffner SI–SVIII</b> (garis dari SIAS kanan ke arcus costae kiri dibagi 8; SIV di umbilikus, SVIII di SIAS).',
+      '<b>Perkusi</b> — pembesaran hepar/limpa; udara bebas (perforasi) → timpani; cairan bebas → asites; bunyi timpani-pekak berselang → peritonitis TB. <b>Ruang Traube</b> (dibatasi lobus kiri hati, batas bawah paru kiri, dan limpa) yang normalnya timpani akan menjadi pekak bila limpa membesar.',
+    ]},
+  ],
+  prosedur:[
+    {g:'A. Persiapan', items:[
+      'Mengucapkan salam, memperkenalkan diri, memastikan identitas pasien, menjelaskan dan meminta persetujuan tindakan.',
+      'Dengan sopan, tanyakan identitas (nama, umur, alamat).',
+      'Meminta pasien membuka baju/pakaian secukupnya, berbaring supine dengan lapangan periksa dari processus xiphoideus sampai symphysis pubis.',
+      'Berdiri di sisi kanan pasien, mencuci tangan.',
+    ]},
+    {g:'B. Inspeksi', items:[
+      'Menilai bentuk abdomen: datar, cembung/buncit, cekung, atau asimetris.',
+      'Menilai kulit: striae, sikatriks, vena kolateral, kemerahan, lesi.',
+      'Menilai umbilikus dan adanya benjolan/massa.',
+      'Menilai gerakan dinding perut: peristaltik yang tampak, pulsasi epigastrium.',
+    ]},
+    {g:'C. Auskultasi', items:[
+      'Meletakkan diafragma stetoskop pada 1 titik abdomen (biasanya kuadran kanan bawah) sebelum palpasi/perkusi.',
+      'Mendengarkan bising usus selama minimal 1 menit, menilai frekuensi dan karakter.',
+      'Mendengarkan bruit pada regio epigastrium/renal bila dicurigai kelainan vaskular.',
+    ]},
+    {g:'D. Perkusi', items:[
+      'Melakukan perkusi pada keempat kuadran untuk menilai timpani/pekak secara umum.',
+      'Menentukan batas atas dan bawah hepar (liver span) pada linea midclavicularis kanan.',
+      'Menentukan pekak limpa pada linea aksilaris anterior kiri (ruang Traube).',
+      'Melakukan perkusi sudut kostovertebra kanan dan kiri (nyeri ketok CVA) untuk menilai nyeri ginjal.',
+    ]},
+    {g:'E. Palpasi', items:[
+      'Palpasi superfisial (ringan) di keempat kuadran untuk menilai nyeri tekan dan rigiditas.',
+      'Palpasi dalam untuk menilai massa, organomegali, dan nyeri tekan dalam.',
+      'Palpasi hepar: tangan kanan di kuadran kanan bawah, minta pasien tarik napas dalam, rasakan tepi hepar saat turun.',
+      'Palpasi limpa (Schuffner): mulai dari SIAS kanan menuju arcus costae kiri, minta pasien miring kanan dan tarik napas dalam.',
+      'Palpasi ginjal secara bimanual: satu tangan di posterior (sudut kostovertebra), satu tangan di anterior di bawah arcus costae, dorong ginjal ke anterior saat pasien inspirasi dalam, nilai ballotement pada kedua sisi.',
+      'Nyeri ketok kostovertebra: tangan kiri di sudut kostovertebra, pukul dengan sisi ulnar kepalan tangan kanan, nilai nyeri pada kedua sisi.',
+    ]},
+    {g:'F. Pemeriksaan Shifting Dullness (Asites)', items:[
+      'Perkusi dari umbilikus (puncak abdomen) ke lateral kiri atau kanan, tentukan batas perubahan bunyi timpani ke redup dan tandai dengan jari.',
+      'Minta pasien miring ke arah kontralateral, tunggu 30–60 detik.',
+      'Perkusi ulang pada titik yang ditandai; nilai apakah bunyi berubah dari redup menjadi timpani.',
+    ]},
+    {g:'G. Pemeriksaan Undulasi (Fluid Wave)', items:[
+      'Tangan pemeriksa/asisten diletakkan di garis tengah abdomen (untuk menahan transmisi lemak dinding perut).',
+      'Tangan pemeriksa lain di kedua sisi lateral abdomen; lakukan hentakan pada satu sisi.',
+      'Rasakan getaran gelombang cairan pada tangan di sisi kontralateral — positif bila teraba getaran.',
+    ]},
+    {g:'H. Pemeriksaan Fisik untuk Apendisitis', items:[
+      'Minta pasien menunjuk lokasi nyeri, lalu batuk — tentukan asal dan penjalaran nyeri.',
+      'Cari daerah nyeri lokal (titik Mc Burney).',
+      'Nilai nyeri lepas (rebound tenderness) di lokasi nyeri.',
+      'Uji <b>Rovsing sign</b>: palpasi dalam kuadran kiri bawah, lalu lepas tekanan dengan cepat — positif bila nyeri dirasakan di kuadran kanan bawah.',
+      'Uji <b>Psoas sign</b>: pasien miring kiri, ekstensikan tungkai kanan pada panggul (atau fleksikan panggul melawan tahanan tangan pemeriksa) — positif bila nyeri.',
+      'Uji <b>Obturator sign</b>: fleksikan dan rotasi internal paha kanan pada panggul dengan lutut ditekuk — positif bila nyeri hipogastrik kanan.',
+    ]},
+  ],
+  interpretasi:[
+    'Perut buncit/melebar ke samping → curiga asites; bulging suprapubik → distensi kandung kemih atau uterus gravid.',
+    'Abdomen asimetris → curiga massa intra-abdomen.',
+    'Peristaltik terlihat pada dinding perut (di luar orang sangat kurus) → curiga obstruksi intestinal.',
+    'Peningkatan pulsasi epigastrium → curiga aneurisma aorta.',
+    'Spasme otot abdomen yang teraba → tanda rangsangan peritoneum.',
+    'Nyeri lepas (lebih nyeri saat tangan dilepas daripada ditekan) → tanda rangsangan peritoneal.',
+    'Shifting dullness positif (redup → timpani saat miring) → asites.',
+    'Undulasi positif → cairan bebas jumlah banyak (dapat juga positif tanpa asites sejati).',
+    'Nyeri mulai periumbilikal berpindah ke kuadran kanan bawah, memberat saat batuk, Rovsing/psoas/obturator sign positif → mengarah ke apendisitis akut.',
+  ],
+},
+{
+  id:'hernia', blok:'gastro', title:'Pemeriksaan Fisik Hernia',
+  sub:'Penilaian hernia inguinalis (direk/indirek) dan femoralis dengan palpasi cincin inguinal.',
+  tujuan:['Melakukan persiapan penderita dengan benar sebelum prosedur pemeriksaan.',
+    'Melakukan pemeriksaan hernia yang benar.',
+    'Mengetahui hasil pemeriksaan hernia yang normal dan abnormal.'],
+  teori:[
+    {h:'Definisi & Klasifikasi', list:[
+      'Hernia adalah protrusi kantong peritoneum, organ, atau jaringan pra-peritoneum melalui defek dinding abdomen (locus minoris resistentiae) yang secara normal tidak dapat dilewati. Bagian hernia: cincin hernia, kantong hernia (processus vaginalis), dan isi hernia.',
+      'Berdasarkan terjadinya: kongenital atau akuisita. Berdasarkan letak: diafragmatika, umbilikalis, femoralis, inguinalis. Berdasarkan lokasi terhadap rongga: eksterna atau interna.',
+    ]},
+    {h:'Menurut Sifatnya', list:[
+      '<b>Reponibilis</b> — isi hernia keluar-masuk bebas (keluar saat berdiri/mengedan, masuk saat berbaring/didorong), tanpa nyeri atau tanda obstruksi.',
+      '<b>Ireponibilis</b> — isi kantong tidak dapat kembali ke rongga (biasanya karena perlekatan), tanpa nyeri atau tanda obstruksi.',
+      '<b>Inkarserata/strangulata</b> — isi hernia terjepit cincin hernia, tidak dapat kembali, disertai gangguan pasase/vaskularisasi.',
+    ]},
+    {h:'Keluhan Umum', list:[
+      'Benjolan di lipat paha saat berdiri/batuk/bersin/mengedan, menghilang saat berbaring.',
+      'Nyeri visceral di epigastrium/paraumbilikal akibat regangan mesenterium; nyeri disertai mual-muntah menandakan inkarserata.',
+    ]},
+  ],
+  prosedur:[
+    {g:'A. Persiapan', items:['Ucapkan salam.','Perkenalkan diri dan tanyakan identitas (nama, umur, alamat) dengan sopan.','Jelaskan jenis dan prosedur tindakan kepada pasien.','Cuci tangan dan kenakan sarung tangan.']},
+    {g:'B. Pemeriksaan', items:[
+      'Pasien berdiri, pemeriksa duduk di depan pasien dengan nyaman.',
+      'Bebaskan daerah inguinal dan genital untuk pemeriksaan.',
+      'Inspeksi kedua area inguinal — cari benjolan atau asimetri.',
+      'Hernia inguinal kanan: gunakan ujung telunjuk kanan mencari batas bawah sakus skrotalis, dorong ke atas menuju kanalis inguinalis.',
+      'Telusuri korda spermatikus sampai ligamentum inguinal, temukan cincin inguinal eksterna (di atas & lateral tuberkel pubis). Palpasi cincin eksterna dan dasarnya; minta pasien mengedan/valsava, cari benjolan di atas ligamentum inguinal.',
+      'Bila cincin eksterna cukup lebar, masukkan jari sampai cincin inguinal interna; minta pasien mengedan kembali, cari benjolan di kanalis inguinalis, dorong dengan ujung jari telunjuk.',
+      'Hernia inguinalis kiri: lakukan cara yang sama dengan telunjuk kiri.',
+      'Hernia femoralis: letakkan jari di anterior kanalis femoralis, minta pasien mengedan, nilai pembengkakan/nyeri.',
+      'Bila tampak massa skrotum: minta pasien berbaring, nilai apakah massa menghilang. Bila tetap ada, palpasi dan dengarkan bising usus pada massa dengan stetoskop.',
+    ]},
+  ],
+  interpretasi:[
+    'Benjolan yang muncul saat inspeksi/mengedan → curiga hernia.',
+    'Benjolan teraba di sekitar cincin inguinal eksterna → curiga <b>hernia inguinalis direk</b>.',
+    'Benjolan teraba di sekitar cincin inguinal interna → curiga <b>hernia inguinalis indirek</b>.',
+    'Terdengar bising usus pada massa skrotum → isi hernia kemungkinan usus.',
+    'Bila terdapat massa yang tidak mengecil dengan berbaring dan nyeri hebat → pikirkan kemungkinan inkarserata/strangulata dan rujuk segera.',
+  ],
+},
+{
+  id:'ngt', blok:'gastro', title:'Pemasangan Nasogastric Tube (NGT)',
+  sub:'Indikasi dekompresi, feeding, dan diagnostik, lengkap dengan verifikasi posisi pipa.',
+  tujuan:['Mengetahui indikasi dan kontraindikasi pemasangan NGT.','Mempersiapkan alat dan bahan untuk pemasangan NGT.','Melakukan pemasangan NGT sesuai prosedur.'],
+  alat:['Handuk untuk menutupi baju pasien','Kertas tisu','Basin emesis','NGT: dewasa ukuran 16 atau 18 Fr, anak ukuran 10 Fr','Plester','Stetoskop','Disposable spuit 50 mL dengan catheter tip','1 gelas air minum dengan sedotan','Lubricant gel (idealnya mengandung anestesi lokal)'],
+  teori:[
+    {h:'Indikasi', list:[
+      '<b>Dekompresi isi lambung</b> — mengeluarkan cairan lambung pada ileus obstruktif/paralitik, peritonitis, pankreatitis akut; bilas lambung pada perdarahan SCBA.',
+      '<b>Memasukkan cairan/makanan (feeding)</b> — pasien tidak dapat menelan; lavase lambung pada kasus keracunan.',
+      '<b>Diagnostik</b> — analisis cairan isi lambung.',
+    ]},
+    {h:'Kontraindikasi', list:[
+      'Maxillofacial injury atau fraktur basis cranii fossa anterior — risiko misplacement melalui fossa cribriformis ke intrakranial.',
+      'Riwayat striktur esofagus dan varises esofagus.',
+    ]},
+    {h:'Komplikasi', list:[
+      'Iritasi hidung, sinusitis, rhinorrhea, fistula esofagotrakeal (pemasangan jangka lama).',
+      'Pneumonia aspirasi.',
+      'Hipoksia, sianosis, atau respiratory arrest akibat intubasi trakea yang tidak disadari.',
+    ]},
+  ],
+  prosedur:[
+    {g:'A. Persiapan', items:['Mengucapkan salam, memperkenalkan diri, memastikan identitas pasien, menjelaskan dan meminta persetujuan tindakan.','Memeriksa ketersediaan alat.','Mencuci tangan dan menggunakan sarung tangan.','Memeriksa lubang hidung yang akan digunakan untuk insersi.','Mempersiapkan pipa nasogastrik.']},
+    {g:'B. Tindakan', items:[
+      'Mengukur panjang pipa: dari tengah telinga ke puncak hidung, diteruskan ke titik antara processus xiphoideus dan umbilikus; tandai pada skala pipa.',
+      'Mengoleskan lubrikan pada ujung pipa sepanjang 15 cm pertama.',
+      'Memasukkan ujung pipa melalui lubang hidung sambil meminta pasien menelan, sampai batas yang ditandai.',
+      'Memeriksa ketepatan posisi ujung pipa di lambung: masukkan udara dengan catheter tip sambil auskultasi dengan stetoskop di atas lambung (whoosh test).',
+      'Bila ujung pipa tidak berada di lambung, tarik dan coba pasang ulang. Bila pasien sianosis/mengalami masalah respirasi, segera tarik pipa.',
+      'Bila posisi tepat, fiksasi pipa dengan plester pada muka dan hidung — hati-hati jangan menyumbat lubang hidung.',
+      'Mengalirkan ke kantong penampung, atau menutup ujung pipa dengan melipat bila tidak segera digunakan.',
+      'Memberi edukasi tentang perawatan pipa NGT dan rencana penggantian.',
+      'Merapikan alat, membuang bahan medis habis pakai, membuka sarung tangan, mencuci tangan.',
+    ]},
+  ],
+  interpretasi:[
+    'Terdengar suara udara (whoosh) di regio epigastrium saat udara disemprotkan → posisi pipa di lambung sudah tepat.',
+    'Tidak terdengar bunyi udara, atau pasien batuk/sianosis/suara berubah saat insersi → curiga pipa masuk ke saluran napas, segera tarik dan pasang ulang.',
+    'Aspirasi cairan lambung (asam, dapat diuji pH) turut menjadi konfirmasi tambahan posisi NGT.',
+  ],
+},
+{
+  id:'colokdubur', blok:'gastro', title:'Pemeriksaan Colok Dubur (Rectal Toucher)',
+  sub:'Penilaian perianal, tonus sfingter, mukosa rektum, dan kelenjar prostat.',
+  tujuan:['Merencanakan dan mempersiapkan alat dan bahan untuk colok dubur.','Menerangkan kepada pasien (informed consent) tentang tindakan dan persetujuannya.','Melakukan tindakan colok dubur dengan tepat dan sistematis.'],
+  teori:[
+    {h:'Prinsip', list:[
+      'Pemeriksaan colok dubur adalah memasukkan jari telunjuk yang telah diberi pelicin ke dalam lubang dubur, membantu menemukan kelainan pada perineum, anus, prostat, dan kandung kemih.',
+      'Yang dinilai: keadaan perianal, perineum, tonus sfingter ani dan bulbo-kavernosus reflex (BCR), mukosa dan ampula rekti, serta penonjolan prostat. Perianal: fistula, skin tag, tumor anus, hemoroid.',
+      'Pemeriksaan ini dapat menimbulkan rasa tidak nyaman dan kontraksi sfingter ani — perlu penjelasan terlebih dahulu agar pasien kooperatif.',
+    ]},
+    {h:'Posisi Pemeriksaan', list:[
+      '<b>Left lateral (Sims)</b> — rutin untuk wanita atau prosedur pada laki-laki; pasien miring kiri, tungkai atas kanan fleksi, tungkai bawah kiri semi-ekstensi, panggul menungging sejajar pinggir tempat tidur.',
+      '<b>Knee-elbow</b> — baik untuk perabaan prostat dan vesikula seminalis.',
+      '<b>Dorsal</b> — pasien setengah duduk, lutut fleksi; telunjuk kanan masuk melintasi bawah paha kanan; untuk bimanual, tangan kiri di suprapubis.',
+      '<b>Lithotomy</b> — dilakukan di meja operasi; bimanual dengan telunjuk kanan di rektum, tangan kiri di suprapubis.',
+    ]},
+  ],
+  prosedur:[
+    {g:'Prosedur', items:[
+      'Lakukan inspeksi untuk melihat benjolan, luka, inflamasi, kemerahan, atau ekskoriasi di sekitar anus.',
+      'Gunakan sarung tangan, oleskan lubricating gel pada ujung jari telunjuk pemeriksa dan sekitar anus pasien.',
+      'Sampaikan bahwa pemeriksaan akan dimulai, minta pasien tetap rileks.',
+      'Sentuhkan ujung jari ke anus, masukkan secara lembut dan perlahan; bila pasien kesakitan, berhenti sesaat dan periksa luka sekitar anus, lanjutkan saat pasien rileks.',
+      'Nilai tonus sfingter ani, nyeri, indurasi, iregularitas, nodul, atau lesi lain pada permukaan dalam sfingter.',
+      'Masukkan jari sedalam mungkin, putar searah dan berlawanan jarum jam untuk meraba seluruh permukaan rektum — nilai nodul, iregularitas, indurasi, nyeri tekan (tentukan lokasi bila ada). Nilai apakah ampula recti kolaps atau normal.',
+      'Pada laki-laki, setelah seluruh jari masuk, putar ke arah anterior untuk meraba permukaan posterior kelenjar prostat.',
+      'Periksa seluruh permukaan prostat: kutub atas, lobus lateralis, sulkus median. Tentukan ukuran, bentuk, konsistensi, permukaan, dan ada/tidaknya nodul.',
+      'Keluarkan jari secara perlahan.',
+      'Amati sarung tangan — apakah terdapat feses, darah, atau lendir.',
+      'Bila terdapat feses dan diperlukan pemeriksaan feses, masukkan sampel ke kontainer analisis.',
+      'Buka dan buang sarung tangan pada tempat sampah medis, cuci tangan.',
+    ]},
+  ],
+  interpretasi:[
+    'Tonus sfingter menurun → curiga gangguan neurologis (misal cedera medula spinalis).',
+    'Nyeri tekan hebat dan sfingter spasme → curiga fisura ani atau abses perianal.',
+    'Teraba nodul/indurasi/permukaan ireguler pada prostat → curiga keganasan prostat; pembesaran difus, kenyal, simetris → curiga BPH.',
+    'Ampula rekti kolaps → curiga obstruksi usus letak tinggi/ileus.',
+    'Sarung tangan tampak darah → curiga perdarahan saluran cerna bawah/hemoroid/keganasan; lendir → proses inflamasi.',
+  ],
+},
+];
+
+// ============================================================
+// REPRODUKSI & TUMBUH KEMBANG
+// ============================================================
+TOPICS.push(
+{
+  id:'obstetrik', blok:'repro', title:'Pemeriksaan Obstetrik (Anamnesis, Leopold & DJJ)',
+  sub:'Pemeriksaan antenatal — anamnesis kehamilan, palpasi Leopold I–IV, dan auskultasi denyut jantung janin.',
+  tujuan:['Melakukan anamnesis lengkap pada ibu hamil.','Melakukan pemeriksaan fisik menyeluruh pada ibu hamil (atau manikin).'],
+  teori:[
+    {h:'Indikasi Pemeriksaan Obstetrik', list:[
+      'Asuhan antenatal; deteksi dini kondisi patologik dalam kehamilan; merencanakan persalinan; persiapan penyelesaian persalinan.',
+      'Menilai kemajuan persalinan; mengetahui letak, posisi, dan kondisi bayi; menatalaksana masalah yang ditemukan dalam kehamilan.',
+    ]},
+  ],
+  prosedur:[
+    {g:'A. Persiapan Pertemuan', items:['Ucapkan salam.','Dengan sopan, perkenalkan diri dan tanyakan identitas ibu (nama, umur, alamat).']},
+    {g:'B. Anamnesis', items:[
+      'Tanyakan keluhan utama dan riwayat penyakit sekarang: riwayat kehamilan (GPA), riwayat perkawinan (lama tahun); riwayat haid dan HPHT (untuk usia kehamilan); riwayat penyakit ibu/keluarga dan riwayat persalinan (kesulitan persalinan sebelumnya).',
+      'Tentukan usia kehamilan menurut anamnesis haid dan buat taksiran persalinan (HPHT + 7 hari, bulan − 3 / + 9, tahun disesuaikan — rumus Naegele).',
+    ]},
+    {g:'C. Pemeriksaan Umum', items:['Menilai keadaan umum.','Mengukur berat badan.','Mengukur tanda vital: tekanan darah, nadi, pernapasan, suhu tubuh.']},
+    {g:'C. Pemeriksaan Khusus — Persiapan', items:[
+      'Jelaskan prosedur pemeriksaan; pemeriksaan mungkin menimbulkan rasa khawatir/tidak nyaman namun tidak berbahaya.',
+      'Persilakan ibu berbaring, tutup paha dan kaki dengan kain.',
+      'Cuci tangan dengan sabun, bilas air hangat, keringkan dengan handuk.',
+      'Pemeriksa berdiri di sisi kanan ibu menghadap lateral kanan; beritahu ibu pemeriksaan akan dimulai.',
+    ]},
+    {g:'D. Leopold I', items:[
+      'Letakkan sisi lateral telunjuk kiri pada puncak fundus uteri untuk menentukan tinggi fundus — jangan mendorong uterus ke bawah (fiksasi uterus bawah dengan ibu jari & telunjuk kanan bila perlu).',
+      'Usia kehamilan >24 minggu: gunakan pita ukur dari simfisis sampai fundus untuk menentukan TFU (cm); taksiran berat janin (TBJ) = TFU × lingkar perut (cm).',
+      'Angkat jari telunjuk kiri, hadapkan pemeriksa ke arah kepala ibu, letakkan kedua telapak tangan di fundus dan rasakan bagian janin dengan menekan lembut dan menggeser tangan bergantian (bagian keras-bulat-homogen = kepala; bagian lunak-kurang simetris = bokong).',
+    ]},
+    {g:'E. Leopold II', items:[
+      'Letakkan telapak tangan kiri di dinding perut lateral kanan dan tangan kanan di lateral kiri, sejajar dan setinggi.',
+      'Tekan bergantian/simultan dari atas ke bawah, rasakan bagian rata-memanjang (punggung) atau bagian kecil (ekstremitas).',
+    ]},
+    {g:'F. Leopold III', items:[
+      'Pemeriksa menghadap kaki ibu di sisi kanan.',
+      'Letakkan telapak tangan kiri dan kanan di dinding lateral bawah kiri dan kanan perut.',
+      'Tekan lembut bergantian/simultan untuk menentukan bagian terbawah janin (keras-bulat = kepala; lunak-tidak simetris = bokong).',
+    ]},
+    {g:'G. Leopold IV', items:[
+      'Letakkan ujung telapak tangan kiri-kanan di lateral kiri-kanan uterus bawah, ujung jari di tepi atas simfisis.',
+      'Temukan kedua ibu jari, rapatkan jari-jari yang meraba dinding bawah uterus; perhatikan sudut yang dibentuk (konvergen/divergen).',
+      'Pindahkan ibu jari dan telunjuk kiri ke bagian terbawah janin (kepala: pegang dekat leher; bokong: pegang pinggang).',
+      'Fiksasi bagian tersebut ke pintu atas panggul, letakkan jari tangan kanan di antara tangan kiri dan simfisis untuk menilai seberapa jauh bagian terbawah memasuki pintu atas panggul.',
+    ]},
+    {g:'H. Auskultasi Denyut Jantung Janin', items:[
+      'Angkat kedua tangan dari dinding perut, ambil stetoskop monoaural (Laenec) dengan tangan kiri, tempelkan pada dinding perut sesuai posisi punggung janin (bagian memanjang & rata).',
+      'Tempelkan telinga kiri pemeriksa dan dengarkan bunyi jantung janin (pindahkan titik dengar untuk mendapatkan punctum maksimum; bila dinding perut tebal, geser ±3 cm di bawah pusat/sub-umbilikal).',
+      'Dengarkan dan hitung DJJ selama 60 detik penuh (normal <b>120–160 kali/menit</b>).',
+      'Letakkan alat pada tempat semula; lakukan pemeriksaan tambahan bila perlu (laboratorium, USG).',
+      'Beritahu pemeriksaan selesai, angkat kain penutup, rapikan kembali pakaian ibu.',
+      'Persilakan ibu duduk kembali, catat hasil pemeriksaan pada status pasien.',
+    ]},
+    {g:'I. Penjelasan Hasil & Rencana Asuhan', items:[
+      'Jelaskan hasil palpasi-auskultasi: usia kehamilan; letak janin (memanjang/melintang/oblik); posisi janin (punggung kiri/kanan, superior/inferior); presentasi (kepala/sungsang/lintang/ganda); kondisi janin.',
+      'Jelaskan hasil temuan/penilaian klinis ibu dan kondisi kehamilan, serta rencana asuhan antenatal terkait.',
+      'Catat pada buku kontrol ibu hamil, jelaskan langkah/asuhan lanjutan serta jadwal kontrol ulang; anjurkan kunjungan ulang di luar jadwal bila ada keluhan.',
+      'Serahkan kembali buku kontrol ibu hamil dan ucapkan salam.',
+    ]},
+  ],
+  interpretasi:[
+    'DJJ normal: 120–160 kali/menit, teratur. Bradikardia (<120x) atau takikardia (>160x) janin → tanda gawat janin, perlu evaluasi lanjut.',
+    'Leopold I: tinggi fundus sesuai usia kehamilan menilai pertumbuhan janin; teraba bulat-keras di fundus → presentasi bokong.',
+    'Leopold III: bagian terbawah belum masuk PAP (masih dapat digoyangkan) vs sudah masuk (terfiksasi) menentukan kesiapan persalinan.',
+    'Leopold IV: jari konvergen → bagian terbawah belum masuk panggul; jari divergen → bagian terbawah sudah masuk panggul.',
+  ],
+},
+{
+  id:'ginekologi', blok:'repro', title:'Pemeriksaan Ginekologi',
+  sub:'Pemasangan spekulum vagina (inspekulo) dan pemeriksaan bimanual uterus-adneksa.',
+  tujuan:['Melakukan anamnesis berhubungan dengan keluhan organ genitalia wanita.','Melakukan pemasangan spekulum vagina dengan benar dan aman.','Melakukan pemeriksaan bimanual dengan benar.','Menegakkan diagnosis dan diagnosis banding.'],
+  teori:[
+    {h:'Tujuan Klinis', list:[
+      'Pemeriksaan ginekologi adalah prosedur klinik bimanual untuk menilai kondisi organ genitalia wanita, mencakup arah, besar, konsistensi uterus dan serviks, kondisi adneksa, parametrium, dan organ sekitar genitalia interna.',
+      'Indikasi: menilai bentuk/arah/besar/konsistensi uterus; adneksa dan parametrium; ballotement; konfirmasi kehamilan intra/ekstrauterin; konfirmasi peradangan/infeksi; fluor albus, perdarahan, dan tumor pelvik.',
+    ]},
+  ],
+  prosedur:[
+    {g:'A. Anamnesis & Persetujuan', items:[
+      'Menyapa pasien dan memperkenalkan diri.',
+      'Anamnesis sistematis: identitas, keluhan utama, perjalanan penyakit, jumlah anak, siklus haid, riwayat berobat.',
+      'Jelaskan prosedur, tujuan pemeriksaan, dan kemungkinan rasa tidak nyaman; pastikan pasien mengerti; minta persetujuan lisan.',
+    ]},
+    {g:'B. Persiapan Pasien & Alat', items:['Siapkan alat pada klien: kapas & antiseptik, spekulum cocor bebek (Grave), penjepit kasa, meja instrumen & lampu sorot, ranjang ginekologi dengan penopang kaki.','Siapkan alat pemeriksa: apron & baju periksa, sarung tangan DTT, sabun, air bersih, handuk.']},
+    {g:'C. Inspeksi & Inspekulo', items:[
+      'Pasien posisi litotomi; inspeksi vulva dan perineum.',
+      'Buka celah kedua labium mayus, perhatikan muara uretra dan introitus (kosongkan kandung kemih bila perlu).',
+      'Raba dan telusuri labium mayus kanan-kiri (terutama kelenjar Bartolini) dengan ibu jari dan telunjuk.',
+      'Ambil spekulum dengan tangan kanan, masukkan ujung telunjuk kiri pada introitus (agar terbuka), masukkan spekulum arah sejajar introitus, dorong bilah ke lumen vagina.',
+      'Setelah masuk setengah panjang bilah, putar spekulum 90° hingga tangkai ke bawah; buka kunci pengatur bilah atas-bawah hingga menyentuh dinding vagina.',
+      'Tekan pengungkit bilah hingga lumen vagina dan serviks tampak jelas — perhatikan ukuran/warna porsio, dinding, sekret vagina/forniks.',
+      'Setelah inspeksi selesai, lepaskan pengungkit dan pengatur jarak bilah, keluarkan spekulum, letakkan pada tempat yang disediakan.',
+    ]},
+    {g:'D. Pemeriksaan Bimanual (Vaginal Toucher)', items:[
+      'Berdiri untuk tuse vaginal; buka labium mayus kiri-kanan dengan ibu jari dan telunjuk tangan kiri; masukkan jari telunjuk dan tengah tangan kanan ke vagina.',
+      'Letakkan ujung jari tangan kiri di suprasimfisis, tentukan tinggi fundus uteri (bila teraba dari luar).',
+      'Tangan dalam memeriksa dinding vagina; secara bimanual tentukan besar, konsistensi, dan arah uterus; periksa konsistensi serviks, keadaan parametrium, dan kedua adneksa.',
+      'Pindahkan jari tangan luar-dalam ke isthmus, coba pertemukan ujung jari luar-dalam untuk menilai <b>tanda Hegar</b>.',
+      'Tangan kiri menahan uterus di suprasimfisis, keluarkan jari tengah dan telunjuk tangan kanan.',
+      'Angkat tangan kiri dari dinding perut, usap larutan antiseptik pada bekas sekret di dinding perut dan sekitar vulva/perineum.',
+      'Beritahu ibu pemeriksaan selesai, persilakan duduk kembali.',
+    ]},
+    {g:'E. Pencegahan Infeksi & Penjelasan Hasil', items:[
+      'Kumpulkan alat, rendam dalam larutan klorin 0,5% selama 10 menit; buang bahan habis pakai ke tempat sampah medis; seka bagian tercemar dengan larutan klorin.',
+      'Lepas sarung tangan secara aseptik, rendam, cuci tangan dengan sabun & air mengalir.',
+      'Jelaskan hasil pemeriksaan, diagnosis, dan rencana pengobatan; pastikan pasien mengerti; minta persetujuan tertulis bila perlu tindakan lanjut.',
+    ]},
+  ],
+  interpretasi:[
+    'Tanda Hegar (ismus uteri teraba lunak, ujung jari dalam-luar mudah bertemu) → tanda dugaan kehamilan.',
+    'Uterus membesar, lunak, nyeri goyang porsio positif → curiga infeksi pelvis (PID) atau kehamilan ektopik terganggu bila disertai tanda syok.',
+    'Massa adneksa unilateral, nyeri, riwayat terlambat haid → curiga kehamilan ektopik; massa kistik tanpa nyeri → curiga kista ovarium.',
+    'Porsio livide (kebiruan) dan lunak → tanda kehamilan (tanda Chadwick).',
+    'Fluor albus abnormal (berbau, berwarna, gatal) pada inspekulo → curiga infeksi/vaginosis/servisitis.',
+  ],
+},
+{
+  id:'papsmear', blok:'repro', title:'Pengambilan Sampel & Pembuatan Preparat Pap Smear',
+  sub:'Pengambilan sel ekto- dan endoserviks untuk skrining kanker serviks.',
+  tujuan:['Melakukan pemeriksaan Pap Smear dengan benar, dari pengambilan sampel hingga pembuatan preparat.'],
+  alat:['Ranjang ginekologi','Spekulum cocor bebek (Grave)','Spatula Ayre, kapas lidi / cytobrush','Kasa, penjepit kasa','Spray atau wadah etil alkohol 90%','Objek glass & label nama','Kapas dan larutan antiseptik','Apron, baju periksa, sarung tangan DTT'],
+  teori:[
+    {h:'Tujuan', list:['Pap smear menilai sel yang berasal dari serviks untuk mendeteksi perubahan sel abnormal — kanker serviks atau lesi prekanker. Diperlukan pengambilan sampel dari endoserviks dan ektoserviks.']},
+  ],
+  prosedur:[
+    {g:'A. Persetujuan Pemeriksaan', items:['Ucapkan salam dan perkenalkan diri.','Tanyakan identitas dan keluhan utama.','Jelaskan prosedur dan tujuan pemeriksaan, serta kemungkinan rasa tidak nyaman.','Pastikan pasien mengerti; minta persetujuan lisan.']},
+    {g:'B–D. Persiapan Alat, Pasien & Diri', items:[
+      'Minta pasien mengosongkan kandung kemih dan melepas pakaian; posisikan litotomi di ranjang ginekologi.',
+      'Hidupkan lampu sorot, arahkan pada area periksa.',
+      'Cuci tangan dan keringkan, kenakan sarung tangan.',
+    ]},
+    {g:'E. Pengambilan Sampel', items:[
+      'Pemeriksa duduk menghadap aspektus genitalis; inspeksi vulva dan perineum.',
+      'Pasang spekulum (teknik sama seperti pemeriksaan ginekologi) hingga serviks tampak jelas.',
+      'Bila sekret vagina banyak, bersihkan hati-hati agar pengambilan epitel tidak terganggu.',
+      'Sampel ektoserviks (porsio): putar spatula Ayre 360° pada permukaan porsio; oleskan pada gelas objek.',
+      'Sampel endoserviks (kanalis servikalis): putar kapas lidi/cytobrush 360° sebanyak 1–2 putaran; oleskan pada objek glass yang sama di lokasi berbeda (hindari tertumpuk).',
+      'Fiksasi sampel segera sebelum kering — semprot dari jarak 20–25 cm, atau rendam dalam etil alkohol 95% selama 15 menit, biarkan kering, beri label.',
+      'Lepaskan spekulum dengan hati-hati.',
+      'Lakukan pemeriksaan bimanual: konsistensi porsio, besar & arah uterus, keadaan kedua adneksa.',
+      'Usap larutan antiseptik pada sisa sekret di dinding perut/vulva/perineum; beritahu pemeriksaan selesai.',
+    ]},
+    {g:'F–H. Pencegahan Infeksi, Hasil & Rencana Lanjutan', items:[
+      'Dekontaminasi alat, buang sampah, dekontaminasi sarung tangan, cuci tangan.',
+      'Jelaskan hasil pemeriksaan pada pasien, pastikan dimengerti.',
+      'Catat hasil pada rekam medis; buat pengantar pemeriksaan ke ahli patologi anatomi; jadwalkan kunjungan ulang.',
+    ]},
+  ],
+  interpretasi:[
+    'Preparat yang adekuat memuat sel skuamosa ektoserviks dan sel endoserviks/metaplasia zona transformasi.',
+    'Hasil sitologi dilaporkan menurut sistem Bethesda: normal, ASC-US, LSIL, HSIL, hingga karsinoma — hasil abnormal memerlukan kolposkopi/biopsi lanjutan.',
+  ],
+},
+{
+  id:'iva', blok:'repro', title:'Inspeksi Visual dengan Asam Asetat (IVA)',
+  sub:'Skrining kanker serviks alternatif — pengamatan langsung serviks setelah pengolesan asam asetat 3–5%.',
+  tujuan:['Melakukan pemeriksaan IVA dengan baik dan benar.','Mengintepretasikan hasil pemeriksaan IVA.'],
+  alat:['Alat tulis & buku panduan','Kapas dan larutan antiseptik','Spekulum cocor bebek, penjepit kasa, kapas lidi','Meja instrumen & lampu sorot, ranjang ginekologi','Larutan asam asetat 3–5%','Sarung tangan, apron, larutan klorin, tempat sampah','Sabun & air bersih, cawan, korentang'],
+  teori:[
+    {h:'Definisi & Sejarah', list:['IVA mendeteksi kanker leher rahim, alternatif skrining Pap smear karena murah, praktis, mudah, dan dapat dilakukan tenaga kesehatan selain dokter ginekologi. Serviks diberi asam asetat 3–5% secara inspekulo; perubahan warna diamati langsung setelah 1–2 menit. Penemu: Hinselman (1925).']},
+    {h:'Indikasi (Faktor Risiko)', list:['Hubungan seksual usia <20 tahun.','Banyak pasangan seksual.','Riwayat IMS.','Ibu/saudara dengan kanker serviks.','Hasil Pap smear sebelumnya tidak normal.','Wanita yang terlalu sering melahirkan.','Perokok.']},
+    {h:'Kontraindikasi & Syarat', list:['Tidak direkomendasikan pasca-menopause (zona transisional sering di kanalis servikalis, tidak tampak dengan inspekulo).','Syarat: sudah pernah berhubungan seksual, tidak haid, tidak hamil, 24 jam sebelumnya tidak berhubungan seksual.']},
+    {h:'Keunggulan & Pembuatan Larutan', list:['Mudah, praktis, dapat dilakukan tenaga kesehatan terlatih, alat sederhana, murah, hasil langsung diketahui, dapat segera diterapi (see-and-treat).','Asam asetat 5%: 1 bagian cuka dapur + 4 bagian air. Asam asetat 3%: 2 bagian cuka dapur + 11 bagian air.']},
+  ],
+  prosedur:[
+    {g:'1–5. Persiapan & Pemasangan Spekulum', items:[
+      'Persetujuan pemeriksaan: sama seperti pemeriksaan ginekologi (salam, anamnesis, jelaskan prosedur & tujuan, persetujuan lisan).',
+      'Pemeriksa duduk menghadap aspektus genitalis, inspeksi vagina dengan pencahayaan cukup.',
+      'Pasang spekulum (teknik sama seperti pemeriksaan ginekologi) hingga terkunci dan serviks tampak jelas.',
+    ]},
+    {g:'6–12. Aplikasi Asam Asetat & Pengamatan', items:[
+      'Bila banyak cairan di leher rahim, serap dengan kapas steril.',
+      'Identifikasi daerah sambungan skuamo-kolumnar (zona transformasi/SCJ) dan area sekitarnya.',
+      'Oleskan larutan asam asetat, tunggu 1–2 menit untuk perubahan warna; amati dengan cermat area sekitar zona transformasi.',
+      'Amati SCJ secara menyeluruh; catat bila serviks mudah berdarah; lihat plak putih tebal (epitel <i>aceto white</i>).',
+      'Bersihkan sisa asam asetat dengan lidi kapas bersih.',
+      'Lepaskan pengungkit & pengatur bilah, keluarkan spekulum, letakkan di tempat yang disediakan.',
+    ]},
+    {g:'6–7. Pencegahan Infeksi & Hasil', items:['Dekontaminasi alat, buang sampah, dekontaminasi sarung tangan, cuci tangan.','Jelaskan hasil pemeriksaan; pastikan pasien mengerti.']},
+  ],
+  interpretasi:[
+    '<b>IVA positif</b>: ditemukan area berwarna putih (acetowhite) dengan permukaan meninggi dan batas jelas di sekitar zona transformasi — indikasi lesi prekanker, perlu tata laksana lanjut (krioterapi/rujukan).',
+    'IVA negatif: tidak ditemukan perubahan warna acetowhite pada zona transformasi.',
+  ],
+},
+{
+  id:'akdr', blok:'repro', title:'Pemasangan & Pencabutan AKDR (IUD)',
+  sub:'Konseling, seleksi klien, dan teknik pemasangan/pencabutan AKDR Cu T 380A dengan teknik tanpa-sentuh.',
+  tujuan:['Meningkatkan sikap positif terhadap manfaat dan pemakaian AKDR yang tepat; melakukan seleksi klien.','Melaksanakan praktik pencegahan infeksi untuk mengurangi risiko pasca pemasangan.','Memasang AKDR Cu T 380A dengan teknik "tanpa sentuh" (no-touch technique).','Memberikan konseling sebelum dan sesudah pemasangan; menjelaskan indikasi pencabutan; mencabut AKDR.'],
+  alat:['AKDR Cu T 380A dalam kemasan steril','Spekulum cocor bebek','Tenakulum, sonde rahim','Gunting, tampon tang, klem aligator','Sarung tangan, kain penutup tubuh','Larutan antiseptik, larutan klorin 0,5%'],
+  prosedur:[
+    {g:'A. Konseling Awal', items:['Sapa klien dengan ramah, perkenalkan diri, tanyakan tujuan kedatangan.','Berikan informasi umum tentang Keluarga Berencana.','Jelaskan jenis kontrasepsi yang tersedia, risiko & keuntungan tiap metode (kontap vs metode reversibel), cara kerja, dan efek samping.']},
+    {g:'B. Konseling Metode Khusus', items:['Berikan jaminan kerahasiaan.','Kumpulkan data pribadi klien.','Tanyakan tujuan KB (mengatur jarak/membatasi jumlah anak) dan pertimbangan agama/kepercayaan.','Diskusikan kebutuhan dan kekhawatiran klien dengan sikap simpatik; bantu memilih metode yang tepat.','Bila klien memilih AKDR, jelaskan kemungkinan efek samping AKDR Cu T 380A sampai benar-benar dimengerti.']},
+    {g:'C. Konseling Pra-pemasangan & Seleksi Klien', items:['Lakukan seleksi klien (anamnesis) cermat memastikan tidak ada kontraindikasi AKDR.','Lakukan pemeriksaan fisik umum dan pemeriksaan panggul: inspeksi vulva, inspekulo (nilai sekret vagina/porsio), bersihkan vagina-porsio dengan kasa + antiseptik.']},
+    {g:'D. Pemeriksaan Bimanual Pra-pemasangan', items:['Keluarkan spekulum dengan hati-hati, letakkan pada tempat semula.','Pemeriksaan bimanual: pastikan gerakan serviks bebas, tentukan besar & posisi uterus, pastikan tidak ada kehamilan, tidak ada infeksi/tumor adneksa.','Pemeriksaan rektovaginal bila ada indikasi (sulit menentukan besar uterus retroversi, tumor cavum Douglasi).','Celupkan sarung tangan ke larutan klorin 0,5%, buka dalam keadaan terbalik dan rendam.']},
+    {g:'E. Tindakan Pra-pemasangan (Memasukkan AKDR ke Inserter)', items:[
+      'Jelaskan proses pemasangan dan apa yang akan klien rasakan; beri kesempatan bertanya.',
+      'Buka sebagian plastik penutup kemasan dan lipat ke belakang; masukkan pendorong ke tabung inserter tanpa menyentuh benda tidak steril.',
+      'Letakkan kemasan pada bidang datar; selipkan karton pengukur di bawah lengan AKDR.',
+      'Pegang kedua ujung lengan AKDR, dorong tabung inserter sampai pangkal lengan hingga lengan melipat.',
+      'Setelah lengan melipat, tarik tabung inserter dari bawah lipatan lengan; angkat sedikit, dorong dan putar untuk memasukkan lengan AKDR yang terlipat ke tabung inserter.',
+      'Pastikan cincin biru sejajar arah lengan AKDR (cocokkan ukuran kavum uteri); pastikan ujung pendorong menyentuh ujung AKDR — AKDR siap diinsersikan.',
+    ]},
+    {g:'F. Tindakan Pemasangan AKDR', items:[
+      'Kenakan sarung tangan baru; pasang spekulum vagina untuk melihat serviks.',
+      'Usap vagina & serviks dengan antiseptik 2–3 kali.',
+      'Jepit serviks dengan tenakulum secara hati-hati (takik pertama).',
+      'Masukkan sonde uterus dengan teknik <b>tidak menyentuh</b> — sekali masuk tanpa menyentuh dinding vagina/bibir spekulum. Tentukan posisi & kedalaman kavum uteri, keluarkan sonde.',
+      'Ukur kedalaman kavum uteri pada tabung inserter (masih dalam kemasan steril) dengan menggeser leher biru; buka seluruh plastik penutup kemasan.',
+      'Angkat tabung AKDR dari kemasan tanpa menyentuh permukaan tidak steril, hati-hati pendorong tidak terdorong.',
+      'Pegang tabung dengan leher biru horizontal (sejajar lengan AKDR); sambil menarik hati-hati tenakulum, masukkan tabung inserter ke uterus sampai leher biru menyentuh serviks/terasa tahanan.',
+      'Tahan tenakulum dan pendorong dengan satu tangan.',
+      'Lepaskan lengan AKDR dengan teknik <b>withdrawal</b> — tarik tabung inserter sampai pangkal pendorong dengan tetap menahan pendorong.',
+      'Keluarkan pendorong, dorong kembali tabung inserter ke serviks sampai leher biru menyentuh serviks/terasa tahanan.',
+      'Keluarkan sebagian tabung inserter, gunting benang AKDR ±3–4 cm.',
+      'Keluarkan seluruh tabung inserter, buang ke tempat sampah terkontaminasi.',
+      'Lepaskan tenakulum hati-hati, rendam dalam klorin 0,5%; bila ada perdarahan bekas jepitan, tekan dengan kasa 30–60 detik.',
+      'Keluarkan spekulum hati-hati, rendam dalam klorin 0,5%.',
+    ]},
+    {g:'G. Tindakan Pasca Pemasangan', items:['Rendam semua alat dalam larutan klorin 0,5% selama 10 menit untuk dekontaminasi.','Buang bahan tidak terpakai ke tempat sampah medis.','Celupkan sarung tangan ke klorin, lepas terbalik dan rendam; cuci tangan.','Amati klien selama 5 menit sebelum diperbolehkan pulang; konseling pasca pemasangan.']},
+    {g:'H. Pencabutan AKDR', items:['Lakukan konseling pra-pencabutan dan konfirmasi keinginan klien.','Pasang spekulum, visualisasikan benang AKDR pada serviks.','Jepit benang AKDR dekat serviks dengan klem/tampon tang, tarik perlahan dan mantap searah kanalis servikalis hingga AKDR keluar.','Tunjukkan AKDR yang sudah dicabut kepada klien.']},
+    {g:'I. Konseling Pasca Pencabutan', items:[
+      'Diskusikan apa yang harus dilakukan bila klien mengalami masalah (perdarahan lama, nyeri perut/panggul).',
+      'Minta klien mengulangi penjelasan yang diberikan; jawab semua pertanyaan.',
+      'Ulangi keterangan pilihan kontrasepsi lain bila klien ingin tetap mengatur jarak/membatasi jumlah anak; bantu tentukan kontrasepsi baru atau berikan kontrasepsi sementara.',
+      'Buat rekam medik tentang pencabutan AKDR.',
+    ]},
+  ],
+  interpretasi:[
+    'Benang AKDR tidak teraba pada pemeriksaan lanjutan → curiga ekspulsi, translokasi (perforasi), atau kehamilan — perlu USG konfirmasi.',
+    'Nyeri hebat atau perdarahan aktif saat pemasangan (di luar nyeri ringan wajar) → curiga perforasi uterus, hentikan tindakan dan evaluasi lanjut.',
+    'Tanda Hegar positif pada pemeriksaan pra-pemasangan → kontraindikasi pemasangan (kehamilan), tunda tindakan.',
+  ],
+},
+{
+  id:'apn', blok:'repro', title:'Asuhan Persalinan Normal (APN, 60 Langkah)',
+  sub:'Pertolongan persalinan kala II–IV: kelahiran bayi, manajemen aktif kala III, dan pemantauan kala IV.',
+  tujuan:['Meningkatkan sikap positif terhadap keramahan dan keamanan asuhan persalinan dasar.','Memberi pengetahuan & keterampilan asuhan persalinan normal serta penanganan awal penyulit dan rujukan.','Melakukan penatalaksanaan persalinan fisiologis kala II, III, dan IV.'],
+  alat:['Partus set & perlengkapan bayi','Stetoskop monoaural/Laenec, tensimeter, pita ukur','Sarung tangan DTT, kain penutup tubuh','Ember untuk cairan dekontaminasi, sabun','Oksitosin dan obat-obat seperlunya'],
+  prosedur:[
+    {g:'I. Tanda & Gejala Kala Dua', items:['Mendengar dan melihat tanda persalinan kala dua: dorongan kuat untuk meneran, tekanan pada anus, perineum menonjol, vulva dan anus membuka.']},
+    {g:'II–III. Persiapan Alat & Diri', items:[
+      'Memastikan kelengkapan alat pertolongan persalinan, termasuk mematahkan ampul oksitosin dan memasukkan 1 alat suntik sekali pakai 2½ mL ke wadah partus set.',
+      'Memakai celemek plastik.',
+      'Memastikan tangan tidak memakai perhiasan, mencuci tangan dengan sabun dan air mengalir.',
+      'Memakai sarung tangan DTT pada tangan yang akan digunakan untuk periksa dalam.',
+      'Mengambil alat suntik sekali pakai dengan tangan bersarung, isi dengan oksitosin, letakkan kembali ke wadah partus set. (Bila ketuban belum pecah, siapkan ½ kocher pada partus set.)',
+    ]},
+    {g:'IV. Memastikan Pembukaan Lengkap & Keadaan Janin Baik', items:[
+      'Membersihkan vulva dan perineum dengan kapas basah, arah vulva ke perineum.',
+      'Melakukan periksa dalam, pastikan pembukaan lengkap dan selaput ketuban sudah pecah (pecahkan bila belum; pastikan kepala sudah masuk, tidak teraba bagian kecil janin/tali pusat).',
+      'Bila pembukaan belum lengkap, catat pada partograf dan nilai kemajuan persalinan.',
+      'Dekontaminasi sarung tangan; periksa DJJ setelah kontraksi selesai, pastikan dalam batas normal (120–160x/menit).',
+    ]},
+    {g:'V–VI. Menyiapkan Ibu & Keluarga; Memimpin Meneran', items:[
+      'Beritahukan pada ibu pembukaan sudah lengkap dan keadaan janin baik; bantu ibu menemukan posisi nyaman sesuai keinginannya.',
+      'Tunggu hingga ada dorongan kuat untuk meneran (maksimum 60 menit bila belum ada); anjurkan ganti posisi (miring, jongkok, merangkak).',
+      'Pimpin meneran saat ibu memiliki dorongan kuat: dukung usaha ibu meneran, beri kesempatan istirahat antar-his, minta keluarga memberi minum, periksa DJJ tiap kontraksi selesai.',
+      'Bila bayi belum lahir setelah dipimpin meneran 2 jam (primipara) atau 1 jam (multipara), segera rujuk.',
+    ]},
+    {g:'VII. Persiapan Pertolongan Kelahiran Janin', items:[
+      'Saat kepala terlihat pada vulva diameter 5–6 cm, pasang handuk bersih di perut ibu untuk mengeringkan bayi.',
+      'Ambil kain bersih, lipat 1/3 bagian, letakkan di bawah bokong ibu.',
+      'Buka tutup partus set.',
+      'Pakai sarung tangan DTT pada kedua tangan.',
+    ]},
+    {g:'VIII. Menolong Kelahiran Bayi', items:[
+      '<b>Lahirnya kepala</b> — saat suboksiput tampak di bawah simfisis, tangan kanan melindungi perineum (lapisan kain di bawah bokong), tangan kiri menahan puncak kepala mencegah defleksi terlalu cepat (minta ibu bernapas pendek-pendek, jangan meneran). Bila ada mekonium di air ketuban, segera lakukan penghisapan mulut & hidung janin.',
+      'Usap muka janin dengan kasa bersih untuk membersihkan lendir dan darah.',
+      'Periksa adanya lilitan tali pusat pada leher janin. Bila lilitan terlalu erat, klem di dua tempat dan potong tali pusat di antara klem.',
+      'Tunggu kepala janin melakukan putaran paksi luar secara spontan.',
+      '<b>Lahirnya bahu</b> — setelah janin menghadap paha ibu, tempatkan kedua telapak tangan pada biparietal kepala, tarik hati-hati ke bawah hingga bahu anterior lahir, lalu ke atas hingga bahu posterior lahir.',
+      '<b>Lahirnya badan & tungkai</b> — tangan kanan menyangga kepala-leher-bahu posterior janin, tangan kiri memegang lengan-bahu anterior saat badan lahir; tangan kiri lalu menyusuri punggung ke arah bokong-tungkai (selipkan telunjuk kiri di antara kedua lutut janin).',
+    ]},
+    {g:'IX. Penanganan Bayi Baru Lahir', items:[
+      'Pegang bayi bertumpu pada lengan kanan menghadap penolong; nilai bayi, letakkan di atas perut ibu dengan kepala lebih rendah dari badan.',
+      'Segera keringkan bayi, bungkus kepala dan badan kecuali tali pusat.',
+      'Jepit tali pusat ±3 cm dari umbilikus, urut tali pusat ke arah ibu, pasang klem kedua 2 cm dari klem pertama.',
+      'Pegang tali pusat di antara 2 klem dengan tangan kiri (lindungi jari dari gunting), potong tali pusat di antara kedua klem.',
+      'Ganti pembungkus bayi dengan kain kering-bersih, bungkus hingga kepala.',
+      'Berikan bayi kepada ibu untuk disusui bila ibu menghendaki (IMD).',
+    ]},
+    {g:'X. Penatalaksanaan Aktif Kala Tiga', items:[
+      'Periksa fundus uteri untuk memastikan kehamilan tunggal; beritahu ibu akan disuntik.',
+      'Suntikkan oksitosin 10 IU IM di 1/3 atas paha kanan luar, aspirasi dulu memastikan jarum tidak mengenai pembuluh darah.',
+      '<b>Peregangan tali pusat terkendali (PTT)</b> — pindahkan klem hingga berjarak 5–10 cm dari vulva; tangan kiri di atas simfisis menahan uterus, tangan kanan memegang tali pusat dengan klem/kasa.',
+      'Saat uterus kontraksi, tegangkan tali pusat dengan tangan kanan, tangan kiri menekan uterus ke arah dorsokranial. Bila uterus tidak segera kontraksi, minta stimulasi puting susu.',
+      '<b>Melahirkan plasenta</b> — bila tali pusat bertambah panjang dan terasa pelepasan plasenta, minta ibu meneran sedikit, tarik tali pusat ke bawah lalu ke atas sesuai kurve jalan lahir hingga plasenta tampak di vulva. Bila plasenta belum lepas dalam 15 menit: ulangi oksitosin 10 IU IM, periksa kandung kemih (kateterisasi bila penuh), siapkan rujukan bila 15 menit kedua tetap gagal.',
+      'Setelah plasenta tampak di vulva, pegang dengan kedua tangan, putar searah untuk membantu pengeluaran dan mencegah robeknya selaput ketuban.',
+      '<b>Masase uterus</b> — segera setelah plasenta lahir, masase fundus secara sirkuler dengan 4 jari tangan kiri hingga kontraksi baik (fundus teraba keras).',
+    ]},
+    {g:'XI. Memeriksa Kemungkinan Perdarahan & Kelengkapan Plasenta', items:[
+      'Periksa kedua sisi plasenta (maternal & fetal) dan selaput ketuban untuk memastikan lengkap; masukkan plasenta ke kantong plastik/tempat khusus.',
+      'Evaluasi adanya laserasi jalan lahir/perineum yang menimbulkan perdarahan aktif, lakukan penjahitan bila perlu.',
+    ]},
+    {g:'Mengikat Tali Pusat', items:[
+      'Ikat tali pusat ±1 cm dari umbilikus dengan simpul mati; ikat balik untuk kedua kalinya.',
+      'Lepaskan klem tali pusat, masukkan ke wadah larutan klorin 0,5%.',
+      'Bungkus kembali bayi; berikan kepada ibu untuk disusui.',
+    ]},
+    {g:'Evaluasi Kala IV', items:[
+      'Lanjutkan pemantauan kontraksi uterus, perdarahan pervaginam, dan tanda vital ibu: <b>2–3× dalam 10 menit pertama; tiap 15 menit pada jam pertama; tiap 20–30 menit pada jam kedua</b>. Bila kontraksi tidak baik, lakukan masase.',
+      'Ajarkan ibu/keluarga meraba uterus berkontraksi baik dan cara masase bila kontraksi tidak baik.',
+      'Evaluasi jumlah perdarahan yang terjadi.',
+      'Periksa nadi ibu dan tekanan darah.',
+    ]},
+    {g:'Kebersihan & Keamanan', items:[
+      'Rendam semua alat bekas pakai dalam larutan klorin 0,5%.',
+      'Buang bahan terkontaminasi ke tempat sampah yang disediakan.',
+      'Bersihkan ibu dari sisa air ketuban, lendir, darah; ganti pakaian dengan yang bersih/kering.',
+      'Pastikan ibu merasa nyaman; anjurkan keluarga membantu bila ibu ingin minum.',
+      'Dekontaminasi tempat persalinan dengan larutan klorin 0,5%.',
+      'Bersihkan sarung tangan dalam larutan klorin 0,5%, lepaskan dalam keadaan terbalik dan rendam.',
+      'Cuci tangan dengan sabun dan air mengalir.',
+      'Melengkapi partograf.',
+    ]},
+  ],
+  interpretasi:[
+    'Tanda pelepasan plasenta: uterus globuler dan lebih tinggi (kontraksi), tali pusat memanjang, semburan darah tiba-tiba.',
+    'Kontraksi uterus baik pasca-plasenta lahir: fundus teraba keras/globuler — bila lembek (atonia uteri) → risiko perdarahan pasca-persalinan, lakukan masase & evaluasi penyebab (4T: tone, tissue, trauma, thrombin).',
+    'Perdarahan kala IV dianggap abnormal bila >500 mL pada persalinan pervaginam — pantau ketat pada 2 jam pertama karena risiko perdarahan tertinggi terjadi di periode ini.',
+    'DJJ dan tanda vital ibu dalam batas normal sepanjang kala II merupakan indikator keadaan janin dan ibu yang baik.',
+  ],
+},
+{
+  id:'gizi', blok:'repro', title:'Penilaian Status Gizi & Kebutuhan Kalori Anak',
+  sub:'Penggunaan kurva pertumbuhan WHO (Z-score, <5 tahun) dan CDC-NCHS (>5 tahun), serta perhitungan kebutuhan kalori.',
+  tujuan:['Menjelaskan dan menilai pertumbuhan-perkembangan anak serta kebutuhan kalori untuk pertumbuhan.'],
+  teori:[
+    {h:'Pertumbuhan vs Perkembangan', list:[
+      '<b>Pertumbuhan</b> — perubahan kuantitatif fisik/organ/struktur tubuh (pertambahan ukuran/berat, misal TB dan BB).',
+      '<b>Perkembangan</b> — deretan perubahan progresif yang teratur dan koheren, terjadi terus-menerus dan tidak dapat terulang.',
+    ]},
+  ],
+  prosedur:[
+    {g:'Prosedur Grafik Pertumbuhan WHO (Usia < 5 Tahun)', items:[
+      'Tentukan umur, panjang badan (<2 tahun) / tinggi badan (>2 tahun), dan berat badan anak.',
+      'Tentukan titik pada garis horizontal kurva (umur, atau panjang/tinggi badan tergantung jenis kurva).',
+      'Tentukan titik pada garis vertikal kurva (panjang/berat badan, umur, atau IMT).',
+      'Hubungkan kedua titik hingga didapat titik temu (plotted point) yang menggambarkan status pertumbuhan anak.',
+      'Interpretasikan: garis 0 = median/rata-rata; garis lain = z-score (+1,+2,+3 / −1,−2,−3). Titik temu antara z-score −2 dan −3 = "di bawah −2"; antara +2 dan +3 = "di atas 2".',
+    ]},
+    {g:'Prosedur Grafik CDC-NCHS (Usia > 5 Tahun)', items:[
+      'Siapkan kurva CDC-NCHS: BB, TB, lingkar kepala menurut umur & jenis kelamin, serta BB terhadap TB.',
+      'Catat nama, umur/tanggal lahir, jenis kelamin, BB, TB anak; ukur BB dan TB aktual.',
+      'Plot BB aktual dan TB aktual terhadap umur pada kurva; tentukan posisi persentil (P5, P10, P25, P50, P75, P90, P95) atau di antaranya.',
+      'BB ideal menurut umur: tarik garis dari umur (horizontal) hingga memotong persentil 50 kurva BB. BB/U = BB aktual / BB ideal.',
+      'TB ideal menurut umur: tarik garis dari umur hingga memotong persentil 50 kurva TB. TB/U = TB aktual / TB ideal.',
+      'BB ideal menurut TB aktual: tarik garis mendatar dari TB aktual hingga memotong persentil 50 kurva TB, lalu tarik vertikal ke bawah hingga memotong persentil 50 kurva BB. BB/TB = BB aktual / BB ideal berdasarkan TB.',
+      'Tentukan penilaian antropometri berdasarkan BB/U, TB/U, dan BB/TB.',
+    ]},
+    {g:'Penentuan Kebutuhan Kalori Anak', items:[
+      'Tentukan BB ideal (dari z-score BB/TB atau kurva CDC-NCHS langkah terkait).',
+      'Tentukan usia berdasarkan TB aktual anak (dari kurva TB/U pada z-score 0 / persentil 50).',
+      'Tentukan RDA (angka kecukupan gizi) berdasarkan usia terhadap TB tersebut.',
+      'Hitung kebutuhan kalori anak = BB ideal × RDA.',
+    ]},
+  ],
+  interpretasi:[
+    'Z-score BB/TB atau IMT/U: di atas 3 = obesitas; di atas 2 = overweight (gizi lebih); di atas 1 = berisiko gizi lebih; 0 = median (normal); di bawah −2 = kurus/gizi kurang; di bawah −3 = sangat kurus/gizi buruk.',
+    'Z-score TB/U: di bawah −2 = perawakan pendek (stunted); di bawah −3 = perawakan sangat pendek.',
+    'Klasifikasi status gizi (Waterlow/WHO 2006/CDC 2000) berdasarkan BB/TB: Obesitas >120% median (>+3 SD); Overweight >110% (+2 s.d. +3 SD); Normal >90% (+2 s.d. −2 SD); Gizi kurang 70–90% (<−2 s.d. −3 SD); Gizi buruk <70% (<−3 SD).',
+    'Kebutuhan kalori menurut usia (per kgBB/hari): Prematur 120–150; 0–12 bulan 110–120; 1–3 tahun 100–110; 4–6 tahun 100; 7–12 tahun 75–90; 12–18 tahun 60–75 kkal/kgBB/hari.',
+    'Kebutuhan protein: Bayi 1,6–2,2 g/kgBB/hari; anak 1–10 tahun 1,0–2 g/kgBB/hari; anak >10 tahun 0,85–0,95 g/kgBB/hari.',
+  ],
+  table:{title:'Interpretasi Z-score Kurva Pertumbuhan WHO', head:['Z-skor','TB/Panjang thd Umur','Berat thd Umur','Berat thd Panjang/Tinggi','IMT thd Umur'],
+    rows:[
+      ['Di atas 3','(perawakan tinggi, singkirkan kelainan hormonal)','—','Obesitas','Obesitas'],
+      ['Di atas 2','—','—','Overweight (gizi lebih)','Overweight (gizi lebih)'],
+      ['Di atas 1','—','—','Berisiko gizi lebih','Berisiko gizi lebih'],
+      ['0 (median)','Normal','Normal','Normal','Normal'],
+      ['Di bawah −1','—','—','—','—'],
+      ['Di bawah −2','Perawakan pendek','Gizi kurang','Kurus','Kurus'],
+      ['Di bawah −3','Perawakan sangat pendek/kerdil','Gizi buruk','Sangat kurus','Sangat kurus'],
+    ]},
+},
+{
+  id:'ddst', blok:'repro', title:'Penilaian Perkembangan Anak — Denver II (DDST II)',
+  sub:'Skrining perkembangan 4 sektor (personal-sosial, motorik halus, bahasa, motorik kasar) dengan formulir Denver.',
+  tujuan:['Melakukan dan menentukan secara dini adanya gangguan perkembangan seorang anak.'],
+  teori:[
+    {h:'Prinsip Denver II', list:[
+      'Tahap pertama dilakukan pada usia 0–6 tahun, pada titik skrining: 3–6 bulan, 9–12 bulan, 18–24 bulan, 3 tahun, 4 tahun, 5 tahun.',
+      'Tahap kedua dilakukan pada anak yang dicurigai ada hambatan perkembangan pada tahap pertama, dilanjutkan evaluasi diagnostik lengkap.',
+      'Formulir Denver berisi 125 tugas perkembangan pada 4 sektor, masing-masing dengan batas persentil populasi yang lulus (25%, 50%, 90%).',
+    ]},
+    {h:'Alat Bantu', list:['Formulir Denver II, alat tulis, penggaris.','Seperangkat alat bermain: benang, kismis, kerincingan bergagang kecil, balok warna-warni (10 kubus), botol kaca kecil berlubang, bel kecil, bola tenis, pensil merah, boneka kecil dengan botol susu, cangkir plastik bergagang, kertas kosong.']},
+  ],
+  prosedur:[
+    {g:'Langkah Pemeriksaan', items:[
+      'Siapkan formulir Denver (125 tugas perkembangan dengan batas 25%, 50%, 90% populasi lulus).',
+      'Tentukan umur anak/koreksi faktor prematuritas (bila lahir >2 minggu sebelum taksiran persalinan dan usia <2 tahun).',
+      'Tarik garis umur dari atas ke bawah, cantumkan tanggal pemeriksaan di ujung atas garis (gunakan warna berbeda untuk pemeriksaan berulang).',
+      'Siapkan alat yang dapat dijangkau anak, berikan mainan sesuai yang ingin diujikan.',
+      'Lakukan tugas perkembangan tiap sektor mulai dari yang paling mudah (di sebelah kiri garis umur), lanjutkan ke kanan garis umur.',
+      'Pada tiap sektor, lakukan minimal 3 uji coba terdekat di sebelah kiri garis umur serta tiap uji coba yang dilalui garis umur.',
+      'Nilai tiap tugas: L (lulus/pass), G (gagal/fail), M (menolak/refuse), atau Tk (tidak ada kesempatan).',
+      'Interpretasikan hasil per sektor dan keseluruhan: normal, suspect (dicurigai), atau tidak dapat dites — rujuk untuk evaluasi lanjut bila suspect/abnormal.',
+    ]},
+  ],
+  interpretasi:[
+    'Empat sektor Denver II: personal-sosial, motorik halus-adaptif, bahasa, motorik kasar.',
+    'Keterlambatan (delay) ditentukan bila anak gagal pada tugas yang seharusnya lulus oleh 90% anak seusianya (di kiri garis umur).',
+    'Hasil "suspect"/dicurigai bila terdapat ≥2 keterlambatan pada ≥2 sektor atau kombinasi tertentu sesuai kriteria Denver — perlu evaluasi ulang atau rujukan.',
+  ],
+},
+{
+  id:'kpsp', blok:'repro', title:'Penilaian Perkembangan Anak dengan KPSP', interactive:'kpsp',
+  sub:'Kuesioner Praskrining Perkembangan (KPSP) — 10 pertanyaan Ya/Tidak sesuai kelompok usia anak.',
+  tujuan:['Melakukan skrining perkembangan anak dengan KPSP sesuai kelompok usia dan menginterpretasikan hasilnya.'],
+  teori:[
+    {h:'Prinsip KPSP', list:[
+      'KPSP terdiri dari 9–10 pertanyaan per kelompok usia, dijawab oleh ibu/pengasuh anak (jawaban <b>YA</b> atau <b>TIDAK</b>) atau dengan perintah kepada anak/pengasuh untuk melaksanakan tugas yang tertulis.',
+      'Pertanyaan dijawab berurutan satu per satu.',
+    ]},
+    {h:'Catatan Pemilihan Usia', list:[
+      'Bila usia anak di antara dua kelompok KPSP, gunakan KPSP dengan usia yang lebih kecil. Contoh: bayi 7 bulan → gunakan KPSP 6 bulan.',
+      'Bila umur anak lebih dari 16 hari, dibulatkan ke atas 1 bulan. Contoh: 3 bulan 16 hari → dibulatkan 4 bulan; 3 bulan 15 hari → dibulatkan 3 bulan.',
+    ]},
+  ],
+  prosedur:[
+    {g:'Langkah Pemeriksaan', items:[
+      'Siapkan formulir KPSP.',
+      'Pilih KPSP yang sesuai umur anak (lihat catatan pembulatan usia).',
+      'Lakukan penilaian dengan pertanyaan yang dijawab ibu/pengasuh anak — hanya jawaban YA atau TIDAK.',
+      'Lakukan penilaian dengan memberi perintah kepada ibu/pengasuh/anak untuk melaksanakan tugas yang tertulis pada KPSP.',
+      'Pertanyaan dijawab berurutan satu per satu.',
+      'Interpretasikan nilai KPSP (jumlah jawaban YA).',
+      'Berikan saran sesuai hasil interpretasi.',
+    ]},
+  ],
+  interpretasi:[
+    'Jawaban YA = 9 atau 10 → perkembangan <b>sesuai (S)</b>.',
+    'Jawaban YA = 7 atau 8 → perkembangan <b>meragukan (M)</b>.',
+    'Jawaban YA = 6 atau kurang → <b>kemungkinan ada penyimpangan (P)</b> — rinci nomor jawaban TIDAK untuk menentukan jenis keterlambatan (sektor motorik kasar/halus, bahasa, atau personal-sosial), dan rujuk untuk evaluasi lanjut.',
+  ],
+},
+);
+
+/* =========================================================
+   APP LOGIC
+   ========================================================= */
+const KPSP = JSON.parse(document.getElementById('kpsp-data').textContent);
+const KPSP_AGES = Object.keys(KPSP);
+
+const state = { view:'home', topicId:null, blokFilter:'all', activeTab:'teori', kpspAge:KPSP_AGES[0], kpspAnswers:{} };
+
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+const viewRoot = $('#viewRoot');
+function esc(s){ return (s+'').replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function findTopic(id){ return TOPICS.find(t=>t.id===id); }
+function blokLabel(id){ return BLOKS.find(b=>b.id===id).label; }
+function topicsFiltered(){ return state.blokFilter==='all' ? TOPICS : TOPICS.filter(t=>t.blok===state.blokFilter); }
+
+/* ---------- Sidebar nav ---------- */
+function renderNavTree(filter){
+  const q = (filter||'').trim().toLowerCase();
+  let list = topicsFiltered();
+  if(q){
+    list = list.filter(t => t.title.toLowerCase().includes(q) || (t.sub||'').toLowerCase().includes(q));
+  }
+  let html = '';
+  BLOKS.forEach(b=>{
+    if(state.blokFilter!=='all' && state.blokFilter!==b.id) return;
+    const topics = list.filter(t=>t.blok===b.id);
+    if(!topics.length) return;
+    html += `<div class="nav-cat"><div class="nav-cat-head">${esc(b.label)}</div>`;
+    topics.forEach(t=>{
+      html += `<div class="nav-item ${t.id===state.topicId?'active':''}" data-topic="${t.id}"><span class="dot"></span><span>${esc(t.title)}</span></div>`;
+    });
+    html += `</div>`;
+  });
+  $('#navTree').innerHTML = html || '<div style="padding:10px 8px;color:var(--muted);font-size:12.5px;">Tidak ditemukan.</div>';
+  $$('.nav-item').forEach(it=>{
+    it.addEventListener('click', ()=>{ goTopic(it.dataset.topic); closeSidebarMobile(); });
+  });
+}
+
+/* ---------- Home ---------- */
+function renderHome(push){
+  state.view='home'; state.topicId=null;
+  if(push!==false){ history.pushState({view:'home'}, '', '#'); }
+  const gastroCount = TOPICS.filter(t=>t.blok==='gastro').length;
+  const reproCount = TOPICS.filter(t=>t.blok==='repro').length;
+  viewRoot.innerHTML = `
+  <div class="content-wrap">
+    <div class="hero reveal">
+      <div class="eyebrow">Penuntun CSL · OSCE Semester 4</div>
+      <h1>Panduan <em>Keterampilan Klinis</em><br>Gastrointestinal & Reproduksi.</h1>
+      <p class="lede">Rangkuman gabungan ${TOPICS.length} keterampilan klinis dari Penuntun CSL Blok Gastrointestinal serta Blok Reproduksi & Tumbuh Kembang — lengkap dengan dasar teori, langkah klinik, interpretasi hasil, dan daftar tilik interaktif untuk persiapan OSCE.</p>
+      <div class="hero-stats">
+        <div class="stat"><b>${TOPICS.length}</b><span>Keterampilan</span></div>
+        <div class="stat"><b>${gastroCount}</b><span>Gastrointestinal</span></div>
+        <div class="stat"><b>${reproCount}</b><span>Reproduksi & TK</span></div>
+      </div>
+    </div>
+
+    <div class="blok-grid reveal">
+      <div class="blok-card gastro" data-blok="gastro">
+        <div class="bn">Blok Gastrointestinal</div>
+        <h3>Sistem Pencernaan</h3>
+        <p>Pemeriksaan abdomen, hernia, NGT, dan colok dubur.</p>
+      </div>
+      <div class="blok-card repro" data-blok="repro">
+        <div class="bn">Blok Reproduksi & Tumbuh Kembang</div>
+        <h3>Obstetri, Ginekologi & Anak</h3>
+        <p>Leopold, ginekologi, Pap smear, IVA, AKDR, APN, status gizi, DDST & KPSP.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:44px;">
+      <h2 style="font-family:'IBM Plex Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); font-weight:600;">Semua keterampilan</h2>
+      <div class="home-grid">
+        ${TOPICS.map((t,i)=>`
+          <div class="home-card reveal" style="animation-delay:${Math.min(i*15,260)}ms" data-topic="${t.id}">
+            <div class="n">${esc(blokLabel(t.blok))}</div>
+            <h4>${esc(t.title)}</h4>
+            <p>${esc(t.sub||'')}</p>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+  $$('.blok-card').forEach(c=>c.addEventListener('click', ()=>{ setBlokFilter(c.dataset.blok); }));
+  $$('.home-card').forEach(c=>c.addEventListener('click', ()=>goTopic(c.dataset.topic)));
+  renderNavTree($('#searchInput').value);
+}
+
+function setBlokFilter(id){
+  state.blokFilter = id;
+  $('#btnBlokAll').classList.toggle('active', id==='all');
+  $('#btnBlokGastro').classList.toggle('active', id==='gastro');
+  $('#btnBlokRepro').classList.toggle('active', id==='repro');
+  renderNavTree($('#searchInput').value);
+  if(state.view==='home') renderHome(false);
+}
+
+/* ---------- Topic page ---------- */
+function renderProsedurGroups(groups, mode){
+  // mode: 'proc' normal display; used also to build flattened list for tilik
+  return groups.map(g=>`
+    <div class="proc-group">
+      <div class="proc-group-title">${esc(g.g)}</div>
+      ${g.items.map((it,i)=>`<div class="proc-step"><div class="pn">${i+1}</div><div class="pb">${it}</div></div>`).join('')}
+    </div>`).join('');
+}
+
+function flattenSteps(groups){
+  const out = [];
+  groups.forEach(g=>{ g.items.forEach(it=>out.push({g:g.g, text:it})); });
+  return out;
+}
+
+function renderTeoriTab(t){
+  let html = '';
+  if(t.tujuan && t.tujuan.length){
+    html += `<div class="section-block"><h2>Tujuan Pembelajaran</h2><ul>${t.tujuan.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+  }
+  if(t.alat && t.alat.length){
+    html += `<div class="section-block"><h2>Alat & Bahan</h2><ul>${t.alat.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
+  }
+  (t.teori||[]).forEach(sec=>{
+    html += `<div class="section-block"><h2>${esc(sec.h)}</h2><ul>${sec.list.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+  });
+  if(t.table){
+    html += `<div class="section-block"><h2>${esc(t.table.title)}</h2><table class="data-tbl"><thead><tr>${t.table.head.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${t.table.rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  }
+  if(!html) html = '<p style="color:var(--muted);">Tidak ada materi teori tambahan untuk topik ini.</p>';
+  return html;
+}
+
+function renderProsedurTab(t){
+  return `<div class="section-block" style="margin-top:0;"><h2>Langkah Klinik</h2>${renderProsedurGroups(t.prosedur)}</div>`;
+}
+
+function renderInterpretasiTab(t){
+  if(!t.interpretasi || !t.interpretasi.length) return '<p style="color:var(--muted);">Tidak ada catatan interpretasi khusus — nilai hasil sesuai temuan klinis pada langkah pemeriksaan.</p>';
+  return `<div class="section-block" style="margin-top:0;"><h2>Interpretasi Hasil</h2><ul>${t.interpretasi.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+}
+
+function renderTilikTab(t){
+  const steps = flattenSteps(t.prosedur);
+  let rows = '';
+  let lastG = null;
+  steps.forEach((s,i)=>{
+    if(s.g !== lastG){ rows += `<tr class="grp"><td colspan="6">${esc(s.g)}</td></tr>`; lastG = s.g; }
+    rows += `<tr data-idx="${i}">
+      <td class="tn">${i+1}</td>
+      <td>${s.text.replace(/<[^>]+>/g,'')}</td>
+      <td class="tscore"><input type="radio" name="tilik-${i}" value="0"></td>
+      <td class="tscore"><input type="radio" name="tilik-${i}" value="1"></td>
+      <td class="tscore"><input type="radio" name="tilik-${i}" value="2"></td>
+    </tr>`;
+  });
+  return `
+  <div class="tilik-head">
+    <div class="id-fields">
+      <span>Nama: <input type="text" placeholder="…"></span>
+      <span>NIM: <input type="text" placeholder="…"></span>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button class="btn-mini" id="tilikResetBtn">Reset</button>
+      <button class="btn-mini" id="tilikPrintBtn">Cetak</button>
+    </div>
+  </div>
+  <table class="tilik-tbl">
+    <thead><tr><th style="width:34px;">No</th><th>Prosedur</th><th class="tscore">0</th><th class="tscore">1</th><th class="tscore">2</th></tr></thead>
+    <tbody id="tilikBody">${rows}</tbody>
+  </table>
+  <div class="tilik-legend">0 = tidak dilakukan &nbsp;·&nbsp; 1 = dilakukan tapi tidak sempurna &nbsp;·&nbsp; 2 = dilakukan dengan sempurna</div>
+  <div class="tilik-foot">
+    <span>Skor total: <b id="tilikScore">0</b> / ${steps.length*2}</span>
+    <span>Nilai akhir: <b id="tilikPct">0%</b></span>
+  </div>`;
+}
+
+function wireTilikTab(){
+  const body = $('#tilikBody');
+  if(!body) return;
+  function recompute(){
+    let sum = 0, n = 0;
+    $$('#tilikBody tr[data-idx]').forEach(tr=>{
+      n++;
+      const checked = tr.querySelector('input:checked');
+      if(checked) sum += parseInt(checked.value,10);
+    });
+    $('#tilikScore').textContent = sum;
+    $('#tilikPct').textContent = n ? Math.round(sum/(n*2)*100)+'%' : '0%';
+  }
+  body.addEventListener('change', recompute);
+  $('#tilikResetBtn').addEventListener('click', ()=>{
+    $$('#tilikBody input[type=radio]').forEach(i=>i.checked=false);
+    recompute();
+  });
+  $('#tilikPrintBtn').addEventListener('click', ()=> window.print());
+  recompute();
+}
+
+const TABS = [
+  {id:'teori', label:'Teori & Tujuan'},
+  {id:'prosedur', label:'Langkah Klinik'},
+  {id:'interpretasi', label:'Interpretasi Hasil'},
+  {id:'tilik', label:'Daftar Tilik'},
+];
+
+function goTopic(id, push, tab){
+  state.view='topic'; state.topicId=id; state.activeTab = tab || 'teori';
+  if(push!==false){ history.pushState({view:'topic', topicId:id}, '', '#'+id); }
+  const t = findTopic(id);
+  if(t.interactive==='kpsp'){ renderKpspTopic(t, push); renderNavTree($('#searchInput').value); window.scrollTo({top:0,behavior:'instant'}); return; }
+
+  const idx = TOPICS.filter(x=>x.blok===t.blok).indexOf(t);
+  const siblings = TOPICS.filter(x=>x.blok===t.blok);
+  const prev = siblings[idx-1], next = siblings[idx+1];
+
+  viewRoot.innerHTML = `
+  <div class="content-wrap">
+    <div class="crumbs reveal"><span>Penuntun OSCE Semester 4</span><span class="sep">/</span><span>${esc(blokLabel(t.blok))}</span></div>
+    <div class="topic-head reveal">
+      <h1>${esc(t.title)}</h1>
+      <span class="badge-blok ${t.blok}">${t.blok==='gastro'?'Gastro':'Repro & TK'}</span>
+    </div>
+    <div class="topic-sub reveal">${esc(t.sub||'')}</div>
+    <div class="tabbar">${TABS.map(tb=>`<button data-tab="${tb.id}" class="${tb.id===state.activeTab?'active':''}">${tb.label}</button>`).join('')}</div>
+    <div class="tabpane ${state.activeTab==='teori'?'show':''}" data-pane="teori">${renderTeoriTab(t)}</div>
+    <div class="tabpane ${state.activeTab==='prosedur'?'show':''}" data-pane="prosedur">${renderProsedurTab(t)}</div>
+    <div class="tabpane ${state.activeTab==='interpretasi'?'show':''}" data-pane="interpretasi">${renderInterpretasiTab(t)}</div>
+    <div class="tabpane ${state.activeTab==='tilik'?'show':''}" data-pane="tilik">${renderTilikTab(t)}</div>
+    <div class="topic-nav">
+      ${prev ? `<button class="tn-btn prev" data-topic="${prev.id}"><div class="lbl">← Sebelumnya</div><div class="ttl">${esc(prev.title)}</div></button>` : '<div></div>'}
+      ${next ? `<button class="tn-btn next" data-topic="${next.id}"><div class="lbl">Selanjutnya →</div><div class="ttl">${esc(next.title)}</div></button>` : '<div></div>'}
+    </div>
+  </div>`;
+
+  $$('.tabbar button').forEach(b=>b.addEventListener('click', ()=>{
+    state.activeTab = b.dataset.tab;
+    $$('.tabbar button').forEach(x=>x.classList.toggle('active', x===b));
+    $$('.tabpane').forEach(p=>p.classList.toggle('show', p.dataset.pane===b.dataset.tab));
+    if(b.dataset.tab==='tilik') wireTilikTab();
+  }));
+  if(state.activeTab==='tilik') wireTilikTab();
+  $$('.tn-btn[data-topic]').forEach(b=>b.addEventListener('click', ()=>goTopic(b.dataset.topic)));
+
+  renderNavTree($('#searchInput').value);
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+/* ---------- KPSP interactive topic ---------- */
+function kpspScore(){
+  const ans = state.kpspAnswers[state.kpspAge] || {};
+  let ya = 0, answered = 0;
+  const qs = KPSP[state.kpspAge];
+  qs.forEach((_,i)=>{ if(ans[i]==='ya'){ya++; answered++;} else if(ans[i]==='tidak'){answered++;} });
+  return {ya, total:qs.length, answered};
+}
+function kpspInterpretText(ya){
+  if(ya>=9) return {label:'Perkembangan Sesuai (S)', cls:'ok'};
+  if(ya>=7) return {label:'Perkembangan Meragukan (M)', cls:'warn'};
+  return {label:'Kemungkinan Ada Penyimpangan (P)', cls:'bad'};
+}
+
+function renderKpspTopic(t, push){
+  const idx = TOPICS.filter(x=>x.blok===t.blok).indexOf(t);
+  const siblings = TOPICS.filter(x=>x.blok===t.blok);
+  const prev = siblings[idx-1], next = siblings[idx+1];
+  viewRoot.innerHTML = `
+  <div class="content-wrap">
+    <div class="crumbs reveal"><span>Penuntun OSCE Semester 4</span><span class="sep">/</span><span>${esc(blokLabel(t.blok))}</span></div>
+    <div class="topic-head reveal"><h1>${esc(t.title)}</h1><span class="badge-blok repro">Repro & TK</span></div>
+    <div class="topic-sub reveal">${esc(t.sub||'')}</div>
+    <div class="tabbar">
+      <button data-tab="teori" class="${state.activeTab==='teori'?'active':''}">Teori & Tujuan</button>
+      <button data-tab="interpretasi" class="${state.activeTab==='interpretasi'?'active':''}">Aturan Interpretasi</button>
+      <button data-tab="kuesioner" class="${state.activeTab==='kuesioner'||state.activeTab==='prosedur'||state.activeTab==='tilik'?'active':''}">Kuesioner Interaktif</button>
+    </div>
+    <div class="tabpane ${state.activeTab==='teori'?'show':''}" data-pane="teori">${renderTeoriTab(t)}</div>
+    <div class="tabpane ${state.activeTab==='interpretasi'?'show':''}" data-pane="interpretasi">${renderInterpretasiTab(t)}</div>
+    <div class="tabpane ${(state.activeTab==='kuesioner'||state.activeTab==='prosedur'||state.activeTab==='tilik')?'show':''}" data-pane="kuesioner">
+      <div class="section-block" style="margin-top:0;">
+        <h2>Pilih Kelompok Usia</h2>
+        <div class="kpsp-age-row" id="kpspAgeRow">
+          ${KPSP_AGES.map(a=>`<button data-age="${a}" class="${a===state.kpspAge?'active':''}">${a}</button>`).join('')}
+        </div>
+        <div id="kpspQuestions"></div>
+        <div class="kpsp-result" id="kpspResult"></div>
+      </div>
+    </div>
+    <div class="topic-nav">
+      ${prev ? `<button class="tn-btn prev" data-topic="${prev.id}"><div class="lbl">← Sebelumnya</div><div class="ttl">${esc(prev.title)}</div></button>` : '<div></div>'}
+      ${next ? `<button class="tn-btn next" data-topic="${next.id}"><div class="lbl">Selanjutnya →</div><div class="ttl">${esc(next.title)}</div></button>` : '<div></div>'}
+    </div>
+  </div>`;
+
+  $$('.tabbar button').forEach(b=>b.addEventListener('click', ()=>{
+    state.activeTab = b.dataset.tab;
+    $$('.tabbar button').forEach(x=>x.classList.toggle('active', x===b));
+    $$('.tabpane').forEach(p=>p.classList.toggle('show', p.dataset.pane===b.dataset.tab));
+  }));
+  $$('.tn-btn[data-topic]').forEach(b=>b.addEventListener('click', ()=>goTopic(b.dataset.topic)));
+
+  renderKpspQuestions();
+  $$('#kpspAgeRow button').forEach(b=>b.addEventListener('click', ()=>{
+    state.kpspAge = b.dataset.age;
+    $$('#kpspAgeRow button').forEach(x=>x.classList.toggle('active', x===b));
+    renderKpspQuestions();
+  }));
+
+  if(push!==false){ history.pushState({view:'topic', topicId:t.id}, '', '#'+t.id); }
+}
+
+function renderKpspQuestions(){
+  const qs = KPSP[state.kpspAge];
+  if(!state.kpspAnswers[state.kpspAge]) state.kpspAnswers[state.kpspAge] = {};
+  const ans = state.kpspAnswers[state.kpspAge];
+  $('#kpspQuestions').innerHTML = qs.map((q,i)=>`
+    <div class="kpsp-q">
+      <div class="qn">${i+1}</div>
+      <div class="qt">${esc(q)}</div>
+      <div class="qa">
+        <button data-i="${i}" data-v="ya" class="${ans[i]==='ya'?'sel-ya':''}">Ya</button>
+        <button data-i="${i}" data-v="tidak" class="${ans[i]==='tidak'?'sel-tidak':''}">Tidak</button>
+      </div>
+    </div>`).join('');
+  $$('#kpspQuestions .qa button').forEach(b=>b.addEventListener('click', ()=>{
+    const i = b.dataset.i, v = b.dataset.v;
+    state.kpspAnswers[state.kpspAge][i] = v;
+    renderKpspQuestions();
+    updateKpspResult();
+  }));
+  updateKpspResult();
+}
+
+function updateKpspResult(){
+  const {ya, total, answered} = kpspScore();
+  const res = kpspInterpretText(ya);
+  const colors = {ok:'var(--teal)', warn:'var(--amber)', bad:'var(--rose)'};
+  $('#kpspResult').innerHTML = `
+    <div class="rscore">${ya} <span style="font-size:16px;color:var(--muted);">/ ${total} jawaban YA</span></div>
+    <div class="rlabel" style="color:${answered<total?'var(--muted)':colors[res.cls]}">${answered<total? `Menjawab ${answered}/${total} pertanyaan…` : res.label}</div>
+  `;
+}
+
+/* ---------- Wiring: search, blok toggle, sidebar, back/forward ---------- */
+$('#sbBrandHome').addEventListener('click', ()=>{ renderHome(); closeSidebarMobile(); });
+$('#btnBlokAll').addEventListener('click', ()=>setBlokFilter('all'));
+$('#btnBlokGastro').addEventListener('click', ()=>setBlokFilter('gastro'));
+$('#btnBlokRepro').addEventListener('click', ()=>setBlokFilter('repro'));
+$('#searchInput').addEventListener('input', (e)=> renderNavTree(e.target.value));
+
+const sidebarEl = $('#sidebar'), overlayEl = $('#sbOverlay');
+function openSidebarMobile(){ sidebarEl.classList.add('open'); overlayEl.classList.add('show'); }
+function closeSidebarMobile(){ sidebarEl.classList.remove('open'); overlayEl.classList.remove('show'); }
+$('#hamburgerBtn').addEventListener('click', openSidebarMobile);
+overlayEl.addEventListener('click', closeSidebarMobile);
+
+window.addEventListener('popstate', (e)=>{
+  const st = e.state;
+  if(!st || st.view==='home'){ renderHome(false); }
+  else if(st.view==='topic' && findTopic(st.topicId)){ goTopic(st.topicId, false); }
+  else { renderHome(false); }
+  closeSidebarMobile();
+});
+
+/* Init */
+renderNavTree('');
+const initialHash = decodeURIComponent(location.hash.replace('#',''));
+if(initialHash && findTopic(initialHash)){
+  history.replaceState({view:'topic', topicId:initialHash}, '', '#'+initialHash);
+  goTopic(initialHash, false);
+} else {
+  history.replaceState({view:'home'}, '', '#');
+  renderHome(false);
+}
+
+</script>
+</body>
+</html>
