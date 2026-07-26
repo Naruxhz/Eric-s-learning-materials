@@ -40,22 +40,7 @@ button{font-family:inherit;}
 /* Sidebar */
 #sidebar{width:300px;flex-shrink:0;background:var(--bg-panel);border-right:1px solid var(--line);height:100vh;position:sticky;top:0;overflow-y:auto;padding:20px 14px 40px;}
 .sb-brand{display:flex; align-items:center; gap:10px;padding:6px 8px 16px;border-bottom:1px solid var(--line);margin-bottom:14px;cursor:pointer;transition:opacity .15s ease;}
-.sb-brand{
-  display:flex; align-items:center; gap:10px;
-  padding:6px 8px 18px;
-  border-bottom:1px solid var(--line);
-  margin-bottom:14px;
-  transition:opacity .15s ease;
-}
 .sb-brand:hover{opacity:0.7;}
-.back-home-link{
-  display:flex; align-items:center; gap:6px;
-  font-size:11.5px; color:var(--muted); font-weight:600;
-  padding:7px 8px; margin-bottom:6px; border-radius:7px;
-  cursor:pointer; text-decoration:none; width:fit-content;
-}
-.back-home-link:hover{background:var(--bg); color:var(--teal-deep);}
-.back-home-link svg{flex-shrink:0;}
 .sb-brand .cell{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 32% 30%, #2f8a8d, var(--teal-deep) 70%);box-shadow: inset 0 -3px 6px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.15);flex-shrink:0;}
 .sb-brand .t1{font-size:16px; line-height:1.15;}
 .sb-brand .t2{font-size:10px; letter-spacing:0.07em; text-transform:uppercase; color:var(--muted); margin-top:2px;}
@@ -100,8 +85,6 @@ button{font-family:inherit;}
 .blok-card:hover{transform:translateY(-2px); box-shadow:var(--shadow);}
 .blok-card.gastro{background:var(--rose-tint); border-color:#e0b7bd;}
 .blok-card.repro{background:var(--teal-tint); border-color:#b7d4cf;}
-.blok-card.active-blok{box-shadow:0 0 0 2px var(--ink), var(--shadow);}
-.blok-card.active-blok .bn::after{content:" · aktif"; opacity:0.7; font-weight:600;}
 .blok-card .bn{font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px; font-weight:700;}
 .blok-card.gastro .bn{color:var(--rose);}
 .blok-card.repro .bn{color:var(--teal);}
@@ -177,6 +160,12 @@ table.tilik-tbl input[type=radio]{cursor:pointer;}
 .tilik-foot b{font-family:'IBM Plex Mono',monospace; color:var(--accent-deep);}
 .tilik-legend{font-size:11.5px; color:var(--muted); margin-top:10px;}
 
+/* Script komunikasi — monolog mengalir */
+.script-monolog{background:var(--bg-panel); border:1px solid var(--line); border-radius:12px; padding:22px 24px; box-shadow:var(--shadow);}
+.script-monolog p{font-size:14.5px; font-style:italic; color:var(--ink); line-height:1.7; margin:0 0 14px; padding-left:18px; border-left:2.5px solid var(--accent-tint); position:relative;}
+.script-monolog p:last-child{margin-bottom:0;}
+.script-monolog p::before{content:"“"; position:absolute; left:-2px; top:-4px; font-size:22px; font-family:'Fraunces',serif; color:var(--accent); font-style:normal; opacity:0.5;}
+
 /* KPSP widget */
 .kpsp-age-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;}
 .kpsp-age-row button{border:1.5px solid var(--line); background:#fff; border-radius:20px; padding:7px 14px; font-size:12.5px; font-weight:600; cursor:pointer; color:var(--muted);}
@@ -225,10 +214,6 @@ table.tilik-tbl input[type=radio]{cursor:pointer;}
 <div class="sb-overlay" id="sbOverlay"></div>
 <div id="app">
   <aside id="sidebar">
-    <a class="back-home-link" href="../">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-      Semua Mata Kuliah
-    </a>
     <div class="sb-brand" id="sbBrandHome">
       <div class="cell"></div>
       <div>
@@ -927,6 +912,281 @@ TOPICS.push(
 );
 
 /* =========================================================
+   SCRIPT KOMUNIKASI ("NYANYIAN") & EDUKASI PASIEN
+   Monolog naratif lengkap ala mahasiswa OSCE — mengalir dengan
+   kata sambung (pertama/kemudian/lalu/selanjutnya), bukan
+   kalimat mekanis per baris checklist. Disusun per topik.
+   ========================================================= */
+const SCRIPTS = {
+  abdomen: {
+    script:[
+      'Selamat pagi/siang, perkenalkan saya dokter muda [nama], yang bertugas di ruangan/klinik ini hari ini.',
+      'Sebelum memulai, boleh saya konfirmasi nama lengkap dan tanggal lahir Bapak/Ibu terlebih dahulu?',
+      'Baik, jadi hari ini saya akan melakukan pemeriksaan fisik pada bagian perut Bapak/Ibu — saya akan melihat, mendengarkan dengan stetoskop, mengetuk, lalu meraba perut secara bertahap. Beberapa bagian mungkin terasa sedikit tidak nyaman saat saya tekan, tapi akan saya lakukan seminimal mungkin dan saya akan berhenti bila Bapak/Ibu merasa kesakitan. Apakah Bapak/Ibu bersedia dan sudah cukup jelas dengan penjelasan saya?',
+      'Baik, kalau begitu saya akan menyiapkan alat terlebih dahulu — stetoskop dan sarung tangan.',
+      'Selanjutnya saya persilakan Bapak/Ibu berbaring lurus dengan kedua lutut sedikit ditekuk, agar otot dinding perut lebih rileks. Saya akan membuka pakaian pada bagian perut secukupnya saja, dari ulu hati sampai daerah kemaluan.',
+      'Pertama, saya akan melakukan inspeksi dulu — saya lihat bentuk perutnya, apakah datar, cembung, atau ada bagian yang tampak berbeda, serta saya perhatikan kulit dan pusarnya.',
+      'Kemudian saya lanjutkan dengan auskultasi menggunakan stetoskop untuk mendengarkan bunyi usus — mohon tenang dan bernapas biasa sebentar ya, saya dengarkan selama satu menit.',
+      'Lalu saya lakukan perkusi — saya ketuk-ketuk perlahan pada beberapa titik untuk menilai batas hati dan limpa.',
+      'Selanjutnya saya lakukan palpasi, dimulai dengan perabaan ringan di keempat kuadran, kemudian saya lanjutkan dengan perabaan yang lebih dalam untuk menilai organ hati, limpa, dan ginjal. Kalau terasa nyeri di bagian tertentu, tolong beri tahu saya ya.',
+      'Karena keluhannya mengarah ke daerah perut kanan bawah, saya juga akan melakukan pemeriksaan tambahan untuk menilai tanda radang usus buntu — saya akan tekan di titik ini lalu lepaskan dengan cepat, tolong sampaikan bila terasa lebih nyeri saat saya lepaskan dibanding saat saya tekan.',
+      'Baik, pemeriksaan fisik abdomen sudah selesai saya lakukan. Sekarang saya akan merapikan kembali pakaian Bapak/Ibu, dan saya akan sampaikan hasil pemeriksaannya.',
+    ],
+    edukasi:[
+      'Jelaskan hasil pemeriksaan dengan bahasa awam (misal: "perut teraba lemas, tidak ada tanda pembesaran organ atau nyeri hebat").',
+      'Bila ditemukan tanda alarm (nyeri hebat, tegang seperti papan, demam) — jelaskan perlunya pemeriksaan penunjang lanjutan (laboratorium/USG) dan kemungkinan rujukan segera.',
+      'Edukasi tanda bahaya yang harus segera dilaporkan: nyeri perut memberat, muntah terus-menerus, perut makin kembung, demam tinggi, atau BAB berdarah/hitam.',
+      'Anjurkan makan teratur, hindari makanan pencetus bila ada riwayat gangguan lambung, dan cukup cairan.',
+      'Jadwalkan kontrol ulang atau rujukan sesuai temuan.',
+    ],
+  },
+  hernia: {
+    script:[
+      'Selamat pagi Pak, perkenalkan saya dokter muda [nama]. Boleh saya konfirmasi nama dan tanggal lahir Bapak dahulu?',
+      'Baik Pak, jadi keluhan Bapak ada benjolan di lipat paha ya. Hari ini saya akan memeriksa daerah tersebut dengan cara melihat lalu meraba, dan nanti saya akan minta Bapak batuk atau mengedan sebentar untuk melihat apakah benjolannya keluar. Prosesnya singkat dan tidak menyakitkan. Apakah Bapak bersedia?',
+      'Baik, kalau begitu saya akan cuci tangan dan memakai sarung tangan terlebih dahulu.',
+      'Selanjutnya saya persilakan Bapak berdiri dengan nyaman, dan saya akan membuka pakaian pada area lipat paha secukupnya saja — privasi Bapak akan saya jaga.',
+      'Pertama saya akan inspeksi dulu kedua sisi lipat paha Bapak, melihat apakah ada benjolan atau bagian yang tampak tidak simetris.',
+      'Kemudian saya akan meraba mulai dari batas bawah kantong buah zakar, menyusuri ke atas menuju daerah lipat paha, sambil mencari cincin di bawah kulit.',
+      'Sekarang saya minta Bapak batuk sebentar, atau mengedan seperti mau BAB, supaya saya bisa merasakan apakah ada benjolan yang muncul saat tekanan perut meningkat.',
+      'Lalu saya akan periksa juga sisi lainnya dengan cara yang sama, serta daerah femoral di bawah lipat paha.',
+      'Kalau saya temukan benjolan di daerah kantong buah zakar, saya akan minta Bapak berbaring untuk melihat apakah benjolannya bisa masuk kembali, dan saya dengarkan juga dengan stetoskop untuk memastikan isinya.',
+      'Baik, pemeriksaan sudah selesai Pak, terima kasih atas kerja samanya. Silakan berpakaian kembali, dan saya akan jelaskan hasil temuannya.',
+    ],
+    edukasi:[
+      'Jelaskan bahwa benjolan adalah hernia — organ/jaringan perut yang menonjol keluar melalui celah otot dinding perut.',
+      'Edukasi tanda bahaya inkarserata/strangulata: benjolan tidak bisa masuk kembali, nyeri hebat mendadak, mual-muntah, perut kembung — bila muncul, segera ke IGD karena berisiko jaringan mati.',
+      'Sampaikan bahwa tatalaksana definitif hernia adalah operasi (hernioplasti/hernioraphy); tidak akan sembuh dengan obat semata.',
+      'Anjurkan hindari mengangkat beban berat dan mengedan berlebihan (atasi konstipasi/batuk kronik) sambil menunggu jadwal operasi.',
+      'Jelaskan pentingnya kontrol rutin ke bedah untuk rencana tindakan elektif sebelum terjadi komplikasi darurat.',
+    ],
+  },
+  ngt: {
+    script:[
+      'Selamat pagi Bapak/Ibu, perkenalkan saya dokter muda [nama] yang bertugas hari ini. Boleh saya konfirmasi nama dan tanggal lahir Bapak/Ibu?',
+      'Baik, jadi karena kondisi Bapak/Ibu saat ini [tidak bisa makan lewat mulut / perlu dikeluarkan isi lambungnya], saya akan memasang selang kecil dari hidung menuju lambung, namanya NGT. Saat selangnya lewat tenggorokan mungkin akan terasa tidak nyaman, tapi saya akan minta Bapak/Ibu menelan supaya prosesnya lebih cepat dan lebih nyaman. Apakah Bapak/Ibu bersedia?',
+      'Baik, kalau begitu pertama saya siapkan dulu alat-alatnya — selang NGT, pelicin, spuit, dan plester.',
+      'Kemudian saya ukur dulu panjang selang yang akan dimasukkan, dari ujung hidung ke telinga lalu ke ulu hati, supaya saya tahu sampai mana batas yang perlu saya masukkan.',
+      'Setelah itu saya oleskan pelicin di ujung selangnya, lalu saya mulai memasukkan perlahan lewat hidung. Sekarang tolong menelan ya seperti menelan ludah, saya masukkan sedikit demi sedikit mengikuti gerakan menelan Bapak/Ibu.',
+      'Kalau selama proses ini Bapak/Ibu merasa sesak, ingin batuk terus, atau suaranya berubah, segera beri tahu saya, saya akan tarik selangnya kembali.',
+      'Selanjutnya, setelah selang masuk sampai batas yang saya tandai, saya akan memastikan dulu posisinya benar-benar di lambung — saya akan masukkan sedikit udara dengan spuit sambil saya dengarkan dengan stetoskop di daerah ulu hati.',
+      'Setelah saya pastikan posisinya tepat, saya akan tempelkan plester di hidung dan pipi supaya selangnya tidak bergeser.',
+      'Baik, pemasangan NGT sudah selesai dengan baik. Saya akan rapikan alat-alatnya, dan saya jelaskan dulu perawatannya di rumah/ruangan.',
+    ],
+    edukasi:[
+      'Jelaskan tujuan pemasangan NGT (dekompresi/pemberian nutrisi/diagnostik) sesuai indikasi pasien.',
+      'Edukasi keluarga cara menjaga kebersihan area hidung dan mengganti plester fiksasi bila kotor/longgar.',
+      'Jelaskan tanda yang harus segera dilaporkan: sesak napas, batuk terus-menerus, selang tampak memanjang keluar/berpindah posisi, muntah di sekitar selang.',
+      'Bila untuk feeding: jelaskan cara pemberian makanan cair perlahan dan posisi kepala ditinggikan 30–45° saat dan setelah pemberian untuk mencegah aspirasi.',
+      'Sampaikan rencana evaluasi/penggantian selang secara berkala sesuai kebijakan (umumnya tiap 1–2 minggu untuk selang jangka panjang).',
+    ],
+  },
+  colokdubur: {
+    script:[
+      'Selamat pagi Pak/Bu, perkenalkan saya dokter muda [nama]. Boleh saya konfirmasi nama dan tanggal lahir dahulu?',
+      'Baik, jadi hari ini saya akan melakukan pemeriksaan colok dubur untuk menilai kondisi anus dan bagian dalam rektum Bapak/Ibu. Pemeriksaan ini mungkin terasa tidak nyaman, namun tidak akan sakit bila Bapak/Ibu rileks dan mengikuti instruksi saya. Apakah Bapak/Ibu bersedia?',
+      'Baik, kalau begitu pertama saya siapkan dulu sarung tangan dan pelicin.',
+      'Selanjutnya saya persilakan Bapak/Ibu berbaring miring ke kiri, dengan kedua lutut ditekuk ke arah dada, seperti posisi meringkuk.',
+      'Kemudian saya akan melihat dulu daerah sekitar anus, apakah ada benjolan, luka, atau tanda peradangan.',
+      'Setelah itu saya oleskan pelicin, dan saya mulai memasukkan jari telunjuk secara perlahan. Tolong tarik napas dalam dan coba rileks ya, jangan mengencangkan otot di sekitar anus.',
+      'Kalau terasa nyeri, segera beri tahu saya, saya akan berhenti sebentar sampai Bapak/Ibu lebih rileks.',
+      'Lalu saya akan memutar jari saya untuk meraba seluruh permukaan dinding rektum, menilai apakah ada benjolan atau bagian yang tidak rata.',
+      'Khusus untuk Bapak, saya juga akan meraba kelenjar prostat di bagian depan, untuk menilai ukuran, permukaan, dan konsistensinya.',
+      'Setelah selesai, saya akan keluarkan jari secara perlahan, dan saya periksa sarung tangan saya untuk melihat apakah ada darah atau lendir.',
+      'Baik, pemeriksaan sudah selesai. Saya akan bersihkan area sekitar anus Bapak/Ibu, dan saya jelaskan hasil temuannya.',
+    ],
+    edukasi:[
+      'Jelaskan hasil temuan secara sederhana (tonus otot, ada/tidak benjolan, kondisi prostat pada laki-laki) tanpa membuat pasien cemas berlebihan.',
+      'Bila dicurigai keganasan/BPH: jelaskan perlunya pemeriksaan lanjutan (PSA, USG, kolonoskopi) dan rujukan ke spesialis terkait.',
+      'Edukasi tanda bahaya: BAB berdarah/hitam, perubahan pola BAB, nyeri anus menetap, penurunan berat badan tanpa sebab — segera periksa ulang bila muncul.',
+      'Untuk keluhan hemoroid/fisura: anjurkan tinggi serat, cukup cairan, hindari mengedan berlebihan, dan sitz bath bila nyeri.',
+    ],
+  },
+  obstetrik: {
+    script:[
+      'Selamat pagi Bu, perkenalkan saya dokter muda [nama] yang bertugas hari ini. Boleh saya konfirmasi nama dan tanggal lahir Ibu?',
+      'Baik Bu, sebelum saya periksa, saya tanya-tanya dulu ya — ini kehamilan yang keberapa Bu, dan kapan hari pertama haid terakhir Ibu?',
+      'Baik, jadi berdasarkan itu usia kehamilan Ibu sekarang sekitar [ ] minggu, dengan taksiran persalinan sekitar tanggal [ ].',
+      'Sekarang saya akan lanjutkan dengan pemeriksaan fisik ya Bu — saya akan meraba perut Ibu untuk menilai posisi bayi, lalu saya dengarkan detak jantungnya. Mungkin akan terasa sedikit tidak nyaman saat saya tekan, tapi tidak akan sakit. Apakah Ibu bersedia?',
+      'Baik, pertama saya cuci tangan dulu, lalu saya persilakan Ibu berbaring dengan nyaman, dan saya tutup bagian paha-kaki dengan kain.',
+      'Kemudian saya akan mulai dengan Leopold pertama — saya raba bagian atas perut Ibu untuk menentukan tinggi rahim dan bagian janin apa yang ada di sana.',
+      'Selanjutnya Leopold kedua, saya raba sisi kanan dan kiri perut Ibu secara bergantian untuk mencari letak punggung bayi.',
+      'Lalu Leopold ketiga, saya periksa bagian bawah perut Ibu untuk menentukan bagian terbawah janin, apakah kepala atau bokong.',
+      'Setelah itu Leopold keempat, saya nilai seberapa jauh bagian terbawah tadi sudah masuk ke rongga panggul.',
+      'Terakhir, saya akan dengarkan detak jantung bayi menggunakan alat ini — mohon tenang sebentar ya Bu, saya hitung selama satu menit penuh.',
+      'Baik Bu, alhamdulillah detak jantung bayi baik, sekitar [ ] kali per menit, dan posisi bayi [letak/presentasi]. Sekarang saya rapikan dulu ya Bu, dan saya jelaskan hasil serta rencana kontrol berikutnya.',
+    ],
+    edukasi:[
+      'Jelaskan hasil pemeriksaan (usia kehamilan, letak/presentasi janin, DJJ) dengan bahasa yang menenangkan.',
+      'Edukasi tanda bahaya kehamilan: perdarahan pervaginam, nyeri kepala hebat/pandangan kabur, bengkak wajah-tangan mendadak, gerak janin berkurang, kontraksi sebelum waktunya — segera ke fasilitas kesehatan bila muncul.',
+      'Anjurkan konsumsi tablet tambah darah, asam folat, dan gizi seimbang sesuai usia kehamilan.',
+      'Ingatkan jadwal kunjungan ANC berikutnya (minimal 6 kali selama kehamilan sesuai standar terbaru) dan imunisasi TT bila diperlukan.',
+      'Diskusikan rencana persalinan (tempat, penolong, transportasi, pendonor darah) sebagai bagian dari persiapan persalinan aman.',
+    ],
+  },
+  ginekologi: {
+    script:[
+      'Selamat pagi Bu, perkenalkan saya dokter muda [nama]. Boleh saya konfirmasi nama dan tanggal lahir Ibu?',
+      'Baik Bu, saya dengar keluhannya [ ]. Untuk memastikan penyebabnya, saya perlu melakukan pemeriksaan organ kandungan — saya akan memasang alat spekulum untuk melihat leher rahim, kemudian saya periksa dengan jari untuk meraba rahim dan indung telur Ibu. Prosesnya mungkin terasa sedikit tidak nyaman tapi tidak sakit bila Ibu rileks. Apakah Ibu bersedia?',
+      'Baik, pertama saya siapkan dulu alatnya dan saya cuci tangan serta memakai sarung tangan.',
+      'Kemudian saya persilakan Ibu naik ke meja periksa, berbaring dengan posisi kaki di penyangga, dan lutut rileks ke samping.',
+      'Selanjutnya saya lihat dulu bagian luarnya, kemudian saya akan memasukkan spekulum secara perlahan — mohon tarik napas dalam dan jangan menegangkan otot panggul ya Bu.',
+      'Setelah spekulumnya terpasang, saya lihat kondisi leher rahim dan dinding vagina Ibu.',
+      'Lalu saya keluarkan spekulumnya perlahan, dan saya lanjutkan dengan pemeriksaan menggunakan jari — saya masukkan dua jari untuk meraba ukuran, arah, dan konsistensi rahim Ibu, sambil tangan satunya saya letakkan di perut bagian bawah.',
+      'Baik, pemeriksaan sudah selesai Bu, terima kasih atas kerja samanya. Ibu boleh berpakaian kembali, dan saya akan jelaskan hasil temuannya.',
+    ],
+    edukasi:[
+      'Jelaskan hasil pemeriksaan dan diagnosis kerja dengan bahasa yang mudah dipahami, hindari istilah medis tanpa penjelasan.',
+      'Bila ditemukan keputihan abnormal/infeksi: edukasi pentingnya menyelesaikan pengobatan tuntas dan pemeriksaan/pengobatan pasangan bila IMS.',
+      'Bila dicurigai kehamilan: jelaskan langkah konfirmasi lanjutan (tes kehamilan/USG) dan rencana ANC.',
+      'Anjurkan menjaga kebersihan area genital, hindari douching berlebihan, dan gunakan pakaian dalam yang menyerap keringat.',
+      'Jadwalkan kontrol ulang atau rujukan sesuai temuan (misal kolposkopi bila ada kecurigaan lesi serviks).',
+    ],
+  },
+  papsmear: {
+    script:[
+      'Selamat pagi Bu, perkenalkan saya dokter muda [nama]. Boleh saya konfirmasi nama dan tanggal lahir Ibu?',
+      'Baik Bu, hari ini saya akan mengambil sampel sel dari leher rahim Ibu untuk skrining kanker serviks — namanya Pap smear. Prosesnya singkat, mungkin terasa sedikit tidak nyaman tapi tidak sakit. Apakah Ibu bersedia?',
+      'Baik, pertama saya minta Ibu mengosongkan kandung kemih dulu, lalu saya persilakan naik ke meja periksa dengan posisi kaki di penyangga.',
+      'Kemudian saya cuci tangan dan memakai sarung tangan, lalu saya pasang spekulum secara perlahan agar leher rahim Ibu terlihat jelas — mohon rileks dan bernapas biasa ya Bu.',
+      'Selanjutnya saya usap permukaan leher rahim Ibu dengan alat khusus ini, saya putar perlahan satu putaran penuh — tidak akan sakit, hanya seperti usapan.',
+      'Setelah itu saya ambil juga sampel dari bagian dalam mulut rahim dengan sikat kecil, dengan cara yang sama.',
+      'Lalu saya oleskan sampelnya ke kaca objek dan saya semprotkan cairan fiksasi supaya selnya tidak rusak.',
+      'Setelah selesai, saya keluarkan spekulumnya perlahan, dan saya lanjutkan dengan pemeriksaan meraba rahim dan indung telur Ibu sebentar.',
+      'Baik, pengambilan sampel sudah selesai Bu. Sampel ini akan saya kirim ke laboratorium, dan saya jelaskan dulu apa yang perlu Ibu lakukan setelah ini.',
+    ],
+    edukasi:[
+      'Jelaskan bahwa hasil Pap smear membutuhkan waktu beberapa hari-minggu dan akan diinformasikan saat kontrol berikutnya.',
+      'Sampaikan bahwa sedikit flek/bercak setelah pemeriksaan adalah normal dan akan hilang sendiri dalam 1–2 hari.',
+      'Anjurkan tidak berhubungan seksual dan tidak menggunakan pembersih vagina 24–48 jam setelah pemeriksaan.',
+      'Edukasi pentingnya skrining rutin (umumnya tiap 3 tahun bila hasil normal, sesuai rekomendasi) sebagai deteksi dini kanker serviks.',
+      'Jelaskan langkah lanjutan bila hasil abnormal (kolposkopi/biopsi) agar pasien tidak panik saat menerima hasil.',
+    ],
+  },
+  iva: {
+    script:[
+      'Selamat pagi Bu, perkenalkan saya dokter muda [nama]. Boleh saya konfirmasi nama dan tanggal lahir Ibu?',
+      'Baik Bu, hari ini saya akan melakukan pemeriksaan IVA — yaitu melihat langsung leher rahim Ibu setelah diberi cairan asam asetat yang mirip cuka, untuk mendeteksi dini kanker serviks. Kelebihannya, hasilnya bisa langsung saya ketahui hari ini juga. Apakah Ibu bersedia?',
+      'Baik, pertama saya persilakan Ibu naik ke meja periksa dengan posisi kaki di penyangga, lalu saya cuci tangan dan memakai sarung tangan.',
+      'Kemudian saya pasang spekulum secara perlahan supaya leher rahim Ibu terlihat jelas — mohon rileks ya Bu.',
+      'Setelah leher rahimnya terlihat jelas, saya bersihkan dulu bila ada cairan, lalu saya identifikasi batas daerah yang perlu saya periksa.',
+      'Selanjutnya saya oleskan cairan asam asetatnya sekarang — mungkin terasa sedikit perih atau hangat sebentar, ini normal ya Bu. Saya tunggu satu sampai dua menit untuk melihat perubahan warnanya.',
+      'Lalu saya amati dengan cermat apakah ada area yang berubah warna menjadi putih di sekitar daerah tersebut.',
+      'Setelah selesai mengamati, saya bersihkan sisa cairannya, lalu saya keluarkan spekulumnya perlahan.',
+      'Baik Bu, dari pemeriksaan tadi, hasilnya adalah [positif/negatif]. Saya jelaskan dulu ya artinya dan langkah selanjutnya.',
+    ],
+    edukasi:[
+      'Bila hasil <b>negatif</b>: sampaikan hasil baik, anjurkan skrining ulang 3–5 tahun kemudian sesuai rekomendasi program.',
+      'Bila hasil <b>positif</b>: jelaskan bahwa ini bukan berarti kanker, melainkan ditemukan area yang perlu tata laksana lanjut (krioterapi/rujukan) — jelaskan agar pasien tidak panik.',
+      'Sampaikan sedikit bercak/keputihan encer setelah tindakan (khususnya bila dilakukan krioterapi) adalah normal beberapa hari.',
+      'Anjurkan tidak berhubungan seksual dahulu sesuai instruksi bila dilakukan krioterapi hari itu.',
+      'Edukasi faktor risiko yang bisa dimodifikasi: berhenti merokok, setia pada pasangan, dan pertimbangkan vaksinasi HPV bila memenuhi syarat.',
+    ],
+  },
+  akdr: {
+    script:[
+      'Selamat pagi Bu, perkenalkan saya dokter muda [nama]. Boleh saya konfirmasi nama dan tanggal lahir Ibu terlebih dahulu?',
+      'Baik Bu, boleh saya tahu dulu tujuan Ibu datang hari ini — apakah ingin mengatur jarak kehamilan, atau tidak ingin hamil lagi untuk sementara waktu?',
+      'Baik, kalau begitu saya jelaskan dulu beberapa pilihan kontrasepsi yang tersedia ya Bu, termasuk cara kerja, keuntungan, dan efek sampingnya masing-masing.',
+      'Karena Ibu tertarik dengan AKDR, saya jelaskan lebih detail — AKDR adalah alat kecil berbentuk huruf T yang dipasang di dalam rahim, efektif hingga delapan sampai sepuluh tahun, dan bisa dilepas kapan saja bila Ibu ingin hamil kembali. Di awal pemakaian mungkin akan terasa mules dan perdarahan sedikit lebih banyak, ini normal. Apakah Ibu ingin melanjutkan dengan metode ini?',
+      'Baik, sebelum pemasangan, saya akan periksa dulu ya Bu — saya pasang spekulum untuk melihat leher rahim, lalu saya periksa dengan jari untuk memastikan ukuran dan posisi rahim Ibu, serta memastikan tidak ada kehamilan atau infeksi.',
+      'Setelah saya pastikan semuanya baik, sekarang saya siapkan AKDR-nya di dalam tabung khusus tanpa menyentuh bagian yang steril.',
+      'Kemudian saya pasang kembali spekulumnya, saya bersihkan leher rahim dengan cairan antiseptik, lalu saya jepit sedikit leher rahimnya dengan alat khusus supaya posisinya stabil.',
+      'Selanjutnya saya ukur dulu kedalaman rahim Ibu dengan alat sonde, tanpa menyentuh dinding vagina.',
+      'Setelah itu saya masukkan tabung AKDR-nya perlahan mengikuti kedalaman yang sudah saya ukur tadi — mohon tarik napas dalam dan rileks ya Bu, sebentar saja prosesnya, mungkin terasa mules seperti nyeri haid.',
+      'Lalu saya lepaskan AKDR-nya di posisi yang tepat, saya tarik tabungnya keluar, dan saya potong benangnya menyisakan sekitar tiga sampai empat sentimeter.',
+      'Baik Bu, AKDR sudah terpasang dengan baik. Saya keluarkan spekulumnya perlahan, dan saya jelaskan dulu cara memeriksa benangnya sendiri di rumah serta apa yang perlu Ibu perhatikan.',
+    ],
+    edukasi:[
+      'Ajarkan cara meraba benang AKDR sendiri setelah haid untuk memastikan AKDR masih pada tempatnya.',
+      'Edukasi efek samping normal di awal: kram perut ringan dan perdarahan/spotting lebih banyak selama beberapa siklus pertama.',
+      'Jelaskan tanda bahaya yang harus segera diperiksakan: benang tidak teraba/memanjang, nyeri perut hebat, demam, keputihan berbau, terlambat haid (curiga hamil).',
+      'Sampaikan jadwal kontrol ulang (biasanya 1 bulan pasca pemasangan, lalu rutin tiap tahun) dan masa pakai/tanggal pelepasan AKDR.',
+      'Ingatkan AKDR tidak melindungi dari infeksi menular seksual — anjurkan kondom bila berisiko IMS.',
+    ],
+  },
+  apn: {
+    script:[
+      'Baik Bu, dari pemeriksaan tadi pembukaan Ibu sudah lengkap dan kondisi bayi baik. Sebentar lagi kita akan mulai proses melahirkan bayinya ya Bu.',
+      'Pertama saya pastikan dulu semua alat sudah siap, saya pakai celemek, saya cuci tangan, lalu saya pakai sarung tangan steril.',
+      'Kemudian saya bersihkan dulu daerah kemaluan Ibu, dan saya periksa dalam sekali lagi untuk memastikan pembukaannya benar-benar lengkap.',
+      'Selanjutnya, begitu Ibu merasakan dorongan kuat untuk mengedan, saya akan pimpin ya Bu — nanti saat mules/kontraksi datang, tarik napas dalam, tahan, lalu mengedan sekuat tenaga sambil menunduk melihat ke arah perut. Di antara kontraksi, Ibu boleh istirahat dulu dan minum.',
+      'Setelah kepala bayi mulai terlihat, saya pasang kain bersih di bawah bokong Ibu dan handuk di perut untuk mengeringkan bayi nanti.',
+      'Begitu kepala bayi semakin terlihat di depan lubang kemaluan, saya akan lindungi daerah perineum dengan tangan kanan, dan tangan kiri saya menahan puncak kepala supaya lahirnya tidak terlalu cepat — sekarang tolong napas pendek-pendek saja dulu ya Bu, jangan mengedan dulu.',
+      'Setelah kepala lahir, saya periksa dulu apakah ada lilitan tali pusat di leher bayi, lalu saya tunggu kepalanya berputar sendiri ke arah paha Ibu.',
+      'Kemudian saya pegang kepala bayi di kedua sisi, saya tarik perlahan ke bawah untuk melahirkan bahu depan, lalu ke atas untuk melahirkan bahu belakang, dan badan beserta tungkainya menyusul mengikuti gerakan yang sama.',
+      'Bayinya sudah lahir dengan selamat, Bu! Sekarang saya keringkan badannya, saya bungkus, dan saya letakkan di atas perut/dada Ibu untuk kontak kulit langsung.',
+      'Selanjutnya saya raba dulu perut Ibu untuk memastikan tidak ada bayi kedua, lalu saya suntikkan obat oksitosin di paha Ibu untuk membantu ari-ari lahir dan mencegah perdarahan berlebih.',
+      'Setelah tali pusatnya berhenti berdenyut, saya jepit dan potong di antara dua klem, lalu bayi saya serahkan ke Ibu untuk mulai menyusu dini.',
+      'Kemudian saya lakukan peregangan tali pusat terkendali — begitu ada tanda ari-ari lepas, saya tarik perlahan mengikuti arah jalan lahir sampai plasentanya lahir seluruhnya.',
+      'Setelah plasenta lahir, saya lakukan masase pada rahim Ibu secara memutar supaya kontraksinya baik dan tidak terjadi perdarahan berlebihan.',
+      'Saya periksa juga kelengkapan plasenta dan selaput ketubannya, serta saya lihat apakah ada robekan jalan lahir yang perlu dijahit.',
+      'Baik Bu, semua tahapan sudah selesai dengan baik. Selanjutnya saya akan pantau terus kondisi Ibu selama dua jam ke depan — saya cek kontraksi rahim, perdarahan, serta tekanan darah dan nadi Ibu secara berkala untuk memastikan semuanya tetap baik.',
+    ],
+    edukasi:[
+      'Anjurkan Inisiasi Menyusu Dini (IMD) segera setelah bayi lahir dan keringkan, kontak kulit-ke-kulit minimal 1 jam.',
+      'Ajarkan ibu dan keluarga cara meraba fundus uteri dan melakukan masase bila kontraksi terasa lembek pasca-persalinan.',
+      'Edukasi tanda bahaya nifas yang harus segera dilaporkan: perdarahan banyak/mendadak, demam, nyeri perut hebat, sakit kepala berat, atau pandangan kabur.',
+      'Jelaskan pentingnya mobilisasi bertahap, nutrisi bergizi, dan istirahat cukup untuk pemulihan pasca-persalinan.',
+      'Ingatkan jadwal kunjungan nifas (KF) dan kunjungan neonatal (KN) sesuai standar, serta imunisasi awal bayi.',
+    ],
+  },
+  gizi: {
+    script:[
+      'Selamat pagi Bu, perkenalkan saya dokter muda [nama]. Boleh saya konfirmasi nama dan tanggal lahir anak Ibu?',
+      'Baik Bu, hari ini saya akan mengukur berat dan tinggi badan anak untuk menilai status gizi dan pertumbuhannya. Boleh saya mulai ya Bu?',
+      'Baik, pertama saya timbang dulu berat badannya — Adik boleh berdiri di sini ya, tegak lurus menghadap ke depan.',
+      'Kemudian saya ukur tinggi/panjang badannya dengan alat ini, mohon berdiri/berbaring lurus ya.',
+      'Setelah saya dapatkan angkanya, saya akan plot hasil ini pada kurva pertumbuhan sesuai usia dan jenis kelamin anak.',
+      'Selanjutnya saya bandingkan posisi berat badan terhadap usia, tinggi badan terhadap usia, dan berat terhadap tinggi badannya, untuk menentukan kategori status gizinya.',
+      'Baik Bu, berdasarkan hasil pengukuran tadi, status gizi anak Ibu termasuk kategori [normal/kurang/lebih]. Saya jelaskan dulu ya artinya dan apa yang bisa kita lakukan.',
+    ],
+    edukasi:[
+      'Jelaskan hasil status gizi (BB/U, TB/U, BB/TB) kepada orang tua dengan bahasa sederhana disertai posisi pada kurva pertumbuhan.',
+      'Bila gizi kurang/buruk: edukasi pola makan bergizi seimbang sesuai kebutuhan kalori-protein anak, dan jadwalkan pemantauan berkala.',
+      'Bila gizi lebih/obesitas: edukasi pengaturan porsi, jenis makanan, dan aktivitas fisik anak tanpa membuat anak merasa "dihukum" soal makan.',
+      'Anjurkan kunjungan rutin ke Posyandu/Puskesmas untuk pemantauan pertumbuhan berkala, terutama anak <5 tahun.',
+      'Rujuk ke dokter anak/ahli gizi bila ditemukan penyimpangan bermakna atau tidak membaik setelah intervensi awal.',
+    ],
+  },
+  ddst: {
+    script:[
+      'Selamat pagi Bu, perkenalkan saya dokter muda [nama]. Boleh saya konfirmasi nama dan tanggal lahir anak Ibu?',
+      'Baik Bu, hari ini saya akan menilai perkembangan anak Ibu melalui beberapa permainan sederhana sesuai usianya, menggunakan formulir Denver. Prosesnya menyenangkan untuk anak, dan hanya butuh waktu sekitar 15 sampai 20 menit. Boleh saya mulai?',
+      'Baik, pertama saya tentukan dulu garis usia anak pada formulirnya, saya sesuaikan juga bila ada riwayat lahir prematur.',
+      'Kemudian saya siapkan mainan yang sesuai, dan saya mulai dari tugas yang paling mudah di sebelah kiri garis usia, baru saya lanjutkan ke tugas berikutnya.',
+      '(Kepada anak) Adik, coba ambil mainan ini ya. / Coba ikuti apa yang kakak lakukan ya.',
+      'Selanjutnya saya nilai setiap tugas — apakah berhasil, gagal, menolak, atau tidak ada kesempatan untuk mencoba, pada keempat sektor perkembangannya.',
+      'Baik Bu, dari hasil penilaian tadi, perkembangan anak Ibu pada sektor [personal-sosial/motorik halus/bahasa/motorik kasar] berada pada kategori [normal/perlu dipantau/perlu evaluasi lanjut]. Saya jelaskan dulu ya artinya.',
+    ],
+    edukasi:[
+      'Jelaskan hasil skrining per sektor perkembangan dan makna praktisnya bagi orang tua.',
+      'Bila hasil "suspect": anjurkan stimulasi terarah di rumah sesuai sektor yang tertinggal, dan jadwalkan evaluasi ulang dalam 2 minggu–1 bulan.',
+      'Bila hasil "suspect" menetap: jelaskan perlunya rujukan ke dokter spesialis anak/tumbuh kembang untuk evaluasi diagnostik lengkap.',
+      'Ajarkan orang tua cara memberikan stimulasi dini sesuai usia (bermain, bicara, membaca bersama) sebagai bagian rutinitas harian.',
+      'Ingatkan jadwal skrining perkembangan berikutnya sesuai titik usia yang direkomendasikan.',
+    ],
+  },
+  kpsp: {
+    script:[
+      'Selamat pagi Bu, perkenalkan saya dokter muda [nama]. Boleh saya konfirmasi nama dan tanggal lahir anak Ibu?',
+      'Baik Bu, berdasarkan usianya, saya akan menggunakan formulir KPSP untuk usia [ ] bulan. Saya akan menanyakan sepuluh pertanyaan tentang kemampuan anak Ibu sehari-hari, mohon dijawab Ya atau Tidak sesuai kondisi anak saat ini ya Bu.',
+      'Baik, pertama saya mulai dari pertanyaan pertama — Apakah anak Ibu bisa [sesuai butir pertanyaan]?',
+      'Kemudian saya lanjutkan ke pertanyaan berikutnya secara berurutan, satu per satu sampai pertanyaan terakhir.',
+      'Setelah semua pertanyaan terjawab, saya hitung dulu jumlah jawaban Ya-nya untuk menentukan kategori perkembangannya.',
+      'Baik Bu, dari total sepuluh pertanyaan, anak Ibu menjawab Ya sebanyak [jumlah], yang artinya perkembangannya termasuk kategori [sesuai/meragukan/kemungkinan ada penyimpangan]. Saya jelaskan dulu ya maksudnya dan langkah selanjutnya.',
+    ],
+    edukasi:[
+      'Hasil <b>sesuai (S)</b>: beri pujian pada orang tua, anjurkan stimulasi rutin dilanjutkan, dan skrining ulang pada usia titik berikutnya.',
+      'Hasil <b>meragukan (M)</b>: ajarkan stimulasi intensif pada sektor yang belum tercapai di rumah selama 2 minggu, lalu evaluasi ulang dengan KPSP usia yang sama.',
+      'Hasil <b>kemungkinan penyimpangan (P)</b>: jelaskan dengan tenang bahwa anak perlu evaluasi lebih lanjut (rujukan ke dokter spesialis anak) — hindari kata "terlambat" yang bisa membuat orang tua panik berlebihan.',
+      'Ingatkan bahwa KPSP adalah skrining awal, bukan diagnosis pasti — evaluasi lanjut diperlukan untuk kepastian.',
+      'Anjurkan orang tua mencatat perkembangan anak dan aktif menstimulasi sesuai usia melalui buku KIA.',
+    ],
+  },
+};
+
+/* =========================================================
    APP LOGIC
    ========================================================= */
 const KPSP = JSON.parse(document.getElementById('kpsp-data').textContent);
@@ -972,10 +1232,6 @@ function renderHome(push){
   if(push!==false){ history.pushState({view:'home'}, '', '#'); }
   const gastroCount = TOPICS.filter(t=>t.blok==='gastro').length;
   const reproCount = TOPICS.filter(t=>t.blok==='repro').length;
-  const shown = topicsFiltered();
-  const sectionTitle = state.blokFilter==='all' ? 'Semua keterampilan'
-    : state.blokFilter==='gastro' ? 'Keterampilan Sistem Pencernaan'
-    : 'Keterampilan Reproduksi & Tumbuh Kembang';
   viewRoot.innerHTML = `
   <div class="content-wrap">
     <div class="hero reveal">
@@ -990,12 +1246,12 @@ function renderHome(push){
     </div>
 
     <div class="blok-grid reveal">
-      <div class="blok-card gastro ${state.blokFilter==='gastro'?'active-blok':''}" data-blok="gastro">
+      <div class="blok-card gastro" data-blok="gastro">
         <div class="bn">Blok Gastrointestinal</div>
         <h3>Sistem Pencernaan</h3>
         <p>Pemeriksaan abdomen, hernia, NGT, dan colok dubur.</p>
       </div>
-      <div class="blok-card repro ${state.blokFilter==='repro'?'active-blok':''}" data-blok="repro">
+      <div class="blok-card repro" data-blok="repro">
         <div class="bn">Blok Reproduksi & Tumbuh Kembang</div>
         <h3>Obstetri, Ginekologi & Anak</h3>
         <p>Leopold, ginekologi, Pap smear, IVA, AKDR, APN, status gizi, DDST & KPSP.</p>
@@ -1003,12 +1259,9 @@ function renderHome(push){
     </div>
 
     <div style="margin-top:44px;">
-      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
-        <h2 style="font-family:'IBM Plex Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); font-weight:600;">${esc(sectionTitle)}</h2>
-        ${state.blokFilter!=='all' ? `<button id="clearBlokBtn" style="border:1px solid var(--line); background:#fff; border-radius:20px; padding:5px 12px; font-size:11.5px; font-weight:600; color:var(--muted); cursor:pointer;">Tampilkan semua ✕</button>` : ''}
-      </div>
+      <h2 style="font-family:'IBM Plex Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); font-weight:600;">Semua keterampilan</h2>
       <div class="home-grid">
-        ${shown.map((t,i)=>`
+        ${TOPICS.map((t,i)=>`
           <div class="home-card reveal" style="animation-delay:${Math.min(i*15,260)}ms" data-topic="${t.id}">
             <div class="n">${esc(blokLabel(t.blok))}</div>
             <h4>${esc(t.title)}</h4>
@@ -1017,12 +1270,7 @@ function renderHome(push){
       </div>
     </div>
   </div>`;
-  $$('.blok-card').forEach(c=>c.addEventListener('click', ()=>{
-    const b = c.dataset.blok;
-    setBlokFilter(state.blokFilter===b ? 'all' : b);
-  }));
-  const clearBtn = $('#clearBlokBtn');
-  if(clearBtn) clearBtn.addEventListener('click', ()=> setBlokFilter('all'));
+  $$('.blok-card').forEach(c=>c.addEventListener('click', ()=>{ setBlokFilter(c.dataset.blok); }));
   $$('.home-card').forEach(c=>c.addEventListener('click', ()=>goTopic(c.dataset.topic)));
   renderNavTree($('#searchInput').value);
 }
@@ -1087,7 +1335,7 @@ function renderTilikTab(t){
     if(s.g !== lastG){ rows += `<tr class="grp"><td colspan="6">${esc(s.g)}</td></tr>`; lastG = s.g; }
     rows += `<tr data-idx="${i}">
       <td class="tn">${i+1}</td>
-      <td>${s.text.replace(/<[^>]+>/g,'')}</td>
+      <td>${s.text.replace(/<\/?(b|i)>/gi,'')}</td>
       <td class="tscore"><input type="radio" name="tilik-${i}" value="0"></td>
       <td class="tscore"><input type="radio" name="tilik-${i}" value="1"></td>
       <td class="tscore"><input type="radio" name="tilik-${i}" value="2"></td>
@@ -1137,11 +1385,30 @@ function wireTilikTab(){
   recompute();
 }
 
+function renderScriptTab(t){
+  const s = SCRIPTS[t.id];
+  let html = `<div class="section-block" style="margin-top:0;"><h2>Script Komunikasi (Monolog OSCE)</h2>
+    <p style="color:var(--muted); font-size:13px; margin-bottom:14px;">Baca sebagai satu alur narasi menyambung — ucapkan sambil melakukan tindakannya, seolah sedang diuji.</p>`;
+  if(s && s.script && s.script.length){
+    html += `<div class="script-monolog">`;
+    s.script.forEach(line=>{ html += `<p>${line}</p>`; });
+    html += `</div>`;
+  } else {
+    html += `<p style="color:var(--muted);">Belum ada script untuk topik ini.</p>`;
+  }
+  html += `</div>`;
+  if(s && s.edukasi && s.edukasi.length){
+    html += `<div class="section-block"><h2>Edukasi Pasien</h2><ul>${s.edukasi.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+  }
+  return html;
+}
+
 const TABS = [
   {id:'teori', label:'Teori & Tujuan'},
   {id:'prosedur', label:'Langkah Klinik'},
   {id:'interpretasi', label:'Interpretasi Hasil'},
   {id:'tilik', label:'Daftar Tilik'},
+  {id:'script', label:'Script & Edukasi'},
 ];
 
 function goTopic(id, push, tab){
@@ -1167,6 +1434,7 @@ function goTopic(id, push, tab){
     <div class="tabpane ${state.activeTab==='prosedur'?'show':''}" data-pane="prosedur">${renderProsedurTab(t)}</div>
     <div class="tabpane ${state.activeTab==='interpretasi'?'show':''}" data-pane="interpretasi">${renderInterpretasiTab(t)}</div>
     <div class="tabpane ${state.activeTab==='tilik'?'show':''}" data-pane="tilik">${renderTilikTab(t)}</div>
+    <div class="tabpane ${state.activeTab==='script'?'show':''}" data-pane="script">${renderScriptTab(t)}</div>
     <div class="topic-nav">
       ${prev ? `<button class="tn-btn prev" data-topic="${prev.id}"><div class="lbl">← Sebelumnya</div><div class="ttl">${esc(prev.title)}</div></button>` : '<div></div>'}
       ${next ? `<button class="tn-btn next" data-topic="${next.id}"><div class="lbl">Selanjutnya →</div><div class="ttl">${esc(next.title)}</div></button>` : '<div></div>'}
@@ -1213,6 +1481,7 @@ function renderKpspTopic(t, push){
       <button data-tab="teori" class="${state.activeTab==='teori'?'active':''}">Teori & Tujuan</button>
       <button data-tab="interpretasi" class="${state.activeTab==='interpretasi'?'active':''}">Aturan Interpretasi</button>
       <button data-tab="kuesioner" class="${state.activeTab==='kuesioner'||state.activeTab==='prosedur'||state.activeTab==='tilik'?'active':''}">Kuesioner Interaktif</button>
+      <button data-tab="script" class="${state.activeTab==='script'?'active':''}">Script & Edukasi</button>
     </div>
     <div class="tabpane ${state.activeTab==='teori'?'show':''}" data-pane="teori">${renderTeoriTab(t)}</div>
     <div class="tabpane ${state.activeTab==='interpretasi'?'show':''}" data-pane="interpretasi">${renderInterpretasiTab(t)}</div>
@@ -1226,6 +1495,7 @@ function renderKpspTopic(t, push){
         <div class="kpsp-result" id="kpspResult"></div>
       </div>
     </div>
+    <div class="tabpane ${state.activeTab==='script'?'show':''}" data-pane="script">${renderScriptTab(t)}</div>
     <div class="topic-nav">
       ${prev ? `<button class="tn-btn prev" data-topic="${prev.id}"><div class="lbl">← Sebelumnya</div><div class="ttl">${esc(prev.title)}</div></button>` : '<div></div>'}
       ${next ? `<button class="tn-btn next" data-topic="${next.id}"><div class="lbl">Selanjutnya →</div><div class="ttl">${esc(next.title)}</div></button>` : '<div></div>'}
