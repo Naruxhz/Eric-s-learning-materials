@@ -1,0 +1,2532 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neuropsikiatri (CSL) — Atlas Belajar Interaktif</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F1EFE9;
+  --bg-panel:#FFFFFF;
+  --ink:#1C1B19;
+  --muted:#6E6A62;
+  --line:#DEDACE;
+  --red:#4A3F9F;
+  --red-deep:#2F2873;
+  --red-tint:#EAE7F8;
+  --teal:#1E5B5E;
+  --teal-tint:#E3EFEC;
+  --amber:#B9832E;
+  --amber-tint:#F8ECD8;
+  --shadow: 0 1px 2px rgba(28,27,25,0.06), 0 8px 24px rgba(28,27,25,0.05);
+  --radius: 10px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'IBM Plex Sans', sans-serif;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.5;
+}
+h1,h2,h3,h4{
+  font-family:'Fraunces', serif;
+  font-weight:600;
+  margin:0;
+  letter-spacing:-0.01em;
+}
+.mono{font-family:'IBM Plex Mono', monospace;}
+::selection{background:var(--red-tint); color:var(--red-deep);}
+a{color:inherit;}
+button{font-family:inherit;}
+
+/* ---------- App shell ---------- */
+#app{display:flex; min-height:100vh;}
+
+/* Sidebar */
+#sidebar{
+  width:290px;
+  flex-shrink:0;
+  background:var(--bg-panel);
+  border-right:1px solid var(--line);
+  height:100vh;
+  position:sticky;
+  top:0;
+  overflow-y:auto;
+  padding:20px 14px 40px;
+}
+.sb-brand{
+  display:flex; align-items:center; gap:10px;
+  padding:6px 8px 18px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:14px;
+  transition:opacity .15s ease;
+}
+.sb-brand:hover{opacity:0.7;}
+.back-home-link{
+  display:flex; align-items:center; gap:6px;
+  font-size:11.5px; color:var(--muted); font-weight:600;
+  padding:7px 8px; margin-bottom:6px; border-radius:7px;
+  cursor:pointer; text-decoration:none; width:fit-content;
+}
+.back-home-link:hover{background:var(--bg); color:var(--red-deep);}
+.back-home-link svg{flex-shrink:0;}
+.sb-brand .cell{
+  width:34px;height:34px;border-radius:50%;
+  background:radial-gradient(circle at 32% 30%, #8f84e0, var(--red-deep) 70%);
+  box-shadow: inset 0 -3px 6px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.15);
+  flex-shrink:0;
+}
+.sb-brand .t1{font-size:17px; line-height:1.1;}
+.sb-brand .t2{font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-top:2px;}
+.watermark{
+  font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--muted); opacity:0.55;
+  text-align:right; margin:-8px 4px 14px 0; letter-spacing:0.02em;
+}
+
+.search-box{
+  display:flex; align-items:center; gap:8px;
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:8px 10px;
+  margin-bottom:16px;
+}
+.search-box input{
+  border:none; background:transparent; outline:none;
+  font-size:13.5px; width:100%; color:var(--ink); font-family:inherit;
+}
+.search-box svg{flex-shrink:0; opacity:0.5;}
+
+.mode-toggle{
+  display:flex; background:var(--bg); border:1px solid var(--line);
+  border-radius:8px; padding:3px; margin-bottom:18px; gap:3px;
+}
+.mode-toggle button{
+  flex:1; border:none; background:transparent; padding:8px 6px;
+  border-radius:6px; font-size:12.5px; font-weight:600; color:var(--muted);
+  cursor:pointer; transition:all .15s ease;
+}
+.mode-toggle button.active{background:var(--red); color:#fff; box-shadow:var(--shadow);}
+
+.nav-cat{margin-bottom:4px;}
+.nav-cat-head{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:9px 8px; cursor:pointer; border-radius:7px;
+  font-size:13px; font-weight:600;
+  user-select:none;
+}
+.nav-cat-head:hover{background:var(--bg);}
+.nav-cat-head .chev{transition:transform .18s ease; opacity:0.5;}
+.nav-cat-head .badge-count{
+  font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted);
+  background:var(--bg); border:1px solid var(--line); border-radius:20px;
+  padding:1px 7px; margin-left:6px;
+}
+.nav-cat.open .chev{transform:rotate(90deg);}
+.nav-list{max-height:0; overflow:hidden; transition:max-height .25s ease;}
+.nav-cat.open .nav-list{max-height:1200px;}
+.nav-item{
+  display:flex; align-items:center; gap:8px;
+  padding:7px 8px 7px 22px; font-size:13px; cursor:pointer;
+  border-radius:7px; color:var(--muted); position:relative;
+}
+.nav-item:hover{background:var(--bg); color:var(--ink);}
+.nav-item.active{background:var(--red-tint); color:var(--red-deep); font-weight:600;}
+.nav-item .dot{width:5px;height:5px;border-radius:50%; background:currentColor; opacity:0.5; flex-shrink:0;}
+.nav-item .check{
+  margin-left:auto; width:14px; height:14px; border-radius:50%;
+  border:1.5px solid var(--line); flex-shrink:0;
+}
+.nav-item .check.done{background:var(--teal); border-color:var(--teal);}
+
+.sb-progress{
+  margin-top:20px; padding:12px; background:var(--bg); border-radius:8px; border:1px solid var(--line);
+}
+.sb-progress .lbl{font-size:11px; color:var(--muted); display:flex; justify-content:space-between; margin-bottom:6px;}
+.sb-progress .bar{height:6px; background:var(--line); border-radius:4px; overflow:hidden;}
+.sb-progress .fill{height:100%; background:linear-gradient(90deg, var(--teal), #2a7a7d); border-radius:4px; transition:width .3s ease;}
+.sb-progress-foot{
+  display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:10px;
+}
+.sb-progress-foot span{font-size:10px; color:var(--muted); opacity:0.8;}
+.sb-progress-foot button{
+  border:none; background:transparent; color:var(--muted); font-size:10.5px; font-weight:600;
+  cursor:pointer; text-decoration:underline; padding:0; flex-shrink:0;
+}
+.sb-progress-foot button:hover{color:var(--red);}
+
+/* Main */
+#main{flex:1; min-width:0;}
+.topbar{
+  position:sticky; top:0; z-index:5;
+  background:rgba(241,239,233,0.88); backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+  padding:14px 40px; display:none; align-items:center; gap:10px;
+}
+.hamburger{display:none; border:1px solid var(--line); background:#fff; border-radius:8px; width:36px; height:36px; align-items:center; justify-content:center; cursor:pointer;}
+
+.content-wrap{max-width:880px; margin:0 auto; padding:56px 40px 120px;}
+</style>
+</head>
+<body>
+<style>
+/* ---------- Hero (home view) ---------- */
+.hero{padding-bottom:12px;}
+.hero .eyebrow{
+  font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.12em;
+  text-transform:uppercase; color:var(--red); display:flex; align-items:center; gap:8px; margin-bottom:14px;
+}
+.hero .eyebrow::before{content:""; width:20px; height:1px; background:var(--red);}
+.hero h1{font-size:clamp(34px,5vw,52px); line-height:1.02;}
+.hero h1 em{font-style:italic; color:var(--red);}
+.hero p.lede{font-size:16.5px; color:var(--muted); max-width:560px; margin-top:16px;}
+.hero-stats{display:flex; gap:28px; margin-top:30px; flex-wrap:wrap;}
+.hero-stats .stat b{font-family:'Fraunces',serif; font-size:28px; display:block;}
+.hero-stats .stat span{font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em;}
+
+/* Signature: MCV algorithm widget */
+.algo-widget{
+  margin-top:40px; background:var(--bg-panel); border:1px solid var(--line); border-radius:14px;
+  padding:28px 28px 24px; box-shadow:var(--shadow);
+}
+.algo-widget h3{font-size:16px; margin-bottom:4px;}
+.algo-widget .sub{font-size:12.5px; color:var(--muted); margin-bottom:20px;}
+.algo-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;}
+.algo-btn{
+  flex:1; min-width:150px; text-align:left; border:1.5px solid var(--line); background:var(--bg);
+  border-radius:9px; padding:12px 14px; cursor:pointer; transition:all .15s ease;
+}
+.algo-btn b{display:block; font-size:13.5px; font-family:'IBM Plex Mono',monospace;}
+.algo-btn span{font-size:11.5px; color:var(--muted);}
+.algo-btn:hover{border-color:var(--red); background:var(--red-tint);}
+.algo-btn.picked{border-color:var(--red); background:var(--red-tint); box-shadow:inset 0 0 0 1px var(--red);}
+.algo-result{
+  margin-top:16px; padding:16px 18px; border-radius:10px; background:var(--teal-tint);
+  border:1px solid #c8ddd9; font-size:13.5px; min-height:20px;
+}
+.algo-result .rlabel{font-size:10.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--teal); font-weight:600; margin-bottom:6px;}
+.algo-result .chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;}
+.chip{
+  background:#fff; border:1px solid var(--line); padding:5px 11px; border-radius:20px; font-size:12.5px;
+  font-family:'IBM Plex Mono', monospace; cursor:pointer;
+}
+.chip:hover{border-color:var(--teal); color:var(--teal);}
+
+.home-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:14px; margin-top:44px;}
+.home-card{
+  background:var(--bg-panel); border:1px solid var(--line); border-radius:12px; padding:18px;
+  cursor:pointer; transition:all .15s ease;
+}
+.home-card:hover{transform:translateY(-2px); box-shadow:var(--shadow); border-color:#cfc9ba;}
+.home-card .n{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--red); margin-bottom:8px;}
+.home-card h4{font-size:15.5px;}
+.home-card p{font-size:12.5px; color:var(--muted); margin-top:6px;}
+
+/* ---------- Topic page ---------- */
+.crumbs{font-size:12px; color:var(--muted); margin-bottom:14px; display:flex; align-items:center; gap:6px;}
+.crumbs .sep{opacity:0.5;}
+.topic-head{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:6px;}
+.topic-head h1{font-size:clamp(28px,4vw,40px);}
+.badge-level{
+  font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; color:#fff;
+  background:var(--red); border-radius:6px; padding:4px 9px; flex-shrink:0; margin-top:6px;
+  white-space:nowrap;
+}
+.topic-sub{color:var(--muted); font-size:14.5px; margin-bottom:8px;}
+.mark-btn{
+  display:inline-flex; align-items:center; gap:7px; border:1.5px solid var(--line); background:#fff;
+  padding:8px 14px; border-radius:8px; font-size:12.5px; font-weight:600; cursor:pointer; margin:18px 0 8px;
+  color:var(--muted);
+}
+.mark-btn.done{border-color:var(--teal); background:var(--teal-tint); color:var(--teal);}
+.mark-btn .dotc{width:9px;height:9px;border-radius:50%; border:1.5px solid currentColor;}
+.mark-btn.done .dotc{background:var(--teal);}
+
+.section-block{margin-top:30px;}
+.section-block h2{
+  font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--red);
+  font-family:'IBM Plex Mono', monospace; font-weight:600;
+  display:flex; align-items:center; gap:10px; margin-bottom:14px;
+}
+.section-block h2::after{content:""; flex:1; height:1px; background:var(--line);}
+.section-block ul{margin:0; padding-left:20px;}
+.section-block li{margin-bottom:7px; font-size:14.5px;}
+.section-block p{font-size:14.5px; margin:0 0 10px;}
+.section-block .sub-h{font-weight:600; font-size:14px; margin-top:14px; margin-bottom:6px; font-family:'Fraunces',serif;}
+
+.extra-wrap{margin-top:34px; border-top:2px dashed var(--line); padding-top:26px;}
+.extra-wrap-head{display:flex; align-items:center; gap:8px; margin-bottom:4px;}
+.extra-wrap-head .tag{
+  font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:700; letter-spacing:0.06em;
+  color:#fff; background:var(--teal); padding:3px 9px; border-radius:20px; text-transform:uppercase;
+}
+.extra-wrap-head b{font-family:'Fraunces',serif; font-size:16px;}
+.extra-wrap-note{font-size:12px; color:var(--muted); margin-bottom:18px;}
+.extra-block{margin-top:22px;}
+.extra-block h3{
+  font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--teal);
+  font-family:'IBM Plex Mono', monospace; font-weight:600; display:flex; align-items:center; gap:10px; margin-bottom:10px;
+}
+.extra-block h3::after{content:""; flex:1; height:1px; background:var(--line);}
+.extra-block ul{margin:0; padding-left:20px;}
+.extra-block li{margin-bottom:7px; font-size:14px;}
+
+.topic-images{display:flex; gap:14px; flex-wrap:wrap; margin:18px 0;}
+.topic-image-card{
+  background:var(--bg-panel); border:1px solid var(--line); border-radius:12px;
+  overflow:hidden; width:200px; flex-shrink:0; box-shadow:var(--shadow);
+}
+.topic-image-card img{display:block; width:100%; height:auto;}
+.topic-image-card .cap{padding:9px 11px; font-size:11.5px; color:var(--muted); line-height:1.4;}
+@media (max-width:640px){ .topic-image-card{width:100%;} }
+
+.callout{
+  border-radius:10px; padding:16px 18px; margin:14px 0; font-size:13.5px; border:1px solid;
+}
+.callout.mnemonic{background:var(--amber-tint); border-color:#e3caa0;}
+.callout.mnemonic .clabel{font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--amber); font-weight:700; margin-bottom:6px;}
+.callout.key{background:var(--red-tint); border-color:#c9c3ea;}
+.callout.key .clabel{font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--red-deep); font-weight:700; margin-bottom:6px;}
+
+table.data-tbl{width:100%; border-collapse:collapse; margin:14px 0; font-size:13px;}
+table.data-tbl th, table.data-tbl td{border:1px solid var(--line); padding:9px 11px; text-align:left; vertical-align:top;}
+table.data-tbl th{background:var(--bg); font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.04em; color:var(--muted);}
+table.data-tbl tr:nth-child(even) td{background:#fbfaf7;}
+
+.topic-nav{display:flex; justify-content:space-between; margin-top:56px; padding-top:22px; border-top:1px solid var(--line); gap:14px;}
+.tn-btn{flex:1; border:1px solid var(--line); background:#fff; border-radius:10px; padding:14px 16px; cursor:pointer; max-width:48%;}
+.tn-btn .lbl{font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em;}
+.tn-btn .ttl{font-family:'Fraunces',serif; font-size:15px; margin-top:3px;}
+.tn-btn.next{text-align:right; margin-left:auto;}
+
+/* ---------- Quiz ---------- */
+.quiz-shell{max-width:680px; margin:0 auto; padding:56px 40px 100px;}
+.quiz-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:26px;}
+.quiz-progress-track{height:6px; background:var(--line); border-radius:4px; flex:1; margin:0 16px; overflow:hidden;}
+.quiz-progress-fill{height:100%; background:var(--red); border-radius:4px; transition:width .3s ease;}
+.quiz-count{font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--muted); white-space:nowrap;}
+.qcard{background:var(--bg-panel); border:1px solid var(--line); border-radius:14px; padding:28px; box-shadow:var(--shadow);}
+.qcard .vignette{font-size:15px; line-height:1.65; margin-bottom:20px;}
+.qcard .question{font-weight:600; font-size:15px; margin-bottom:18px; font-family:'Fraunces',serif;}
+.opt{
+  display:flex; gap:12px; align-items:flex-start; padding:13px 14px; border:1.5px solid var(--line);
+  border-radius:9px; margin-bottom:10px; cursor:pointer; font-size:14px; transition:all .12s ease;
+}
+.opt:hover{border-color:#c9a; background:var(--red-tint);}
+.opt .lt{
+  width:24px;height:24px; border-radius:50%; border:1.5px solid var(--line); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600;
+  font-family:'IBM Plex Mono',monospace;
+}
+.opt.correct{border-color:var(--teal); background:var(--teal-tint);}
+.opt.correct .lt{background:var(--teal); border-color:var(--teal); color:#fff;}
+.opt.wrong{border-color:var(--red); background:var(--red-tint);}
+.opt.wrong .lt{background:var(--red); border-color:var(--red); color:#fff;}
+.opt.disabled{cursor:default;}
+.opt.disabled:hover{background:none;}
+.opt.dim{opacity:0.55;}
+
+.qexplain{margin-top:16px; padding:15px 16px; background:var(--bg); border-radius:9px; font-size:13.5px; border-left:3px solid var(--teal); display:none;}
+.qexplain.show{display:block;}
+.qexplain b{color:var(--teal);}
+.qnext-row{display:flex; justify-content:flex-end; margin-top:18px;}
+.btn-primary{
+  background:var(--red); color:#fff; border:none; padding:11px 22px; border-radius:8px;
+  font-weight:600; font-size:13.5px; cursor:pointer;
+}
+.btn-primary:disabled{opacity:0.35; cursor:not-allowed;}
+.btn-ghost{background:transparent; border:1.5px solid var(--line); padding:11px 22px; border-radius:8px; font-weight:600; font-size:13.5px; cursor:pointer;}
+.btn-ghost:disabled{opacity:0.35; cursor:not-allowed;}
+
+.quiz-result{text-align:center; padding:40px 20px;}
+.quiz-result .score{font-family:'Fraunces',serif; font-size:64px; margin:14px 0;}
+.quiz-result .score span{font-size:28px; color:var(--muted);}
+
+/* ---------- Flow / algorithm diagrams (from PPT schemes) ---------- */
+.flowcard{
+  background:var(--bg-panel); border:1px solid var(--line); border-radius:12px;
+  padding:22px 22px 20px; margin-top:14px;
+}
+.flowcard .fnote{font-size:12px; color:var(--muted); margin-bottom:16px;}
+.fstep{
+  display:flex; align-items:center; gap:12px; margin-bottom:10px;
+}
+.fstep .fbox{
+  background:var(--bg); border:1.5px solid var(--line); border-radius:9px; padding:10px 14px;
+  font-size:13px; font-weight:600; flex-shrink:0;
+}
+.fstep .farrow{color:var(--muted); font-size:15px; flex-shrink:0;}
+.fstep .fresult{font-size:13px; color:var(--muted);}
+.fsplit{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:10px 0 4px;}
+.fsplit.three{grid-template-columns:1fr 1fr 1fr;}
+.fbranch{
+  border:1.5px solid var(--line); border-radius:10px; padding:14px 15px; background:var(--bg);
+}
+.fbranch.red{border-color:#c9c3ea; background:var(--red-tint);}
+.fbranch.teal{border-color:#b7d4cf; background:var(--teal-tint);}
+.fbranch.amber{border-color:#e3caa0; background:var(--amber-tint);}
+.fbranch .flabel{
+  font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em;
+  color:var(--muted); margin-bottom:6px; font-weight:600;
+}
+.fbranch.red .flabel{color:var(--red-deep);}
+.fbranch.teal .flabel{color:var(--teal);}
+.fbranch.amber .flabel{color:var(--amber);}
+.fbranch .fhead{font-family:'Fraunces',serif; font-size:15px; margin-bottom:6px;}
+.fbranch ul{margin:0; padding-left:16px;}
+.fbranch li{font-size:12.5px; margin-bottom:4px;}
+.fbranch p{font-size:12.5px; margin:0;}
+.fdivider{
+  display:flex; align-items:center; gap:8px; margin:16px 0 10px; font-size:11px;
+  color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; font-family:'IBM Plex Mono',monospace;
+}
+.fdivider::before, .fdivider::after{content:""; flex:1; height:1px; background:var(--line);}
+.fseq{counter-reset:fseq; margin-top:6px;}
+.fseq-item{
+  counter-increment:fseq; display:flex; gap:14px; padding:12px 0; border-top:1px solid var(--line);
+}
+.fseq-item:first-child{border-top:none;}
+.fseq-item .fnum{
+  width:26px; height:26px; border-radius:50%; background:var(--red); color:#fff; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
+}
+.fseq-item .fbody b{display:block; font-size:13.5px; margin-bottom:3px;}
+.fseq-item .fbody span{font-size:12.5px; color:var(--muted);}
+@media (max-width:640px){
+  .fsplit, .fsplit.three{grid-template-columns:1fr;}
+}
+
+/* ---------- GCS calculator ---------- */
+.gcs-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:14px;}
+.gcs-grid label{display:block; font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); font-weight:600; margin-bottom:5px;}
+.gcs-grid select{width:100%; padding:10px 10px; border:1.5px solid var(--line); border-radius:8px; background:var(--bg); font-family:inherit; font-size:13px; color:var(--ink);}
+.gcs-grid select:focus{outline:none; border-color:var(--red);}
+.gcs-score{font-family:'Fraunces',serif; font-size:34px; line-height:1;}
+.gcs-score small{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted); margin-left:8px;}
+@media (max-width:640px){ .gcs-grid{grid-template-columns:1fr;} }
+
+/* ---------- Scroll reveal ---------- */
+.reveal{opacity:0; transform:translateY(10px); animation:rise .5s ease forwards;}
+@keyframes rise{to{opacity:1; transform:none;}}
+
+@media (max-width:880px){
+  #sidebar{position:fixed; left:0; top:0; z-index:50; transform:translateX(-100%); transition:transform .25s ease; box-shadow:0 0 40px rgba(0,0,0,0.25); width:280px;}
+  #sidebar.open{transform:translateX(0);}
+  .sb-overlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:40;}
+  .sb-overlay.show{display:block;}
+  .topbar{display:flex;}
+  .hamburger{display:flex;}
+  .content-wrap, .quiz-shell{padding:32px 20px 90px;}
+  .algo-row{flex-direction:column;}
+  .topic-nav{flex-direction:column;}
+  .tn-btn{max-width:100%;}
+}
+@media (prefers-reduced-motion: reduce){
+  .reveal{animation:none; opacity:1; transform:none;}
+}
+</style>
+<div class="sb-overlay" id="sbOverlay"></div>
+<div id="app">
+  <aside id="sidebar">
+    <a class="back-home-link" href="../">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Semua Mata Kuliah
+    </a>
+    <div class="sb-brand" id="sbBrandHome" style="cursor:pointer;">
+      <div class="cell"></div>
+      <div>
+        <div class="t1">Neuropsikiatri</div>
+        <div class="t2">Atlas Belajar · CSL</div>
+      </div>
+    </div>
+    <div class="watermark">by Naruxhz</div>
+    <div class="search-box">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="searchInput" placeholder="Cari topik, tes, tanda klinis…" autocomplete="off">
+    </div>
+    <div class="mode-toggle">
+      <button id="btnModeBelajar" class="active">Belajar</button>
+      <button id="btnModeQuiz">Kuis (<span id="quizCountLabel">0</span>)</button>
+    </div>
+    <nav id="navTree"></nav>
+    <div class="sb-progress">
+      <div class="lbl"><span>Progres belajar</span><span id="progressLabel">0 / 0</span></div>
+      <div class="bar"><div class="fill" id="progressFill" style="width:0%"></div></div>
+      <div class="sb-progress-foot">
+        <span>Tersimpan otomatis di browser ini</span>
+        <button id="resetProgressBtn" type="button">Reset</button>
+      </div>
+    </div>
+  </aside>
+
+  <main id="main">
+    <div class="topbar">
+      <button class="hamburger" id="hamburgerBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <b style="font-family:'Fraunces',serif;">Neuropsikiatri</b>
+    </div>
+    <div id="viewRoot"></div>
+  </main>
+</div>
+<script>
+/* =========================================================
+   DATA — bersumber dari Penuntun Clinical Skills Lab (CSL)
+   Blok Neuropsikiatri, FK Universitas Pattimura TA 2024/2025
+   ========================================================= */
+const CATEGORIES = [
+ {
+  "id": "kesadaran",
+  "label": "Tingkat Kesadaran (GCS)",
+  "group": "Neurologi"
+ },
+ {
+  "id": "meningeal",
+  "label": "Rangsang Meningeal",
+  "group": "Neurologi"
+ },
+ {
+  "id": "kranialis",
+  "label": "Nervus Kranialis",
+  "group": "Neurologi"
+ },
+ {
+  "id": "kortikal",
+  "label": "Fungsi Kortikal Luhur",
+  "group": "Neurologi"
+ },
+ {
+  "id": "koordinasi",
+  "label": "Keseimbangan & Koordinasi",
+  "group": "Neurologi"
+ },
+ {
+  "id": "refleks",
+  "label": "Refleks Patologis",
+  "group": "Neurologi"
+ },
+ {
+  "id": "psikiatri",
+  "label": "Anamnesis & Status Mental",
+  "group": "Psikiatri"
+ }
+];
+const TOPICS = [
+ {
+  "id": "gcs",
+  "cat": "kesadaran",
+  "level": "CSL 1",
+  "title": "Pemeriksaan Tingkat Kesadaran (GCS)",
+  "sub": "Glasgow Coma Scale: baku emas kuantitatif untuk menilai derajat kesadaran dan prognosis.",
+  "sections": [
+   {
+    "h": "Konsep Dasar",
+    "list": [
+     "Kesadaran adalah keadaan yang mencerminkan integrasi impuls aferen (input) dan eferen (output) susunan saraf pusat. Kesadaran selalu dinilai <b>pertama</b> pada setiap pasien, karena tatalaksana dan prognosis pasien yang sadar penuh berbeda jauh dari pasien yang mengalami gangguan kesadaran — dan hasilnya membantu menentukan diagnosis topis (letak lesi) maupun etiologis.",
+     "Struktur anatomi yang mengatur kesadaran: <b>ARAS</b> (ascending reticular activating system, berasal dari formasio retikularis tegmentum paramedian mesensefalon dan pons atas), <b>talamus</b>, dan <b>korteks hemisfer serebri bilateral</b>. ARAS menerima input sensorik umum dan khusus lalu mengaktivasi korteks, sehingga korteks dapat memproses informasi dari lingkungan.",
+     "Kesadaran punya dua faktor: <b>keterjagaan (arousal)</b> — terkait ARAS, talamus dan jaras penghubungnya; gangguannya tampak sebagai penurunan kesadaran tanpa siklus bangun-tidur dan tidak responsif terhadap stimulus. <b>Kewaspadaan (awareness)</b> — hasil koordinasi seluruh korteks; gangguannya tampak sebagai disorientasi, perubahan perilaku, agitasi, dan gangguan fungsi luhur."
+    ]
+   },
+   {
+    "h": "Patofisiologi Penurunan Kesadaran",
+    "list": [
+     "<b>Lesi struktural</b>: lesi difus di korteks serebri, atau lesi fokal supratentorial/infratentorial yang mengenai ARAS, talamus dan jaras di antaranya (mis. jaras talamokortikal).",
+     "<b>Lesi fungsional</b> (metabolik): hipoksia, iskemia global, hipoglikemia, asidosis, defisiensi vitamin B1 — neuron kehilangan aktivitas metabolik normalnya.",
+     "<b>Ketidakseimbangan neurotransmitter</b>: intoksikasi obat, sindrom serotonin, sindrom neuroleptik maligna, status epileptikus nonkonvulsif."
+    ]
+   },
+   {
+    "h": "Tahapan Pemeriksaan",
+    "list": [
+     "<b>1. Observasi</b> — apakah pasien membuka mata spontan, memperhatikan sekitar, bergerak sesuai, dan berkomunikasi.",
+     "<b>2. Stimulasi</b> — bertahap: suara (verbal) dahulu, baru rangsang nyeri. Catat <b>respons terbaik</b> yang muncul. Bila tidak ada respons pada stimulasi maksimal, pasien berada di tingkat kesadaran terendah.",
+     "<b>3. Dokumentasi</b> — tuliskan skor per komponen (E, V, M) dan totalnya."
+    ]
+   },
+   {
+    "h": "Cara Menilai Tiap Komponen",
+    "list": [
+     "<b>Eye (E, 1–4)</b>: E4 spontan → bila tidak, panggil nama/perintah buka mata (E3) → bila tidak, rangsang nyeri pada ujung kuku/supraorbita (E2) → tidak ada (E1). Bila mata tidak dapat dibuka karena edema palpebra/cedera maksilofasial, tulis <b>NT (not testable)</b>, bukan E1.",
+     "<b>Verbal (V, 1–5)</b>: V5 menjawab nama dan orientasi waktu-tempat-orang benar; V4 kalimat/frasa tetapi disorientasi (bingung); V3 hanya kata-kata tidak bermakna kalimat; V2 hanya mengerang; V1 tidak ada suara.",
+     "<b>Motorik (M, 1–6)</b>: minta pasien menggenggam dan melepas tangan pemeriksa (M6 bila menurut perintah). Bila tidak, beri nyeri di <b>otot trapezius</b> (dekat supraklavikula) hingga 10 detik dengan intensitas rendah ke tinggi → lalu <b>supraorbita</b> (maks. 10 detik) → lalu <b>sternum</b>, sampai muncul respons motorik terbaik.",
+     "M5 melokalisasi nyeri (tangan melewati dagu menepis rangsang); M4 fleksi normal/menghindar (siku fleksi cepat menjauh); M3 fleksi abnormal = <b>dekortikasi</b> (fleksi siku lambat, rotasi lengan bawah, ibu jari mengepal, ekstensi dorsum pedis); M2 ekstensi = <b>deserebrasi</b>; M1 tidak ada respons.",
+     "Skor minimal <b>3</b> (tidak ada respons), maksimal <b>15</b> (normal)."
+    ]
+   }
+  ],
+  "table": {
+   "title": "Skala Koma Glasgow (GCS)",
+   "head": [
+    "Komponen",
+    "Skor",
+    "Respons"
+   ],
+   "rows": [
+    [
+     "Eye (E)",
+     "4 / 3 / 2 / 1",
+     "Spontan / terhadap suara / terhadap nyeri / tidak ada"
+    ],
+    [
+     "Verbal (V)",
+     "5 / 4 / 3 / 2 / 1",
+     "Berorientasi baik / bingung (confused) / kata tidak tepat / mengerang / tidak ada"
+    ],
+    [
+     "Motorik (M)",
+     "6 / 5 / 4 / 3 / 2 / 1",
+     "Menurut perintah / melokalisasi nyeri / menghindar / fleksi abnormal (dekortikasi) / ekstensi (deserebrasi) / tidak ada"
+    ]
+   ]
+  },
+  "mnemonic": {
+   "label": "Hafalan GCS",
+   "text": "E4 · V5 · M6 = 15. Cedera kepala: GCS 13–15 ringan, 9–12 sedang, ≤8 berat (koma). Selalu catat skor per komponen, mis. E3V4M5 = 12."
+  },
+  "extra": [
+   {
+    "h": "Pendalaman",
+    "list": [
+     "Skor <b>≤8</b> umumnya dianggap tidak mampu mempertahankan jalan napas sendiri sehingga perlu dipertimbangkan pengamanan airway (intubasi).",
+     "Dekortikasi (fleksi lengan) menandakan lesi di atas nukleus ruber; deserebrasi (ekstensi lengan dan tungkai) menandakan lesi lebih ke batang otak — deserebrasi umumnya prognosis lebih buruk."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "meningeal",
+  "cat": "meningeal",
+  "level": "CSL 2",
+  "title": "Pemeriksaan Rangsang Meningeal",
+  "sub": "Kaku kuduk, Kernig, dan Brudzinski I–IV untuk menilai iritasi meningen.",
+  "sections": [
+   {
+    "h": "Konsep Dasar",
+    "list": [
+     "Tanda rangsang meningeal muncul pada iritasi meningen akibat <b>inflamasi, infeksi, atau perdarahan</b> (mis. meningitis, perdarahan subaraknoid) dan pada radikulopati dengan inflamasi lokal radiks. Pemeriksaan ini memberi regangan pada meningen dan radiks yang sudah hipersensitif sehingga tubuh bereaksi dengan postur atau gerakan protektif.",
+     "Meningen terdiri dari 3 lapis, dari luar ke dalam: <b>duramater, araknoid, piamater</b>.",
+     "Mekanisme: medula spinalis terletak di belakang kanalis vertebra sehingga teregang saat fleksi, sementara batang otak relatif terfiksir. Regangan terbesar terjadi pada struktur terbawah (n. femoralis dan n. iskiadikus di cauda equina). Pada meningen yang meradang, regangan ini merangsang radiks aferen → refleks intraspinal → impuls tonik ke otot aksial posterior → <b>spasme otot ekstensor protektif</b>. Spasme otot servikal = kaku kuduk; spasme otot lumbal/hamstring = tanda Kernig.",
+     "Tanda meningeal sangat mengarah ke meningitis tetapi <b>tidak patognomonik</b> — dapat ditemukan juga pada kondisi lain."
+    ]
+   },
+   {
+    "h": "Tujuan",
+    "list": [
+     "Mampu menjelaskan patomekanisme kaku kuduk dan penyakit penyebabnya, melakukan pemeriksaan tanda rangsang meningeal, membedakan dari meningismus, serta memberi penanganan awal dan persiapan rujukan."
+    ]
+   }
+  ],
+  "table": {
+   "title": "Prosedur Tanda Rangsang Meningeal",
+   "head": [
+    "Tanda",
+    "Cara Pemeriksaan",
+    "Positif (abnormal) bila"
+   ],
+   "rows": [
+    [
+     "Kaku kuduk",
+     "Pasien telentang tanpa bantal; satu tangan di bawah kepala, satu di dada. Rotasi kepala kiri-kanan (cek rileks), lalu fleksikan kepala pasif hingga dagu menyentuh dada.",
+     "Ada tahanan atau dagu tidak dapat mencapai dada"
+    ],
+    [
+     "Kernig",
+     "Fleksikan paha 90° pada sendi panggul, lalu ekstensikan tungkai bawah pada sendi lutut. Ulangi sisi lain.",
+     "Ekstensi lutut tidak mencapai 135° atau timbul nyeri"
+    ],
+    [
+     "Brudzinski I",
+     "Satu tangan di bawah kepala, satu di dada; fleksikan kepala cepat ke arah dada.",
+     "Fleksi involunter kedua tungkai pada sendi lutut"
+    ],
+    [
+     "Brudzinski II",
+     "Fleksikan satu tungkai pada lutut, lalu fleksi maksimal pada panggul; tungkai sebelahnya tetap lurus.",
+     "Tungkai yang lurus ikut fleksi involunter pada panggul dan lutut"
+    ],
+    [
+     "Brudzinski III",
+     "Tekan kedua os zigomatikus dengan ibu jari pemeriksa.",
+     "Fleksi involunter kedua lengan pada sendi siku"
+    ],
+    [
+     "Brudzinski IV",
+     "Tekan simfisis os pubis dengan tangan pemeriksa.",
+     "Fleksi involunter kedua tungkai pada sendi lutut"
+    ]
+   ]
+  },
+  "mnemonic": {
+   "label": "Ingat",
+   "text": "Brudzinski I = leher (fleksi kepala) · II = kontralateral (tungkai) · III = pipi (zigoma) · IV = pubis. Semua positif bila ada gerakan fleksi involunter sebagai respons protektif."
+  }
+ },
+ {
+  "id": "cn-olfaktorius",
+  "cat": "kranialis",
+  "level": "CSL 3",
+  "title": "N. I (Olfaktorius) — Penciuman",
+  "sub": "Pemeriksaan indra penghidu dengan bahan yang dikenal sehari-hari.",
+  "sections": [
+   {
+    "h": "Pendahuluan Nervus Kranialis",
+    "list": [
+     "Seluruh nervus kranialis kecuali <b>N. I dan N. II</b> berasal dari batang otak; serabutnya keluar dari sisi bawah otak melalui foramina di basis kranii.",
+     "Gangguan satu atau beberapa saraf kranial menandakan lesi terlokalisasi (tumor, perdarahan) atau gangguan luas (peningkatan TIK, meningitis, infeksi generalisata) — sehingga pemeriksaannya membantu menentukan diagnosis dan letak lesi."
+    ]
+   },
+   {
+    "h": "Prosedur",
+    "list": [
+     "Jelaskan tujuan pemeriksaan. <b>Syarat</b>: tidak ada penyakit intranasal; pasien duduk/berbaring dengan <b>mata tertutup</b>.",
+     "Dekatkan bahan uji ke satu lubang hidung sementara lubang hidung lain ditutup. Gunakan zat yang dikenal sehari-hari: <b>kopi, teh, tembakau, jeruk</b> (hindari zat yang merangsang N. V seperti amonia).",
+     "Minta pasien mengenali bahan; periksa kedua sisi dan bandingkan."
+    ]
+   }
+  ],
+  "table": {
+   "title": "Interpretasi Gangguan Penghidu",
+   "head": [
+    "Istilah",
+    "Arti"
+   ],
+   "rows": [
+    [
+     "Normosmia",
+     "Kemampuan menghidu normal"
+    ],
+    [
+     "Hiposmia",
+     "Kemampuan menghidu menurun"
+    ],
+    [
+     "Hiperosmia",
+     "Kemampuan menghidu meningkat — dapat pada hiperemesis gravidarum atau migren"
+    ],
+    [
+     "Parosmia",
+     "Salah mengenali bau-bauan"
+    ],
+    [
+     "Kakosmia",
+     "Persepsi bau busuk padahal tidak ada"
+    ],
+    [
+     "Halusinasi penciuman",
+     "Biasanya bau tidak sedap; khas pada epilepsi yang berasal dari <b>girus unsinatus lobus temporal</b>, sering disertai gerak mengecap-ngecap (epilepsi parsial kompleks)"
+    ]
+   ]
+  }
+ },
+ {
+  "id": "cn-mata",
+  "cat": "kranialis",
+  "level": "CSL 3",
+  "title": "N. II, III, IV, VI — Pupil & Gerak Bola Mata",
+  "sub": "Ptosis, ukuran pupil, refleks cahaya, akomodasi, gerak bola mata, diplopia, dan nistagmus.",
+  "sections": [
+   {
+    "h": "Celah Palpebra (N. III)",
+    "list": [
+     "Perhatikan celah mata saat wawancara: ptosis, eksoftalmus, enoftalmus. <b>Ptosis</b> terjadi akibat kelumpuhan <b>M. levator palpebrae</b> (N. III). Pada kelumpuhan ringan, celah mata sisi lumpuh lebih kecil dan dahi sering dikerutkan (M. frontalis) sebagai kompensasi.",
+     "Menilai kekuatan levator: minta pasien menutup mata lalu membukanya melawan tahanan ringan pemeriksa; <b>tekan alis</b> dengan tangan lain untuk meniadakan kompensasi M. frontalis.",
+     "Ptosis dapat dijumpai pada <b>miastenia gravis</b> dan <b>sindrom Horner</b>."
+    ]
+   },
+   {
+    "h": "Ukuran & Bentuk Pupil",
+    "list": [
+     "Bandingkan pupil kiri-kanan: sama (isokor) atau tidak (anisokor); bentuk bundar dengan tepi rata (normal).",
+     "Otot konstriktor pupil dipersarafi parasimpatis N. III; otot dilator dipersarafi simpatis (torakolumbal).",
+     "<b>Miosis</b> (pupil mengecil): saat tidur, koma tingkat tertentu, iritasi N. III, kelumpuhan simpatis (sindrom Horner). <b>Midriasis</b> (melebar): kelumpuhan N. III (desakan tumor/hematom), fraktur dasar tengkorak, serta efek obat."
+    ]
+   },
+   {
+    "h": "Refleks Cahaya (N. II aferen, N. III eferen)",
+    "list": [
+     "Pasien disuruh <b>melihat jauh</b> (agar tidak ada refleks akomodasi yang ikut mengecilkan pupil), lalu senter disorotkan dari samping.",
+     "Pupil yang disinari mengecil = refleks cahaya <b>langsung</b> (+). Pupil mata sebelahnya ikut mengecil = refleks cahaya <b>tidak langsung/konsensual</b> (+).",
+     "Pada lesi <b>N. II kanan</b> (jalur aferen rusak): sinar ke mata kanan → langsung (–) dan tidak langsung di kiri (–); tetapi bila mata kiri yang sehat disinari → langsung kiri (+) dan tidak langsung di kanan (+). Mata buta total: refleks cahayanya (–), tetapi bila mata lain disinari pupil mata buta tetap ikut mengecil.",
+     "Pada lesi <b>N. III kanan</b> (jalur eferen rusak): pupil kanan tidak mengecil baik saat kanan disinari (langsung –) maupun saat kiri disinari (tidak langsung kanan –)."
+    ]
+   },
+   {
+    "h": "Refleks Akomodasi (N. III)",
+    "list": [
+     "Pasien melihat jauh, lalu disuruh melihat benda dekat (mis. jari). Refleks akomodasi (+) bila pupil mengecil; pada kelumpuhan N. III refleks ini (–)."
+    ]
+   },
+   {
+    "h": "Gerak Bola Mata (N. III, IV, VI)",
+    "list": [
+     "Pasien telentang; pena/jari ditempatkan vertikal ±50 cm dari mata di garis pandang sentral; tangan lain memfiksasi kepala/dagu. Gerakkan perlahan ke lateral, medial, atas, bawah, dan arah oblik (atas-lateral, bawah-medial, atas-medial, bawah-lateral). Tanyakan adanya penglihatan ganda.",
+     "Tidak dapat bergerak ke <b>lateral</b> → parese M. rektus lateralis (<b>N. VI</b>). Tidak dapat ke <b>medial-bawah</b> → parese M. oblikus superior (<b>N. IV</b>). Tidak dapat bergerak ke arah selain lateral dan medial-bawah → parese <b>N. III</b>."
+    ]
+   },
+   {
+    "h": "Diplopia & Nistagmus",
+    "list": [
+     "<b>Diplopia</b> (melihat kembar) dijumpai pada kelumpuhan otot penggerak bola mata. Tentukan pada arah pandang mana timbul; bila satu mata ditutup, bayangan mana yang hilang. Bayangan yang salah arah menunjukkan arah gerak otot yang lumpuh, dan jaraknya makin besar ke arah itu.",
+     "<b>Nistagmus</b> = gerakan bolak-balik bola mata yang involunter dan ritmik. Minta pasien melirik terus ke satu arah selama 5–6 detik. Jangan melirik terlalu ekstrem — dapat memunculkan <i>end position nystagmus</i> pada orang normal."
+    ]
+   }
+  ],
+  "table": {
+   "title": "Pupil pada Lesi N. II vs N. III (kanan)",
+   "head": [
+    "Sinar ke",
+    "Lesi N. II kanan",
+    "Lesi N. III kanan"
+   ],
+   "rows": [
+    [
+     "Mata kanan",
+     "Langsung kanan (–); tidak langsung kiri (–)",
+     "Langsung kanan (–); tidak langsung kiri (+)"
+    ],
+    [
+     "Mata kiri",
+     "Langsung kiri (+); tidak langsung kanan (+)",
+     "Langsung kiri (+); tidak langsung kanan (–)"
+    ]
+   ]
+  },
+  "mnemonic": {
+   "label": "LR6 SO4",
+   "text": "N. VI → rektus Lateralis (LR6) · N. IV → oblikus Superior (SO4) · semua otot mata lainnya → N. III."
+  }
+ },
+ {
+  "id": "cn-trigeminus",
+  "cat": "kranialis",
+  "level": "CSL 3",
+  "title": "N. V (Trigeminus)",
+  "sub": "Fungsi motorik (masseter, temporalis, pterigoid) dan sensorik tiga cabang wajah.",
+  "sections": [
+   {
+    "h": "Motorik",
+    "list": [
+     "Pasien merapatkan gigi sekuat mungkin; palpasi <b>M. masseter dan M. temporalis</b> (nilai ukuran, tonus, kontur). Lalu pasien membuka mulut: perhatikan <b>deviasi rahang bawah</b>.",
+     "Bila ada paresis, rahang bawah <b>berdeviasi ke sisi yang lumpuh</b> (karena pterigoid sisi sehat mendorong rahang ke sisi lumpuh). Bila deviasi sulit dinilai, gunakan garis antara kedua gigi insisivus sebagai patokan — penting bila ada paresis N. VII bersamaan.",
+     "<b>Alternatif 1</b>: pasien menggigit tong spatel yang ditarik pemeriksa; lalu menggerakkan rahang ke samping (M. pterigoideus lateralis). Paresis kanan → rahang tidak dapat digerakkan ke kiri. <b>Alternatif 2</b>: pasien mempertahankan rahang ke samping, pemeriksa menekan mengembalikan ke tengah.",
+     "<b>Refleks rahang (jaw reflex)</b> untuk lesi supranuklear: jari pemeriksa diletakkan melintang di dagu pasien yang membuka mulut sedikit, lalu diketuk dengan palu refleks. Normal: gerakan minimal/tidak ada. <b>Meningkat</b> (mulut menutup kuat) pada lesi supranuklear."
+    ]
+   },
+   {
+    "h": "Sensorik",
+    "list": [
+     "Periksa kulit dan mukosa wajah untuk modalitas <b>nyeri, panas, dingin, dan raba</b>, bandingkan tiga cabang: <b>oftalmikus (V1), maksilaris (V2), mandibularis (V3)</b>, serta bandingkan dengan sisi kontralateral.",
+     "Hipestesia, parestesia, anestesia harus dipetakan batasnya. Pada <b>neuralgia trigeminus</b>, sentuhan/tekanan pada area tertentu memicu nyeri — disebut <b>trigger point</b>."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "cn-fasialis",
+  "cat": "kranialis",
+  "level": "CSL 3",
+  "title": "N. VII (Fasialis) — Wajah & Pengecapan",
+  "sub": "Kesimetrisan wajah, pembedaan paresis UMN vs LMN, dan pengecapan 2/3 anterior lidah.",
+  "sections": [
+   {
+    "h": "Kesimetrisan Wajah (Motorik)",
+    "list": [
+     "Perhatikan wajah saat istirahat: kerutan dahi, pejaman mata, sulkus nasolabialis, sudut mulut.",
+     "Minta pasien <b>mengangkat alis dan mengerutkan dahi</b> (kerutan hilang pada sisi lumpuh LMN); <b>memejamkan mata</b> lalu pemeriksa mencoba membukanya (sisi lumpuh sulit menutup — <b>lagoftalmus</b>, mudah dibuka); <b>menyeringai/menunjukkan gigi, mencucurkan bibir/bersiul, mengembungkan pipi</b> (sulkus nasolabialis mendatar, sudut mulut turun, pipi tidak bisa digembungkan).",
+     "Pembeda utama: <b>UMN</b> — kelumpuhan hanya pada daerah mulut (M. orbikularis oris) karena dahi dan mata mendapat persarafan kortikal dari kedua hemisfer. <b>LMN</b> — kelumpuhan pada mulut, mata (M. orbikularis okuli) <b>dan</b> dahi (M. frontalis)."
+    ]
+   },
+   {
+    "h": "Pengecapan (N. VII dan IX)",
+    "list": [
+     "Jelaskan prosedur; pasien menjulurkan lidah, lidah dikeringkan dengan tisu, pasien menutup mata, teteskan larutan <b>gula, kina, asam sitrat, atau garam</b>, lalu pasien membuka mata dan menunjuk rasa pada kertas yang sudah ditulis (lidah tetap terjulur).",
+     "N. VII (korda timpani) membawa rasa dari <b>2/3 anterior lidah</b>; kerusakan N. VII sebelum percabangan korda timpani → <b>ageusia</b> di 2/3 depan lidah. Lesi pada/di atas n. petrosus mayor → produksi air mata berkurang; lesi korda timpani → produksi ludah berkurang.",
+     "N. IX membawa rasa 1/3 posterior lidah — tidak rutin diperiksa karena sulit."
+    ]
+   }
+  ],
+  "table": {
+   "title": "Paresis Fasialis UMN vs LMN",
+   "head": [
+    "Aspek",
+    "UMN (sentral)",
+    "LMN (perifer)"
+   ],
+   "rows": [
+    [
+     "Dahi (M. frontalis)",
+     "Masih dapat berkerut",
+     "Tidak dapat berkerut"
+    ],
+    [
+     "Mata (M. orbikularis okuli)",
+     "Masih dapat menutup",
+     "Sulit menutup (lagoftalmus)"
+    ],
+    [
+     "Mulut (M. orbikularis oris)",
+     "Lumpuh (sudut mulut turun)",
+     "Lumpuh"
+    ],
+    [
+     "Contoh",
+     "Stroke",
+     "Bell’s palsy"
+    ]
+   ]
+  },
+  "mnemonic": {
+   "label": "UMN/LMN",
+   "text": "Dahi selamat = UMN (persarafan bilateral). Dahi ikut lumpuh = LMN."
+  }
+ },
+ {
+  "id": "cn-vestibulokokhlearis",
+  "cat": "kranialis",
+  "level": "CSL 3",
+  "title": "N. VIII (Kokhlearis) — Pendengaran",
+  "sub": "Tes garpu tala Schwabach, Rinne, dan Weber untuk membedakan tuli konduktif dan sensorineural.",
+  "sections": [
+   {
+    "h": "Prinsip",
+    "list": [
+     "Secara kasar, ketajaman pendengaran dinilai dengan membisikkan suara pada jarak tertentu dan membandingkannya dengan orang normal; bandingkan telinga kanan dan kiri.",
+     "Garpu tala yang dipakai berfrekuensi <b>128, 256, atau 512 Hz</b>."
+    ]
+   },
+   {
+    "h": "Tes Schwabach",
+    "list": [
+     "Membandingkan pendengaran pasien dengan pemeriksa (dianggap normal). Garpu tala dibunyikan di dekat telinga pasien sampai pasien tidak mendengar, lalu dipindah ke dekat telinga pemeriksa — bila pemeriksa masih mendengar, Schwabach <b>memendek</b> (konduksi udara). Ulangi dengan pangkal garpu tala pada <b>prosesus mastoid</b> (konduksi tulang)."
+    ]
+   },
+   {
+    "h": "Tes Rinne",
+    "list": [
+     "Membandingkan konduksi tulang dengan konduksi udara. Pangkal garpu tala ditekankan pada mastoid; saat pasien tidak mendengar lagi, garpu tala segera didekatkan ke telinga.",
+     "Masih terdengar → konduksi udara &gt; tulang = <b>Rinne positif</b> (normal, dan juga pada tuli saraf). Tidak terdengar → <b>Rinne negatif</b> (tuli konduktif: konduksi tulang lebih baik dari udara)."
+    ]
+   },
+   {
+    "h": "Tes Weber",
+    "list": [
+     "Pangkal garpu tala yang bergetar ditekankan pada tengah dahi/verteks. Tanyakan telinga mana yang mendengar lebih keras.",
+     "Normal: sama keras. <b>Tuli konduktif</b>: lebih keras di telinga yang <b>tuli</b>. <b>Tuli perseptif (sensorineural)</b>: lebih keras di telinga yang <b>sehat</b>."
+    ]
+   }
+  ],
+  "table": {
+   "title": "Interpretasi Tes Garpu Tala",
+   "head": [
+    "Kondisi",
+    "Rinne",
+    "Weber",
+    "Schwabach"
+   ],
+   "rows": [
+    [
+     "Normal",
+     "Positif",
+     "Tidak ada lateralisasi",
+     "Sama dengan pemeriksa"
+    ],
+    [
+     "Tuli konduktif",
+     "Negatif",
+     "Ke telinga yang tuli",
+     "Memanjang"
+    ],
+    [
+     "Tuli sensorineural",
+     "Positif",
+     "Ke telinga yang sehat",
+     "Memendek"
+    ]
+   ]
+  },
+  "mnemonic": {
+   "label": "Ingat",
+   "text": "Konduktif: Weber ke telinga yang SAKIT (Rinne negatif). Sensorineural: Weber ke telinga yang SEHAT (Rinne positif)."
+  },
+  "extra": [
+   {
+    "h": "Pendalaman",
+    "list": [
+     "Pada tuli konduktif, telinga yang sakit “terisolasi” dari bising lingkungan sehingga getaran tulang terasa lebih keras di sana — itulah dasar lateralisasi Weber ke sisi sakit.",
+     "Penuntun hanya menjelaskan Schwabach secara garis besar; secara umum Schwabach memanjang pada tuli konduktif dan memendek pada tuli sensorineural."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "cn-ix-x",
+  "cat": "kranialis",
+  "level": "CSL 3",
+  "title": "N. IX & X — Menelan, Palatum, Refleks Gag",
+  "sub": "Disfagia, posisi palatum molle-uvula, dan refleks muntah.",
+  "sections": [
+   {
+    "h": "Kemampuan Menelan",
+    "list": [
+     "Pasien duduk/berbaring dengan kepala ditinggikan ≥45°, diminta menelan makanan padat, lunak, dan air. Perhatikan keselak atau disfagia.",
+     "Kelumpuhan N. IX dan X menyebabkan disfagia. Persarafannya <b>bilateral</b>, sehingga kelumpuhan supranuklear baru terjadi bila lesi bilateral — mis. hemiparesis dupleks (kelumpuhan <b>pseudobulber</b>)."
+    ]
+   },
+   {
+    "h": "Inspeksi Palatum",
+    "list": [
+     "Pasien membuka mulut; perhatikan palatum molle, faring, uvula, arkus faring saat istirahat dan saat bersuara (“aaaa”).",
+     "Bila ada paresis, palatum molle, uvula dan arkus faring sisi lumpuh <b>letaknya lebih rendah</b>, dan saat bergerak uvula <b>tertarik ke sisi yang sehat</b>. Paresis bilateral: tidak ada gerakan, posisi uvula dan arkus lebih rendah."
+    ]
+   },
+   {
+    "h": "Refleks Gag",
+    "list": [
+     "Sentuh dinding belakang faring dengan spatel, bandingkan kedua sisi; uvula normalnya terangkat.",
+     "Uvula bergerak ke satu sisi → kelumpuhan UMN/LMN pada sisi lawannya. Uvula tidak bergerak saat “AHH” maupun gag → kedua otot palatum paresis. Uvula bergerak saat “AHH” tetapi tidak saat gag, disertai sensasi faring menurun → kelumpuhan N. IX (jarang)."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "cn-xi-xii",
+  "cat": "kranialis",
+  "level": "CSL 3",
+  "title": "N. XI (Aksesorius) & N. XII (Hipoglosus)",
+  "sub": "Otot sternokleidomastoid, trapezius, dan lidah.",
+  "sections": [
+   {
+    "h": "M. Sternokleidomastoideus",
+    "list": [
+     "Lihat kontur saat istirahat dan bergerak; paresis perifer → <b>atrofi</b>; lesi nuklear (mis. ALS) → <b>fasikulasi</b>. Palpasi: nyeri tekan pada miositis.",
+     "Kekuatan: minta pasien menoleh ke kanan melawan tahanan tangan pemeriksa pada dagu → menilai otot sternokleidomastoid <b>kiri</b>. Bandingkan kiri-kanan."
+    ]
+   },
+   {
+    "h": "M. Trapezius",
+    "list": [
+     "Lihat atrofi/fasikulasi dan kontur. Pada kelumpuhan trapezius, <b>bahu sisi sakit lebih rendah</b> dan skapula bergeser ke lateral serta tampak menonjol.",
+     "Tenaga otot: pasien mengangkat bahu melawan tahanan tangan pemeriksa; ekstensi kepala melawan tahanan. Kelemahan satu sisi: kepala tidak bisa ditarik ke sisi itu, bahu tidak dapat diangkat, lengan tidak dapat dielevasi di atas horizontal. Kelumpuhan kedua sisi: kepala cenderung jatuh ke depan."
+    ]
+   },
+   {
+    "h": "Lidah (N. XII)",
+    "list": [
+     "<b>Istirahat</b>: perhatikan ukuran, simetri, atrofi, kerutan, dan fasikulasi.",
+     "<b>Dijulurkan</b>: perhatikan tremor, fasikulasi, dan deviasi — memakai garis antara kedua insisivus sebagai patokan; lidah <b>berdeviasi ke sisi paresis</b>.",
+     "Minta pasien menyentuhkan lidah ke pipi kiri-kanan sementara pemeriksa menahan dari luar pipi untuk menilai kekuatan.",
+     "Minta mengucapkan huruf R / kalimat berhuruf R (mis. “ular lari lurus”) untuk menilai <b>disartria</b> (cadel/pelo)."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "mmse",
+  "cat": "kortikal",
+  "level": "CSL 4",
+  "title": "Fungsi Kortikal Luhur (MMSE)",
+  "sub": "Mini Mental State Examination: skrining cepat gangguan kognitif, skor maksimal 30.",
+  "sections": [
+   {
+    "h": "Konsep Dasar",
+    "list": [
+     "Fungsi luhur adalah fungsi khas manusia yang berkaitan dengan budaya, bahasa, ingatan, dan pengertian: mencakup memori, orientasi, konsentrasi, bahasa, serta kemampuan melaksanakan perintah. Gangguannya dinilai dengan perangkat yang terstandar, sederhana, dan praktis: <b>MMSE</b>.",
+     "MMSE mengevaluasi fungsi kognitif secara <b>runtut dan sistematis</b> melalui lima domain: orientasi, registrasi, atensi dan kalkulasi, mengingat kembali (recall), serta bahasa. Skor maksimal <b>30</b>."
+    ]
+   },
+   {
+    "h": "Tips Pelaksanaan",
+    "list": [
+     "<b>Registrasi</b>: sebutkan 3 benda (apel, meja, koin) dengan jeda ±1 detik per benda; minta pasien mengulang hingga benar. Skor registrasi dihitung dari pengulangan pertama, tetapi ulangi sampai pasien hafal agar recall dapat dinilai.",
+     "<b>Atensi</b>: 100 dikurangi 7 secara berturut-turut sebanyak 5 kali (93, 86, 79, 72, 65) — atau mengeja terbalik kata “WAHYU” bila pasien tidak dapat berhitung (misalnya buta huruf angka).",
+     "<b>Recall</b> ditanyakan setelah atensi — menguji memori jangka pendek yang rentan pada demensia awal."
+    ]
+   }
+  ],
+  "table": {
+   "title": "Komponen MMSE",
+   "head": [
+    "Domain",
+    "Cara",
+    "Skor Maks."
+   ],
+   "rows": [
+    [
+     "Orientasi waktu",
+     "Tanggal, hari, bulan, tahun, musim",
+     "5"
+    ],
+    [
+     "Orientasi tempat",
+     "Negara, provinsi, rumah sakit/kampus, lantai/kamar (dan kota)",
+     "5"
+    ],
+    [
+     "Registrasi",
+     "Ulangi 3 benda (apel, meja, koin)",
+     "3"
+    ],
+    [
+     "Atensi & kalkulasi",
+     "Serial 7 (100−7 ×5) atau mengeja terbalik WAHYU",
+     "5"
+    ],
+    [
+     "Mengingat kembali",
+     "Menyebut kembali 3 benda tadi",
+     "3"
+    ],
+    [
+     "Bahasa",
+     "Menamai benda (pensil/arloji) 2 · mengulang “namun, tanpa, bila” 1 · perintah 3 langkah (ambil kertas, lipat dua, letakkan di lantai) 3 · membaca & melakukan perintah “pejamkan mata” 1 · menulis spontan 1 · menyalin gambar 1",
+     "9 (2+1+3+1+1+1)"
+    ],
+    [
+     "Total",
+     "",
+     "30"
+    ]
+   ]
+  },
+  "extra": [
+   {
+    "h": "Pendalaman",
+    "list": [
+     "Interpretasi yang umum dipakai: skor 24–30 normal, 18–23 gangguan kognitif ringan, 0–17 gangguan berat (≤23 = curiga gangguan kognitif). Interpretasi dapat dipengaruhi tingkat pendidikan dan budaya pasien.",
+     "Pada formulir penuntun, butir menamai benda tertulis bernilai 3 (pensil/buku/arloji), tetapi MMSE baku menamai 2 benda (pensil dan arloji) sehingga total domain bahasa 9 dan total keseluruhan 30 (orientasi 10 + registrasi 3 + atensi 5 + recall 3 + bahasa 9)."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "keseimbangan",
+  "cat": "koordinasi",
+  "level": "CSL 5",
+  "title": "Pemeriksaan Keseimbangan (Romberg & Tandem)",
+  "sub": "Menilai integrasi sistem vestibular, proprioseptif, dan visual.",
+  "sections": [
+   {
+    "h": "Konsep Dasar",
+    "list": [
+     "Keseimbangan mencerminkan integritas SSP dan perifer, dan dipengaruhi tiga sistem: <b>vestibular, proprioseptif, dan visual</b>. Gangguan satu sistem dikompensasi oleh dua sistem lain, sehingga pasien masih dapat mempertahankan keseimbangan. Bila <b>dua sistem terganggu</b>, barulah pasien kehilangan keseimbangan — itulah dasar Romberg: menutup mata menghilangkan input visual sehingga yang tersisa hanya proprioseptif dan vestibular."
+    ]
+   },
+   {
+    "h": "Tes Romberg",
+    "list": [
+     "Tujuan: mendiagnosis <b>ataksia sensorik</b> dan abnormalitas proprioseptif. Syarat: tidak ada kelemahan motorik tungkai bawah, visus baik, dan pasien kooperatif.",
+     "Pasien berdiri di alas datar, kedua tumit/kaki rapat, lengan di sisi tubuh. Amati <b>20 detik mata terbuka</b>, lalu <b>30 detik mata tertutup</b>.",
+     "<b>Romberg dipertajam</b>: kedua kaki dalam satu garis (ibu jari kaki di belakang tumit kaki lain), kedua lengan menyilang di bahu berlawanan; 20 detik mata terbuka lalu 30 detik tertutup. Input proprioseptif dikurangi sehingga hanya impuls vestibular yang tersisa.",
+     "Pasien dinyatakan tidak dapat mempertahankan keseimbangan bila <b>terhuyung dan kaki berubah posisi</b> (untuk mencegah jatuh)."
+    ]
+   },
+   {
+    "h": "Tandem Walking",
+    "list": [
+     "Pasien berjalan pada satu garis lurus dengan tumit satu kaki tepat di depan jari-jari kaki lawan (mata terbuka maupun tertutup). Dapat mengungkap <b>ataksia ringan</b> yang sebelumnya tidak jelas."
+    ]
+   }
+  ],
+  "table": {
+   "title": "Interpretasi Romberg",
+   "head": [
+    "Temuan",
+    "Kemungkinan Lesi"
+   ],
+   "rows": [
+    [
+     "Tidak stabil sejak mata terbuka",
+     "Gangguan <b>serebelum</b>"
+    ],
+    [
+     "Stabil mata terbuka, jatuh/goyang saat mata tertutup",
+     "Gangguan <b>proprioseptif</b> (ataksia sensorik)"
+    ]
+   ]
+  },
+  "mnemonic": {
+   "label": "Ingat",
+   "text": "Romberg: mata terbuka 20 detik → mata tertutup 30 detik. Goyang dari awal = serebelum. Goyang setelah mata ditutup = proprioseptif."
+  }
+ },
+ {
+  "id": "koordinasi",
+  "cat": "koordinasi",
+  "level": "CSL 5",
+  "title": "Pemeriksaan Koordinasi (Fungsi Serebelum)",
+  "sub": "Tes telunjuk-hidung, tumit-lutut, dan diadokokinesia (RAM).",
+  "sections": [
+   {
+    "h": "Konsep Dasar",
+    "list": [
+     "Koordinasi terutama diatur oleh <b>serebelum</b>, yang menyinergikan kontraksi otot serta mengatur tonus dan koordinasi gerakan. Gangguan serebelum memberi: tremor (intensi), inkoordinasi, gait ataksia, <b>disartria</b>, nistagmus, hipotonia, dan <b>dismetria</b>.",
+     "Lesi serebelum menimbulkan gejala pada sisi tubuh yang <b>sama</b> dengan lesi (ipsilateral)."
+    ]
+   },
+   {
+    "h": "Prosedur Singkat",
+    "list": [
+     "<b>Telunjuk-hidung</b>: pasien duduk/berbaring/berdiri, lengan diekstensikan, menyentuh jari pemeriksa lalu ujung hidungnya — mula-mula perlahan, kemudian cepat; pemeriksa mengubah posisi dan jarak jarinya. Perhatikan tremor intensi dan dismetria.",
+     "<b>Tumit-lutut</b>: pasien supinasi, mengangkat tungkai, menaruh tumit pada lutut kontralateral lalu menyusuri tuberositas tibia ke arah ibu jari kaki. Pada gangguan serebelum, tungkai terangkat terlalu tinggi, gerakan kasar dan tidak akurat, disertai tremor intensi.",
+     "<b>Diadokokinesia (RAM)</b>: pasien melakukan pronasi-supinasi telapak tangan bergantian secepat mungkin (siku diam; tangan di paha atau di punggung tangan kontralateral), mata terbuka maupun tertutup. Ketidakmampuan melakukannya = <b>disdiadokokinesia</b> (gagal menyeimbangkan kontraksi dan relaksasi otot agonis-antagonis)."
+    ]
+   },
+   {
+    "h": "Alur Pemeriksaan di CSL",
+    "list": [
+     "<b>Persiapan</b>: salam dan perkenalan, jelaskan tujuan dan minta izin, jamin kerahasiaan, beri kesempatan bertanya, atur posisi, cuci tangan, pemeriksa di sisi kanan pasien.",
+     "<b>Tes equilibrium</b>: Romberg, Romberg dipertajam, tandem walking. <b>Tes nonequilibrium</b>: telunjuk-hidung, tumit-lutut, diadokokinesia.",
+     "<b>Setelah selesai</b>: jelaskan temuan kepada pasien, beri semangat/harapan, ucapkan perpisahan, cuci tangan."
+    ]
+   }
+  ],
+  "table": {
+   "title": "Temuan Abnormal pada Lesi Serebelum",
+   "head": [
+    "Tes / Gejala",
+    "Temuan"
+   ],
+   "rows": [
+    [
+     "Telunjuk-hidung",
+     "Tremor intensi, dismetria (meleset)"
+    ],
+    [
+     "Tumit-lutut",
+     "Tungkai terangkat tinggi, gerakan kasar tidak akurat"
+    ],
+    [
+     "Pronasi-supinasi cepat",
+     "Disdiadokokinesia"
+    ],
+    [
+     "Bicara / mata / tonus",
+     "Disartria, nistagmus, hipotonia"
+    ]
+   ]
+  }
+ },
+ {
+  "id": "refleks-patologis",
+  "cat": "refleks",
+  "level": "CSL 6",
+  "title": "Pemeriksaan Refleks Patologis",
+  "sub": "Babinski, Chaddock, Oppenheim, Schaeffer, Gordon, Rossolimo, Mendel-Bechterew, Hoffmann-Tromner.",
+  "sections": [
+   {
+    "h": "Konsep Dasar",
+    "list": [
+     "Refleks patologis adalah refleks yang <b>tidak muncul pada orang sehat</b> (kecuali bayi dan anak). Umumnya menandakan lesi <b>traktus kortikospinal</b> (UMN), meski dapat juga pada lesi ekstrapiramidal dan lobus frontal. Ada yang bersifat refleks dalam dan ada yang superfisial.",
+     "Banyak cara membangkitkan refleks ini, dengan respons yang hampir sama: <b>dorsofleksi ibu jari kaki disertai mekarnya (abduksi/fanning) jari-jari lain</b>."
+    ]
+   },
+   {
+    "h": "Teknik Singkat",
+    "list": [
+     "Posisi umum: pasien berbaring dengan tungkai diluruskan; pemeriksa di sisi kanan pasien. Goresan harus cukup tegas tetapi <b>tidak menyakiti</b> pasien. Jelaskan hasil kepada pasien setelah selesai.",
+     "Untuk kelompok Babinski: respons positif bila ibu jari dorsofleksi + jari lain mekar. Rossolimo dan Mendel-Bechterew: respons <b>plantarfleksi jari-jari kaki</b>. Hoffmann-Tromner (tungkai atas): fleksi jari-jari tangan dan adduksi ibu jari."
+    ]
+   }
+  ],
+  "table": {
+   "title": "Ringkasan Refleks Patologis",
+   "head": [
+    "Tanda",
+    "Cara",
+    "Respons Positif"
+   ],
+   "rows": [
+    [
+     "Babinski",
+     "Gores telapak kaki lateral dari tumit menyusuri metatarsal hingga bawah ibu jari",
+     "Dorsofleksi ibu jari + jari lain mekar"
+    ],
+    [
+     "Chaddock",
+     "Gores di bawah malleolus lateralis menyusuri sisi lateral kaki hingga kelingking/ibu jari",
+     "Sama dengan Babinski"
+    ],
+    [
+     "Oppenheim",
+     "Tekan/urut dengan jari telunjuk dan tengah dari infrapatela menyusuri tibia anteromedial ke pergelangan kaki",
+     "Sama dengan Babinski"
+    ],
+    [
+     "Schaeffer",
+     "Tekan kuat tendon Achilles",
+     "Sama dengan Babinski"
+    ],
+    [
+     "Gordon",
+     "Remas otot gastroknemius (betis)",
+     "Sama dengan Babinski"
+    ],
+    [
+     "Rossolimo",
+     "Ketuk basis plantar pedis dengan palu refleks",
+     "Plantarfleksi jari-jari kaki"
+    ],
+    [
+     "Mendel-Bechterew",
+     "Ketuk dorsum pedis dengan palu refleks",
+     "Plantarfleksi jari-jari kaki"
+    ],
+    [
+     "Hoffmann",
+     "Tangan pasien dorsofleksi, jari tengah difiksasi; jentik kuku jari tengah dengan ibu jari pemeriksa",
+     "Fleksi jari-jari tangan + adduksi ibu jari"
+    ],
+    [
+     "Tromner",
+     "Tangan pasien menggantung, jari tengah dipegang; ketuk jari tengah",
+     "Fleksi jari-jari tangan + adduksi ibu jari"
+    ]
+   ]
+  },
+  "mnemonic": {
+   "label": "Lokasi dari ujung kaki",
+   "text": "Babinski (telapak) → Chaddock (malleolus lateral) → Schaeffer (Achilles) → Oppenheim (tibia) → Gordon (betis). Semuanya memberi respons seperti Babinski."
+  }
+ },
+ {
+  "id": "anamnesis-psikiatri",
+  "cat": "psikiatri",
+  "level": "CSL 7",
+  "title": "Teknik Anamnesis Psikiatri",
+  "sub": "Wawancara psikiatri: dokter adalah alat pemeriksaannya.",
+  "sections": [
+   {
+    "h": "Konsep Dasar",
+    "list": [
+     "Pemeriksaan psikiatrik berbeda dari pemeriksaan medik umum: perhatian khusus diarahkan pada <b>manifestasi fungsi mental, emosional, dan perilaku</b> untuk menyusun status psikiatrikus. Data diperoleh dari observasi penampilan dan perilaku pasien, interaksi dokter-pasien, serta interaksi pasien dengan lingkungan.",
+     "<b>Alat pemeriksaan psikiatri adalah dokter sendiri</b>; data diungkap melalui pembicaraan yang disebut wawancara psikiatri. Anamnesis dilakukan dengan <b>autoanamnesis</b> (dari pasien) dan <b>alloanamnesis</b> (dari keluarga/pengantar)."
+    ]
+   },
+   {
+    "h": "Fase Wawancara",
+    "list": [
+     "<b>Perkenalan</b>: persilakan pasien masuk, sapa, perkenalkan diri sambil berjabat tangan, tunjukkan <b>empati</b>.",
+     "<b>Pembukaan</b>: identitas, keluhan utama (apa yang membuat datang, apakah butuh bantuan).",
+     "<b>Penutup</b>: simpulkan hasil wawancara dan tanyakan apakah pasien ingin bertanya.",
+     "<b>Pengakhiran</b>: sampaikan rencana tatalaksana, lalu salam."
+    ]
+   },
+   {
+    "h": "Riwayat Penyakit Sekarang",
+    "list": [
+     "Kronologi latar belakang dan perkembangan gejala/perubahan perilaku; lama keluhan utama; faktor presipitasi dan situasi hidup yang memunculkan gejala.",
+     "Eksplorasi gangguan pada: <b>kesadaran, emosi, pikiran, persepsi, kognisi, penilaian, perilaku</b>.",
+     "Pengaruh gejala terhadap kehidupan sehari-hari dan hubungan interpersonal; kepribadian sebelum sakit dan perubahannya; upaya yang telah dilakukan; penyakit fisik yang diderita."
+    ]
+   },
+   {
+    "h": "Riwayat Penyakit Dahulu",
+    "list": [
+     "Gangguan mental emosional sebelumnya: gejala, tingkat disabilitas, pengobatan, jumlah dan nama rumah sakit, lama sakit, efek samping obat.",
+     "Gangguan psikosomatik; kondisi medis berat; <b>riwayat neurologis</b> (sakit kepala, trauma kepala, kehilangan kesadaran, gangguan penglihatan/pendengaran, kejang, tumor otak).",
+     "<b>Penggunaan alkohol dan zat lain</b>, serta faktor risiko dan status HIV."
+    ]
+   },
+   {
+    "h": "Riwayat Keluarga",
+    "list": [
+     "Budaya dan norma yang dianut; orang serumah (kepribadian, kecerdasan, hubungan dengan pasien sejak kecil dan saat ini); peran sakit dalam keluarga; <b>riwayat gangguan mental di keluarga</b> (gejala, pengobatan, kondisi kini).",
+     "Kondisi lingkungan: rumah padat, lingkungan kumuh, ukuran dan pengaturan ruang, jumlah penghuni, hubungan bertetangga, privasi, sumber pendapatan."
+    ]
+   },
+   {
+    "h": "Riwayat Pribadi (Perkembangan)",
+    "list": [
+     "<b>Masa kanak awal (hingga 3 tahun)</b>: prenatal (kehamilan direncanakan/diinginkan, kesehatan ibu, obat selama hamil), proses kelahiran (forceps, vakum, partus lama), kelainan bawaan; hubungan ibu-anak; ASI/PASI dan gangguan makan; perkembangan bahasa dan motorik; pola tidur; kecemasan terhadap orang asing/perpisahan; toilet training; gejala perilaku (menghisap jempol, temper tantrum, tics, night terror, mengompol, menggigit kuku); temperamen.",
+     "<b>Masa kanak pertengahan (3–11 tahun)</b>: riwayat sekolah dan penyesuaian, reaksi berpisah dari ibu, identifikasi gender, disiplin dan hukuman, hubungan dengan saudara dan teman, penyakit/operasi/trauma.",
+     "<b>Masa kanak akhir (prapubertas–remaja)</b>: hubungan teman sebaya, riwayat sekolah dan minat, perkembangan kognisi-motorik (gangguan belajar), masalah emosional/fisik remaja (mimpi buruk, fobia, kenakalan, merokok, zat, rendah diri), <b>riwayat psikoseksual</b> (termasuk pelecehan seksual, menarche/mimpi basah)."
+    ]
+   },
+   {
+    "h": "Teknik Bertanya",
+    "list": [
+     "Gunakan <b>campuran pertanyaan terbuka dan tertutup</b> untuk menggali keluhan utama dan gejala penyerta: onset, frekuensi, sifat, lama, keparahan, lokasi/penjalaran, perjalanan penyakit, gejala lain, stresor (presipitasi dan predisposisi), serta pengaruhnya pada aktivitas sosial, pekerjaan, dan waktu luang.",
+     "Singkirkan dan masukkan kemungkinan diagnosis dengan <b>pertanyaan terpusat dan terinci</b>; telusuri jawaban yang samar untuk memastikan akurasinya; tanyakan riwayat kesehatan umum dan apakah pernah mengalami keadaan serupa (kapan, berapa lama)."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "sm-umum",
+  "cat": "psikiatri",
+  "level": "CSL 8",
+  "title": "Status Mental I: Penampilan, Mood-Afek, Bicara",
+  "sub": "Deskripsi umum, perilaku psikomotor, sikap terhadap pemeriksa, mood vs afek, dan bicara.",
+  "sections": [
+   {
+    "h": "Konsep Dasar",
+    "list": [
+     "Status mental adalah gambaran keseluruhan pasien dari <b>observasi dan kesan saat wawancara</b>, dan dapat berubah-ubah. Cakupan: tingkat kesadaran, orientasi, emosi, perhatian, daya ingat, tilikan, daya nilai, serta isi pikir/persepsi abnormal."
+    ]
+   },
+   {
+    "h": "Penampilan & Perilaku",
+    "list": [
+     "<b>Penampilan</b>: kesesuaian dengan usia, kerapian/kebersihan/bau, pakaian, raut dan ekspresi wajah, <b>kontak mata</b> (±50% dianggap normal), kesan kesehatan umum, status gizi, serta penampilan psikis (tidak tenang, lamban, pandangan kosong, sangat gembira). Tanda ansietas: telapak lembab, dahi berkeringat, gelisah, postur tegang, suara tertahan, mata lebar.",
+     "<b>Perilaku & aktivitas psikomotor</b>: postur, manerisme, tics, gerakan stereotipik, ekopraksia, hiperaktivitas, agitasi, fleksibilitas serea, rigiditas, cara berjalan; perhatikan tanda intoksikasi atau efek samping obat.",
+     "<b>Sikap terhadap pemeriksa</b> memberi petunjuk bermakna (mis. curiga dan hati-hati pada gangguan paranoid): bersahabat, kooperatif, kasar, mengancam, agresif, ambivalen, seduktif, apatis, hostil, menghindar, dan sebagainya."
+    ]
+   },
+   {
+    "h": "Mood & Afek",
+    "list": [
+     "<b>Mood</b>: emosi mendalam dan bertahan lama, bersifat <b>subjektif</b> (berdasarkan laporan pasien selama beberapa hari–bulan terakhir). Contoh: eutimia (normal), depresi/sedih, putus asa, cemas, euforia, elasi, mudah marah (irritable), anhedonia. Mood dapat labil bila berubah cepat dan ekstrem.",
+     "<b>Afek</b>: ekspresi emosi sesaat yang <b>dapat diobservasi</b> (ekspresi wajah, intonasi, gerak tubuh). Jenis: normal (ekspresi bervariasi), <b>terbatas</b> (luas & intensitas berkurang), <b>tumpul</b> (intensitas sangat berkurang), <b>datar</b> (hampir tanpa ekspresi). Nilai juga <b>keserasian afek</b> dengan topik pembicaraan, budaya, dan situasi."
+    ]
+   },
+   {
+    "h": "Bicara",
+    "list": [
+     "Deskripsikan spontanitas, kuantitas (banyak/pendiam), kecepatan, dan kualitas: cepat, lambat, tertekan, ragu-ragu, monoton, keras, berbisik, cadel, terpatah-patah, bergumam, gagap, ekolalia, serta waktu reaksi dan intonasi."
+    ]
+   }
+  ],
+  "table": {
+   "title": "Mood vs Afek",
+   "head": [
+    "Aspek",
+    "Mood",
+    "Afek"
+   ],
+   "rows": [
+    [
+     "Sifat",
+     "Subjektif — laporan pasien",
+     "Objektif — observasi pemeriksa"
+    ],
+    [
+     "Durasi",
+     "Panjang (hari–bulan)",
+     "Sesaat (saat wawancara)"
+    ],
+    [
+     "Analogi",
+     "Iklim",
+     "Cuaca"
+    ]
+   ]
+  },
+  "mnemonic": {
+   "label": "Ingat",
+   "text": "Mood = iklim (apa yang dikatakan pasien). Afek = cuaca (apa yang terlihat saat ini). Periksa juga keserasian keduanya."
+  }
+ },
+ {
+  "id": "sm-pikir",
+  "cat": "psikiatri",
+  "level": "CSL 8",
+  "title": "Status Mental II: Pikiran & Persepsi",
+  "sub": "Bentuk pikir, isi pikir (waham, obsesi, fobia, ide bunuh diri), halusinasi, ilusi, depersonalisasi.",
+  "sections": [
+   {
+    "h": "Proses Pikir (Bentuk Pikir)",
+    "list": [
+     "Pikiran normal bertujuan, berurutan, dan logis. Gangguan bentuk pikir dinilai dari alur jawaban sepanjang wawancara dan dikelompokkan menjadi <b>gangguan asosiasi</b> dan <b>gangguan kecepatan</b>.",
+     "<b>Gangguan asosiasi</b>: sirkumstansial, tangensial, asosiasi longgar, salad kata (<i>word salad</i>)/inkoherensi, neologisme, asosiasi bunyi.",
+     "<b>Gangguan kecepatan/produktivitas</b>: mutisme, kemiskinan bicara, <i>blocking</i>, perseverasi, verbigerasi, logorea, pikiran mendesak (<i>pressured thought</i>), arus pikir cepat (<i>flight of ideas</i>), kemiskinan ide."
+    ]
+   },
+   {
+    "h": "Isi Pikir",
+    "list": [
+     "<b>Waham</b>: keyakinan salah yang tetap dipegang; dapat bizar dan melibatkan kontrol eksternal. Tema: paranoid, kebesaran (grandiose), iri hati, somatik, bersalah, nihilistik, erotik, ide rujukan (TV/radio menyampaikan pesan khusus), ide pengaruh. Cara menggali: tanyakan pikiran yang dianggap aneh oleh orang lain atau kekuatan khusus yang dimiliki.",
+     "<b>Obsesi</b> (ide intrusif berulang) dan <b>kompulsi</b> (tindakan berulang): tanyakan apakah takut kotor, sering mencuci tangan, menghitung berulang, atau melakukan hal tertentu agar pikiran tertentu hilang.",
+     "<b>Fobia</b>: ketakutan yang memaksa pasien menghindari situasi tertentu. Juga preokupasi, gejala hipokondrial, dorongan antisosial.",
+     "<b>Ide bunuh diri dan membunuh — wajib ditanyakan.</b> Tanyakan pikiran melukai diri/bunuh diri, “lebih baik mati saja”; bila positif, <b>tanyakan rencana spesifik</b>. Lakukan hal yang sama untuk ide melukai atau membunuh orang lain, dan tanyakan riwayat tindakan menyakiti diri atau kekerasan."
+    ]
+   },
+   {
+    "h": "Persepsi",
+    "list": [
+     "<b>Halusinasi</b>: persepsi sensorik subjektif tanpa rangsang eksternal yang relevan (auditorik, visual, olfaktorik, taktil, somatik). <b>Ilusi</b>: interpretasi salah terhadap rangsang nyata dari luar.",
+     "Menggali: “Apakah Anda mendengar suara saat tidak ada orang?” atau “melihat hal yang tidak dapat dilihat orang lain?” — gali rincian untuk memastikan benar halusinasi. Untuk <b>halusinasi perintah</b>, tanyakan apa yang dikatakan suara dan bagaimana respons pasien.",
+     "<b>Depersonalisasi</b>: merasa diri berubah/bukan diri sendiri lagi. <b>Derealisasi</b>: merasa lingkungan sekitar berubah/tidak nyata."
+    ]
+   }
+  ],
+  "table": {
+   "title": "Halusinasi vs Ilusi vs Waham",
+   "head": [
+    "Istilah",
+    "Definisi",
+    "Contoh"
+   ],
+   "rows": [
+    [
+     "Halusinasi",
+     "Persepsi tanpa rangsang nyata",
+     "Mendengar suara memerintah padahal sendirian"
+    ],
+    [
+     "Ilusi",
+     "Salah menafsirkan rangsang nyata",
+     "Melihat tali di lantai sebagai ular"
+    ],
+    [
+     "Waham",
+     "Keyakinan salah yang tidak dapat dikoreksi",
+     "Yakin dirinya diawasi dan akan dibunuh tetangga"
+    ],
+    [
+     "Depersonalisasi",
+     "Merasa diri tidak nyata/berubah",
+     "“Saya seperti bukan diri saya”"
+    ],
+    [
+     "Derealisasi",
+     "Merasa lingkungan tidak nyata",
+     "“Sekeliling saya seperti panggung sandiwara”"
+    ]
+   ]
+  },
+  "mnemonic": {
+   "label": "Ingat",
+   "text": "Sirkumstansial = bertele-tele tetapi akhirnya sampai tujuan. Tangensial = menyimpang dan tidak pernah sampai. Asosiasi longgar → inkoherensi/word salad = makin tidak nyambung."
+  }
+ },
+ {
+  "id": "sm-kognitif",
+  "cat": "psikiatri",
+  "level": "CSL 8",
+  "title": "Status Mental III: Sensorium, Daya Nilai & Tilikan",
+  "sub": "Orientasi, konsentrasi, memori, berpikir abstrak, pengendalian impuls, daya nilai, dan enam derajat tilikan.",
+  "sections": [
+   {
+    "h": "Sensorium & Kognitif",
+    "list": [
+     "Menilai fungsi otak organik, taraf intelegensia, kapasitas berpikir abstrak, tilikan dan daya nilai. <b>MMSE</b> (skor 30) dipakai untuk menilai orientasi, daya ingat, kalkulasi, membaca-menulis, visuospasial, dan bahasa.",
+     "<b>Kesadaran/alertness</b>: kesadaran berkabut, fluktuasi, somnolen, stupor, letargi, fugue, koma.",
+     "<b>Orientasi</b>: waktu (perkiraan jam, lama dirawat), tempat, orang.",
+     "<b>Konsentrasi & kalkulasi</b>: serial 7 dari 100, hitungan sederhana (4×9, 5×4), pecahan uang Rp135.000; nilai apakah kesulitan akibat kecemasan atau gangguan mood.",
+     "<b>Memori</b>: <i>remote</i> (masa kanak-kanak, peristiwa penting), <i>recent past</i> (beberapa bulan lalu), <i>recent</i> (beberapa hari — kemarin, sarapan tadi), <i>immediate retention & recall</i> (mengulang enam angka maju dan mundur, lalu diingat kembali beberapa menit kemudian). Perhatikan upaya menutupi defisit (denial, konfabulasi, ledakan marah).",
+     "<b>Dasar pengetahuan</b>: sesuai pendidikan dan budaya pasien. <b>Berpikir abstrak</b>: persamaan (apel–pir), perbedaan, dan peribahasa (mis. “ada gula ada semut”): jawaban dapat <b>konkret</b> (contoh spesifik) atau terlalu abstrak."
+    ]
+   },
+   {
+    "h": "Pengendalian Impuls",
+    "list": [
+     "Menilai kemampuan mengontrol impuls seksual dan lainnya, serta potensi membahayakan diri sendiri atau orang lain — dinilai dari informasi perilaku pasien dan yang terobservasi saat wawancara."
+    ]
+   },
+   {
+    "h": "Daya Nilai & Tilikan",
+    "list": [
+     "<b>Daya nilai</b>: kemampuan menilai secara sosial, apakah memahami akibat perbuatannya dan apakah hal itu memengaruhi dirinya (daya nilai sosial, uji daya nilai, daya nilai realitas).",
+     "<b>Tilikan</b>: pemahaman pasien terhadap penyakitnya — dinilai dalam enam derajat (tabel di bawah).",
+     "Akhiri pemeriksaan dengan <b>formulasi diagnostik multiaksial (Aksis I–V)</b>."
+    ]
+   }
+  ],
+  "table": {
+   "title": "Derajat Tilikan",
+   "head": [
+    "Derajat",
+    "Deskripsi"
+   ],
+   "rows": [
+    [
+     "1",
+     "Penyangkalan penuh terhadap penyakit"
+    ],
+    [
+     "2",
+     "Sedikit pemahaman tetapi sekaligus menyangkal"
+    ],
+    [
+     "3",
+     "Sadar sakit tetapi menyalahkan orang lain, faktor luar, atau faktor organik"
+    ],
+    [
+     "4",
+     "Sadar dirinya sakit tetapi tidak mengetahui penyebabnya"
+    ],
+    [
+     "5",
+     "Tilikan intelektual: mengakui sakit dan tahu penyebabnya (perasaan irasional/gangguan), tetapi tidak memakai pengetahuan itu untuk pengalaman di masa depan"
+    ],
+    [
+     "6",
+     "Tilikan emosional: pemahaman emosional terhadap motif dan perasaan diri dan orang penting, yang membawa perubahan mendasar pada perilaku"
+    ]
+   ]
+  },
+  "mnemonic": {
+   "label": "Ingat",
+   "text": "Tilikan 1 = menyangkal total · 3 = menyalahkan faktor luar · 5 = tilikan intelektual · 6 = tilikan emosional (perubahan perilaku nyata)."
+  },
+  "extra": [
+   {
+    "h": "Pendalaman",
+    "list": [
+     "Penomoran tilikan pada penuntun sedikit berbeda antar bagian (di bagian teori derajat 5 = intelektual dan 6 = emosional; di tabel prosedur tertulis derajat 4 = intelektual). Tabel di atas mengikuti bagian teori; ikuti penomoran yang diberikan instruktur CSL."
+    ]
+   }
+  ]
+ }
+];
+</script>
+<script>
+/* =========================================================
+   QUIZ DATA — 39 soal latihan berbasis skenario
+   ========================================================= */
+const QUIZ = [
+ {
+  "vignette": "Seorang laki-laki 45 tahun dibawa ke IGD setelah kecelakaan lalu lintas. Pasien membuka mata saat namanya dipanggil, hanya mengerang tanpa kata yang jelas, dan menepis tangan pemeriksa hingga melewati dagu saat dirangsang nyeri pada supraorbita.",
+  "question": "Berapakah skor GCS pasien dan kategorinya?",
+  "options": [
+   "E2V2M5 = 9, cedera kepala sedang",
+   "E3V2M5 = 10, cedera kepala sedang",
+   "E3V3M5 = 11, cedera kepala sedang",
+   "E3V2M4 = 9, cedera kepala sedang",
+   "E3V2M5 = 10, cedera kepala berat"
+  ],
+  "answer": 1,
+  "explain": "Membuka mata terhadap suara = <b>E3</b>; hanya mengerang = <b>V2</b>; menepis nyeri melewati dagu (melokalisasi nyeri) = <b>M5</b>. Total 10 → cedera kepala <b>sedang</b> (GCS 9–12)."
+ },
+ {
+  "vignette": "Seorang pasien tidak membuka mata bahkan dengan rangsang nyeri, tidak bersuara, dan saat ujung kuku ditekan lengannya fleksi lambat disertai rotasi lengan bawah dengan ibu jari mengepal.",
+  "question": "Berapakah nilai komponen motorik pasien ini?",
+  "options": [
+   "M2",
+   "M3",
+   "M4",
+   "M5",
+   "M1"
+  ],
+  "answer": 1,
+  "explain": "Fleksi abnormal lambat dengan rotasi lengan bawah = <b>dekortikasi</b> = <b>M3</b>. M4 adalah fleksi normal/menghindar yang cepat, sedangkan M2 adalah ekstensi (deserebrasi)."
+ },
+ {
+  "vignette": "Seorang pasien tidak dapat menuruti perintah sederhana. Dokter hendak memberikan rangsang nyeri untuk menilai respons motorik pada pemeriksaan GCS.",
+  "question": "Lokasi pertama rangsang nyeri yang dianjurkan pada penuntun adalah?",
+  "options": [
+   "Sternum",
+   "Otot trapezius di dekat supraklavikula",
+   "Kuku ibu jari kaki",
+   "Angulus mandibula",
+   "Fossa suprasternal"
+  ],
+  "answer": 1,
+  "explain": "Urutan dalam penuntun: <b>otot trapezius</b> (hingga 10 detik, intensitas rendah ke tinggi) → <b>supraorbita</b> → <b>sternum</b>, sampai muncul respons motorik terbaik."
+ },
+ {
+  "vignette": "Seorang perempuan 30 tahun mengalami trauma wajah dengan edema palpebra bilateral berat sehingga kedua matanya tidak dapat dibuka secara spontan maupun dengan rangsang.",
+  "question": "Bagaimana komponen mata dicatat pada GCS?",
+  "options": [
+   "E1",
+   "E2",
+   "NT (not testable)",
+   "E0",
+   "Tidak perlu dicatat, GCS dihitung dari V dan M saja"
+  ],
+  "answer": 2,
+  "explain": "Bila mata tidak dapat dibuka akibat edema palpebra atau cedera maksilofasial, komponen E <b>tidak dapat dinilai akurat</b> sehingga ditulis <b>NT</b> — bukan E1."
+ },
+ {
+  "vignette": "Seorang laki-laki 25 tahun mengalami demam tinggi dan nyeri kepala hebat. Pasien telentang; paha kanan difleksikan 90° pada sendi panggul, lalu tungkai bawah diekstensikan namun hanya mencapai sudut 110° dengan nyeri.",
+  "question": "Tanda rangsang meningeal apakah yang positif?",
+  "options": [
+   "Kaku kuduk",
+   "Brudzinski I",
+   "Kernig",
+   "Brudzinski III",
+   "Brudzinski IV"
+  ],
+  "answer": 2,
+  "explain": "Ekstensi lutut yang tidak mencapai <b>135°</b> atau nyeri setelah paha difleksikan 90° adalah <b>tanda Kernig positif</b>."
+ },
+ {
+  "vignette": "Pada pemeriksaan pasien dengan dugaan meningitis, dokter menekan kedua tulang zigoma pasien dengan ibu jari dan tampak kedua lengan pasien fleksi pada sendi siku secara involunter.",
+  "question": "Tanda apakah ini?",
+  "options": [
+   "Brudzinski I",
+   "Brudzinski II",
+   "Brudzinski III",
+   "Brudzinski IV",
+   "Kernig"
+  ],
+  "answer": 2,
+  "explain": "Penekanan <b>os zigomatikus</b> dengan respons fleksi involunter kedua lengan = <b>Brudzinski III</b>. Brudzinski IV memakai penekanan simfisis pubis."
+ },
+ {
+  "vignette": "Pasien telentang. Dokter meletakkan satu tangan di bawah kepala dan satu di dada, lalu memfleksikan kepala dengan cepat ke arah dada. Kedua lutut pasien tampak menekuk spontan.",
+  "question": "Tanda apakah yang positif?",
+  "options": [
+   "Kaku kuduk",
+   "Brudzinski I",
+   "Brudzinski II",
+   "Kernig",
+   "Brudzinski IV"
+  ],
+  "answer": 1,
+  "explain": "Fleksi kepala cepat yang diikuti fleksi involunter kedua tungkai pada sendi lutut = <b>Brudzinski I</b>."
+ },
+ {
+  "vignette": "Seorang laki-laki 55 tahun dengan epilepsi mengeluh sebelum kejang selalu mencium bau busuk yang tidak ada sumbernya, lalu mulutnya bergerak mengecap-ngecap.",
+  "question": "Dari struktur manakah gejala penghiduan ini kemungkinan berasal?",
+  "options": [
+   "Bulbus olfaktorius",
+   "Girus unsinatus lobus temporal",
+   "Lobus oksipital",
+   "Serebelum",
+   "Talamus"
+  ],
+  "answer": 1,
+  "explain": "Halusinasi penciuman berupa bau tidak sedap disertai gerak mengecap-ngecap khas <b>epilepsi parsial kompleks</b> yang berasal dari <b>girus unsinatus lobus temporal</b>."
+ },
+ {
+  "vignette": "Seorang laki-laki 60 tahun mengeluh penglihatan ganda. Kelopak mata kanan menutup, pupil kanan lebih lebar, dan bola mata kanan hanya dapat digerakkan ke lateral serta ke medial-bawah.",
+  "question": "Nervus kranialis manakah yang mengalami paresis?",
+  "options": [
+   "N. II kanan",
+   "N. III kanan",
+   "N. IV kanan",
+   "N. VI kanan",
+   "N. V kanan"
+  ],
+  "answer": 1,
+  "explain": "Ptosis (M. levator palpebrae), midriasis (parasimpatis), dan gerak bola mata terbatas selain lateral dan medial-bawah merupakan tanda <b>paresis N. III</b>."
+ },
+ {
+  "vignette": "Seorang pasien melihat ganda terutama saat melirik ke kiri. Pada pemeriksaan gerak bola mata, mata kiri tidak dapat digerakkan ke arah lateral.",
+  "question": "Otot dan saraf manakah yang terganggu?",
+  "options": [
+   "M. oblikus superior kiri — N. IV",
+   "M. rektus medial kiri — N. III",
+   "M. rektus lateralis kiri — N. VI",
+   "M. oblikus inferior kiri — N. III",
+   "M. levator palpebrae — N. III"
+  ],
+  "answer": 2,
+  "explain": "Gerak ke lateral dilakukan <b>M. rektus lateralis</b> yang dipersarafi <b>N. VI</b> (LR6). Gerak ke medial-bawah oleh M. oblikus superior (N. IV)."
+ },
+ {
+  "vignette": "Seorang pasien buta total pada mata kanan akibat lesi N. II kanan, mata kiri normal. Pemeriksa menyinari mata kiri.",
+  "question": "Bagaimana respons pupil yang diharapkan?",
+  "options": [
+   "Pupil kiri mengecil dan pupil kanan juga mengecil",
+   "Pupil kiri mengecil, pupil kanan tidak",
+   "Tidak ada pupil yang mengecil",
+   "Pupil kanan mengecil, pupil kiri tidak",
+   "Kedua pupil melebar"
+  ],
+  "answer": 0,
+  "explain": "Jalur aferen mata kiri utuh dan jalur eferen kedua mata (N. III) utuh → refleks langsung kiri (+) dan refleks tidak langsung pada pupil kanan (+). Bila yang disinari mata kanan, kedua pupil tidak mengecil."
+ },
+ {
+  "vignette": "Seorang pasien dengan lesi N. III kanan diperiksa refleks cahaya dengan senter.",
+  "question": "Bagaimana temuan yang paling sesuai?",
+  "options": [
+   "Mata kanan disinari: pupil kanan mengecil, pupil kiri tidak",
+   "Mata kiri disinari: pupil kiri mengecil, pupil kanan tidak mengecil",
+   "Mata kiri disinari: kedua pupil mengecil",
+   "Mata kanan disinari: kedua pupil mengecil",
+   "Tidak ada kelainan pada refleks cahaya"
+  ],
+  "answer": 1,
+  "explain": "Pada lesi <b>N. III kanan</b> (eferen rusak), pupil kanan tidak mengecil baik refleks langsung maupun tidak langsung; pupil kiri tetap bereaksi saat disinari."
+ },
+ {
+  "vignette": "Seorang pasien stroke mengeluh wajah mencong ke kiri. Pada pemeriksaan, sudut mulut kanan jatuh dan sulkus nasolabialis kanan mendatar, tetapi pasien masih dapat mengerutkan dahi dan menutup mata kanan.",
+  "question": "Jenis kelumpuhan N. VII yang paling sesuai?",
+  "options": [
+   "LMN kanan",
+   "UMN kontralateral terhadap sisi wajah yang lumpuh",
+   "LMN kiri",
+   "Neuropati trigeminus kanan",
+   "Miastenia gravis"
+  ],
+  "answer": 1,
+  "explain": "Dahi dan mata selamat, hanya daerah mulut yang lumpuh → <b>tipe UMN</b>; lesi sentral berada di sisi kontralateral wajah yang lumpuh (hemisfer kiri)."
+ },
+ {
+  "vignette": "Seorang perempuan 35 tahun mendadak tidak dapat mengerutkan dahi kanan, tidak dapat menutup mata kanan (lagoftalmus), dan sudut mulut kanan jatuh. Rasa pada 2/3 anterior lidah kanan juga berkurang.",
+  "question": "Saraf mana yang membawa sensasi pengecapan 2/3 anterior lidah?",
+  "options": [
+   "N. V cabang mandibularis",
+   "N. VII melalui korda timpani",
+   "N. IX",
+   "N. X",
+   "N. XII"
+  ],
+  "answer": 1,
+  "explain": "Pengecapan 2/3 anterior lidah dibawa <b>N. VII (korda timpani)</b>; sedangkan 1/3 posterior oleh N. IX. Kelumpuhan seluruh wajah ipsilateral = LMN (Bell’s palsy)."
+ },
+ {
+  "vignette": "Pada seorang pasien dengan keluhan tuli telinga kanan, tes Rinne telinga kanan negatif dan tes Weber terdengar lebih keras pada telinga kanan.",
+  "question": "Interpretasi yang paling tepat?",
+  "options": [
+   "Normal",
+   "Tuli sensorineural kanan",
+   "Tuli konduktif kanan",
+   "Tuli sensorineural kiri",
+   "Tuli konduktif kiri"
+  ],
+  "answer": 2,
+  "explain": "Rinne negatif (konduksi tulang &gt; udara) dan Weber lateralisasi ke telinga yang sakit = <b>tuli konduktif</b> pada telinga kanan."
+ },
+ {
+  "vignette": "Seorang pasien mengeluh pendengaran telinga kiri berkurang. Rinne positif pada kedua telinga dan pada tes Weber suara terdengar lebih keras di telinga kanan.",
+  "question": "Diagnosis gangguan pendengaran pasien?",
+  "options": [
+   "Tuli konduktif kiri",
+   "Tuli konduktif kanan",
+   "Tuli sensorineural kiri",
+   "Tuli sensorineural kanan",
+   "Pendengaran normal"
+  ],
+  "answer": 2,
+  "explain": "Rinne positif menyingkirkan tuli konduktif. Weber lateralisasi ke telinga <b>sehat</b> (kanan) → <b>tuli sensorineural di telinga kiri</b>."
+ },
+ {
+  "vignette": "Pasien hemiparesis mengeluh sulit menelan. Pada inspeksi saat mengucapkan “aaaa”, uvula tertarik ke kanan dan arkus faring kiri tampak lebih rendah.",
+  "question": "Sisi manakah yang mengalami paresis?",
+  "options": [
+   "Kanan",
+   "Kiri",
+   "Bilateral",
+   "Tidak ada paresis",
+   "Tidak dapat ditentukan"
+  ],
+  "answer": 1,
+  "explain": "Pada paresis, palatum molle/arkus <b>sisi lumpuh lebih rendah</b> dan uvula <b>tertarik ke sisi sehat</b>. Uvula tertarik ke kanan → sisi kiri yang paresis."
+ },
+ {
+  "vignette": "Seorang pasien dengan paresis satu sisi nervus kranialis dijulurkan lidahnya dan lidah tampak berdeviasi ke kanan.",
+  "question": "Interpretasi yang benar?",
+  "options": [
+   "Paresis N. XII kiri",
+   "Paresis N. XII kanan",
+   "Paresis N. X kanan",
+   "Paresis N. VII kanan",
+   "Normal"
+  ],
+  "answer": 1,
+  "explain": "Pada paresis N. XII, lidah <b>berdeviasi ke sisi yang lumpuh</b> → paresis N. XII kanan."
+ },
+ {
+  "vignette": "Seorang pasien tidak dapat mengangkat bahu kiri. Bahu kiri tampak lebih rendah dan skapula kiri menonjol serta bergeser ke lateral.",
+  "question": "Otot dan saraf yang terganggu?",
+  "options": [
+   "M. deltoid — N. aksilaris",
+   "M. trapezius kiri — N. XI",
+   "M. serratus anterior — N. torakalis longus",
+   "M. levator skapula — N. IV",
+   "M. sternokleidomastoid kiri — N. XI"
+  ],
+  "answer": 1,
+  "explain": "Bahu sisi sakit lebih rendah dan skapula bergeser ke lateral, disertai kelemahan mengangkat bahu, khas <b>kelumpuhan M. trapezius</b> oleh gangguan N. XI."
+ },
+ {
+  "vignette": "Seorang perempuan 70 tahun menjalani MMSE. Ia diminta mengurangi 100 dengan 7 secara berurutan dan menjawab 93, 86, 79, 72, 65.",
+  "question": "Berapa skor domain atensi dan kalkulasi?",
+  "options": [
+   "0",
+   "3",
+   "4",
+   "5",
+   "7"
+  ],
+  "answer": 3,
+  "explain": "Lima jawaban benar berturut-turut (93, 86, 79, 72, 65) memberi skor <b>5</b> (nilai maksimal domain atensi dan kalkulasi). Jika pasien tidak bisa berhitung, dapat diganti mengeja terbalik “WAHYU”."
+ },
+ {
+  "vignette": "Pada pemeriksaan MMSE, dokter menyebutkan tiga benda (apel, meja, koin) dan meminta pasien mengulanginya, lalu beberapa menit kemudian meminta pasien menyebutnya kembali.",
+  "question": "Domain apakah yang dinilai pada permintaan menyebut kembali setelah beberapa menit?",
+  "options": [
+   "Registrasi",
+   "Atensi",
+   "Orientasi",
+   "Mengingat kembali (recall)",
+   "Bahasa"
+  ],
+  "answer": 3,
+  "explain": "Mengulang langsung = <b>registrasi</b>; menyebut kembali setelah jeda (setelah atensi) = <b>recall</b> (3 poin)."
+ },
+ {
+  "vignette": "Seorang laki-laki 60 tahun berdiri dengan kaki rapat. Dengan mata terbuka ia stabil, namun segera terhuyung dan kakinya bergeser saat mata dipejamkan.",
+  "question": "Gangguan apa yang paling mungkin?",
+  "options": [
+   "Lesi serebelum",
+   "Gangguan proprioseptif (ataksia sensorik)",
+   "Kelemahan otot tungkai",
+   "Gangguan kortikal luhur",
+   "Tidak ada kelainan"
+  ],
+  "answer": 1,
+  "explain": "Stabil dengan mata terbuka namun goyang saat mata tertutup menunjukkan <b>gangguan proprioseptif</b>; pada lesi serebelum pasien sudah tidak stabil sejak mata terbuka."
+ },
+ {
+  "vignette": "Seorang pasien dengan lesi hemisfer serebelum kanan menjalani tes telunjuk-hidung. Jari kanannya meleset melewati target dan bergetar saat mendekati hidung.",
+  "question": "Istilah untuk temuan tersebut?",
+  "options": [
+   "Disdiadokokinesia dan tremor istirahat",
+   "Dismetria dan tremor intensi",
+   "Bradikinesia dan rigiditas",
+   "Atetosis",
+   "Korea"
+  ],
+  "answer": 1,
+  "explain": "Meleset dari target = <b>dismetria</b>; getaran yang muncul saat gerakan mendekati target = <b>tremor intensi</b>. Lesi serebelum bermanifestasi <b>ipsilateral</b>."
+ },
+ {
+  "vignette": "Seorang pasien diminta melakukan gerakan pronasi-supinasi tangan bergantian secepat mungkin namun geraknya lambat, tidak teratur, dan amplitudonya tidak sama.",
+  "question": "Apa istilah gangguan ini?",
+  "options": [
+   "Dismetria",
+   "Disdiadokokinesia",
+   "Disartria",
+   "Ataksia sensorik",
+   "Tremor intensi"
+  ],
+  "answer": 1,
+  "explain": "Ketidakmampuan melakukan gerakan bergantian cepat (rapid alternating movement) adalah <b>disdiadokokinesia</b>, tanda disfungsi serebelum."
+ },
+ {
+  "vignette": "Seorang laki-laki 62 tahun pasca stroke. Dokter menggores telapak kaki bagian lateral dari tumit menyusuri metatarsal hingga di bawah ibu jari. Ibu jari kaki dorsofleksi dan jari-jari lain mekar.",
+  "question": "Interpretasi pemeriksaan?",
+  "options": [
+   "Normal pada dewasa",
+   "Tanda Babinski positif — lesi traktus kortikospinal (UMN)",
+   "Lesi LMN",
+   "Refleks Rossolimo positif",
+   "Tanda Hoffmann positif"
+  ],
+  "answer": 1,
+  "explain": "Dorsofleksi ibu jari disertai mekarnya jari-jari lain adalah <b>Babinski positif</b>, menandakan lesi UMN/traktus kortikospinal (kecuali pada bayi)."
+ },
+ {
+  "vignette": "Dokter menekan dengan jari telunjuk dan jari tengah secara mengurut dari infrapatela menyusuri sisi anteromedial tibia ke arah pergelangan kaki.",
+  "question": "Nama refleks patologis ini?",
+  "options": [
+   "Chaddock",
+   "Gordon",
+   "Schaeffer",
+   "Oppenheim",
+   "Rossolimo"
+  ],
+  "answer": 3,
+  "explain": "Menekan/mengurut tibia anteromedial dari bawah patela = <b>Oppenheim</b>. Chaddock: goresan di sisi lateral kaki; Schaeffer: tekan Achilles; Gordon: remas betis."
+ },
+ {
+  "vignette": "Dokter memegang tangan pasien dalam posisi dorsofleksi dengan jari tengah terfiksasi, lalu menjentikkan kuku jari tengah pasien. Respons berupa fleksi jari-jari lain dan adduksi ibu jari.",
+  "question": "Tanda apakah ini?",
+  "options": [
+   "Hoffmann",
+   "Rossolimo",
+   "Mendel-Bechterew",
+   "Gordon",
+   "Babinski"
+  ],
+  "answer": 0,
+  "explain": "Penjentikan kuku jari tengah → fleksi jari dan adduksi ibu jari = <b>tanda Hoffmann</b> (bersama Tromner pada ekstremitas atas)."
+ },
+ {
+  "vignette": "Pasien diketuk dengan palu refleks pada dorsum pedis dan jari-jari kaki mengalami plantarfleksi.",
+  "question": "Refleks patologis apakah ini?",
+  "options": [
+   "Rossolimo",
+   "Mendel-Bechterew",
+   "Oppenheim",
+   "Schaeffer",
+   "Chaddock"
+  ],
+  "answer": 1,
+  "explain": "Ketukan pada <b>dorsum pedis</b> dengan respons plantarfleksi jari kaki = <b>Mendel-Bechterew</b>. Rossolimo: ketukan pada basis plantar."
+ },
+ {
+  "vignette": "Seorang pasien dengan gangguan jiwa berat tampak bicara kacau dan tidak koheren sehingga riwayat penyakit sulit digali.",
+  "question": "Teknik anamnesis yang paling tepat dilakukan sebagai pelengkap?",
+  "options": [
+   "Hanya autoanamnesis berulang",
+   "Alloanamnesis dari keluarga atau pengantar",
+   "Menunda anamnesis seumur hidup",
+   "Hanya observasi tanpa wawancara",
+   "Rujuk tanpa anamnesis"
+  ],
+  "answer": 1,
+  "explain": "Anamnesis psikiatri dilakukan secara <b>autoanamnesis dan alloanamnesis</b>; bila pasien tidak dapat memberi riwayat yang andal, informasi dari keluarga/pengantar sangat penting."
+ },
+ {
+  "vignette": "Seorang pasien mengatakan dirinya “sangat sedih dan putus asa selama dua minggu”, namun selama wawancara wajahnya datar tanpa ekspresi dan nada bicara monoton.",
+  "question": "Pernyataan yang benar tentang kondisi pasien?",
+  "options": [
+   "Mood depresif dan afek datar/tumpul",
+   "Mood eutimia dan afek luas",
+   "Mood euforik dan afek serasi",
+   "Mood depresif dan afek luas",
+   "Afek yang diucapkan pasien adalah depresif"
+  ],
+  "answer": 0,
+  "explain": "<b>Mood</b> = laporan subjektif pasien (depresif). <b>Afek</b> = ekspresi emosi yang diobservasi pemeriksa, di sini datar/tumpul."
+ },
+ {
+  "vignette": "Seorang pasien ditanya jam berapa sekarang. Ia menjawab dengan menceritakan panjang lebar tentang perjalanan, merek jam tangannya, dan toko tempat ia membelinya, tetapi akhirnya menyebutkan jawabannya.",
+  "question": "Gangguan bentuk pikir yang paling sesuai?",
+  "options": [
+   "Tangensial",
+   "Sirkumstansial",
+   "Flight of ideas",
+   "Word salad",
+   "Blocking"
+  ],
+  "answer": 1,
+  "explain": "Bertele-tele dengan detail berlebihan namun <b>akhirnya mencapai tujuan</b> = <b>sirkumstansial</b>. Tangensial: menyimpang dan tidak pernah sampai ke tujuan."
+ },
+ {
+  "vignette": "Seorang pasien berbicara: “Meja berlari kuning sekolah bunyi laut tiga nanti.” Kalimatnya tidak berhubungan dan tidak dapat dipahami.",
+  "question": "Istilah gangguan bentuk pikir ini?",
+  "options": [
+   "Sirkumstansial",
+   "Perseverasi",
+   "Salad kata (word salad)/inkoherensi",
+   "Blocking",
+   "Logorea"
+  ],
+  "answer": 2,
+  "explain": "Rangkaian kata tanpa hubungan logis sama sekali disebut <b>word salad (inkoherensi)</b>, bentuk paling berat dari gangguan asosiasi."
+ },
+ {
+  "vignette": "Seorang pasien di kamar gelap mengira jubah yang tergantung di dinding adalah seseorang yang mengawasinya.",
+  "question": "Gangguan persepsi apakah ini?",
+  "options": [
+   "Halusinasi visual",
+   "Ilusi",
+   "Waham",
+   "Depersonalisasi",
+   "Derealisasi"
+  ],
+  "answer": 1,
+  "explain": "Salah menafsirkan <b>rangsang nyata</b> (jubah) = <b>ilusi</b>. Halusinasi terjadi tanpa rangsang eksternal."
+ },
+ {
+  "vignette": "Seorang pasien merasa lingkungan di sekitarnya mendadak tampak asing, tidak nyata, seperti panggung sandiwara, padahal ia sadar dan berorientasi baik.",
+  "question": "Istilah yang tepat?",
+  "options": [
+   "Depersonalisasi",
+   "Derealisasi",
+   "Waham referensi",
+   "Ilusi",
+   "Halusinasi taktil"
+  ],
+  "answer": 1,
+  "explain": "Perasaan bahwa lingkungan berubah/tidak nyata = <b>derealisasi</b>. Depersonalisasi: merasa dirinya yang berubah/bukan dirinya."
+ },
+ {
+  "vignette": "Seorang pasien depresi berkata kepada dokter, “Kadang saya berpikir lebih baik mati saja.”",
+  "question": "Langkah wawancara selanjutnya yang paling tepat?",
+  "options": [
+   "Mengalihkan topik agar pasien tidak semakin sedih",
+   "Menanyakan rencana spesifik bunuh diri secara langsung",
+   "Menyatakan bahwa pikiran itu tidak mungkin dilakukan",
+   "Menunda menanyakannya sampai kunjungan berikutnya",
+   "Langsung meresepkan antidepresan tanpa eksplorasi"
+  ],
+  "answer": 1,
+  "explain": "Menanyakan ide bunuh diri sangat penting; bila pasien menjawab positif, <b>tanyakan rencana spesifik</b> serta riwayat tindakan menyakiti diri. Bertanya langsung tidak memicu tindakan bunuh diri."
+ },
+ {
+  "vignette": "Seorang pasien skizofrenia berkata, “Saya tidak sakit. Kalian semua yang salah membawa saya ke sini.”",
+  "question": "Derajat tilikan pasien?",
+  "options": [
+   "Derajat 1",
+   "Derajat 3",
+   "Derajat 4",
+   "Derajat 5",
+   "Derajat 6"
+  ],
+  "answer": 0,
+  "explain": "Penyangkalan penuh terhadap penyakit = <b>tilikan derajat 1</b>. Derajat 3: sadar sakit tetapi menyalahkan faktor luar/orang lain."
+ },
+ {
+  "vignette": "Seorang pasien ditanya makna peribahasa “ada gula ada semut” dan menjawab, “Kalau ada gula di meja, semut datang makan gula itu.”",
+  "question": "Penilaian kemampuan berpikir abstrak pasien?",
+  "options": [
+   "Berpikir abstrak baik",
+   "Jawaban konkret",
+   "Jawaban terlalu abstrak",
+   "Waham",
+   "Perseverasi"
+  ],
+  "answer": 1,
+  "explain": "Memberikan contoh harfiah tanpa makna kiasan = <b>jawaban konkret</b> (gangguan berpikir abstrak)."
+ },
+ {
+  "vignette": "Seorang pasien lansia tidak dapat mengingat apa yang ia makan pagi ini maupun kemarin, tetapi dapat menceritakan peristiwa masa kecilnya dengan jelas.",
+  "question": "Jenis memori yang terganggu?",
+  "options": [
+   "Remote memory",
+   "Recent memory",
+   "Immediate retention",
+   "Semua jenis memori",
+   "Tidak ada yang terganggu"
+  ],
+  "answer": 1,
+  "explain": "Mengingat kejadian beberapa hari terakhir (makanan kemarin dan tadi pagi) adalah <b>recent memory</b>; memori jauh (remote) masih baik."
+ },
+ {
+  "vignette": "Dokter ingin memeriksa pasien dengan penurunan kesadaran secara sistematis.",
+  "question": "Urutan tahap pemeriksaan kesadaran pada penuntun?",
+  "options": [
+   "Stimulasi → observasi → dokumentasi",
+   "Dokumentasi → observasi → stimulasi",
+   "Observasi → stimulasi → dokumentasi",
+   "Observasi → dokumentasi → stimulasi",
+   "Stimulasi nyeri → verbal → observasi"
+  ],
+  "answer": 2,
+  "explain": "Pemeriksaan kesadaran: <b>observasi</b> (inspeksi keterjagaan dan kewaspadaan) → <b>stimulasi</b> (verbal dahulu, lalu nyeri) → <b>dokumentasi</b> skor."
+ }
+];
+</script>
+<script>
+/* =========================================================
+   APP LOGIC
+   ========================================================= */
+const state = {
+  view:'home',        // home | topic | quiz
+  topicId:null,
+  done:new Set(),
+  quizIdx:0,
+  quizAnswers:[],      // array parallel to QUIZ: null (unanswered) or {chosen, correct}
+};
+
+/* ---------- Progress persistence (localStorage) ---------- */
+const PROGRESS_KEY = 'neuropsikiatri-progress-v1';
+function loadProgress(){
+  try{
+    const raw = localStorage.getItem(PROGRESS_KEY);
+    if(!raw) return;
+    const parsed = JSON.parse(raw);
+    if(Array.isArray(parsed.done)) state.done = new Set(parsed.done);
+  }catch(e){ console.warn('Gagal memuat progres tersimpan:', e); }
+}
+function saveProgress(){
+  try{
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify({ done:[...state.done] }));
+  }catch(e){ console.warn('Gagal menyimpan progres:', e); }
+}
+
+const QUIZ_PROGRESS_KEY = 'neuropsikiatri-quiz-progress-v1';
+function loadQuizProgress(){
+  try{
+    const raw = localStorage.getItem(QUIZ_PROGRESS_KEY);
+    if(!raw) return null;
+    const parsed = JSON.parse(raw);
+    if(!Array.isArray(parsed.quizAnswers) || parsed.quizAnswers.length!==QUIZ.length) return null;
+    return parsed;
+  }catch(e){ console.warn('Gagal memuat progres kuis:', e); return null; }
+}
+function saveQuizProgress(){
+  try{
+    localStorage.setItem(QUIZ_PROGRESS_KEY, JSON.stringify({ quizIdx:state.quizIdx, quizAnswers:state.quizAnswers }));
+  }catch(e){ console.warn('Gagal menyimpan progres kuis:', e); }
+}
+function clearQuizProgress(){
+  try{ localStorage.removeItem(QUIZ_PROGRESS_KEY); }catch(e){}
+}
+
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+const viewRoot = $('#viewRoot');
+
+function esc(s){ return (s+'').replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+function findTopic(id){ return TOPICS.find(t=>t.id===id); }
+function topicsInCat(catId){ return TOPICS.filter(t=>t.cat===catId); }
+
+/* ---------- Sidebar / Nav tree ---------- */
+function renderNavTree(filter){
+  const q = (filter||'').trim().toLowerCase();
+  const groups = {};
+  CATEGORIES.forEach(c=>{
+    const group = c.group || '__solo__';
+    if(!groups[group]) groups[group] = [];
+    groups[group].push(c);
+  });
+
+  let html = '';
+  Object.keys(groups).forEach(groupKey=>{
+    const cats = groups[groupKey];
+    cats.forEach(cat=>{
+      let topics = topicsInCat(cat.id);
+      if(q){
+        topics = topics.filter(t =>
+          t.title.toLowerCase().includes(q) ||
+          (t.sub||'').toLowerCase().includes(q) ||
+          JSON.stringify(t.sections||[]).toLowerCase().includes(q)
+        );
+      }
+      if(q && topics.length===0) return;
+      const isOpen = !!q || cat.id === (findTopic(state.topicId)||{}).cat;
+      const label = groupKey!=='__solo__' ? `${groupKey} · ${cat.label}` : cat.label;
+      html += `<div class="nav-cat ${isOpen?'open':''}" data-cat="${cat.id}">
+        <div class="nav-cat-head">
+          <span>${esc(label)}</span>
+          <span style="display:flex;align-items:center;">
+            <span class="badge-count">${topics.length}</span>
+            <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+        <div class="nav-list">
+          ${topics.map(t=>`
+            <div class="nav-item ${t.id===state.topicId?'active':''}" data-topic="${t.id}">
+              <span class="dot"></span>
+              <span>${esc(t.title)}</span>
+              <span class="check ${state.done.has(t.id)?'done':''}"></span>
+            </div>`).join('')}
+        </div>
+      </div>`;
+    });
+  });
+  $('#navTree').innerHTML = html;
+
+  $$('.nav-cat-head').forEach(h=>{
+    h.addEventListener('click', ()=>{
+      h.closest('.nav-cat').classList.toggle('open');
+    });
+  });
+  $$('.nav-item').forEach(it=>{
+    it.addEventListener('click', ()=>{
+      goTopic(it.dataset.topic);
+      closeSidebarMobile();
+    });
+  });
+  updateProgress();
+}
+
+function updateProgress(){
+  $('#progressLabel').textContent = `${state.done.size} / ${TOPICS.length}`;
+  $('#progressFill').style.width = (state.done.size/TOPICS.length*100)+'%';
+}
+
+/* ---------- Home / Hero view ---------- */
+function renderHome(push){
+  state.view='home'; state.topicId=null;
+  if(push!==false){ history.pushState({view:'home'}, '', '#'); }
+  setActiveModeButtons();
+  viewRoot.innerHTML = `
+  <div class="content-wrap">
+    <div class="hero reveal">
+      <div class="eyebrow">By Naruxhz</div>
+      <h1>Peta <em>Neuropsikiatri</em><br>untuk CSL &amp; OSCE.</h1>
+      <p class="lede">Rangkuman interaktif ${TOPICS.length} topik keterampilan klinis neuropsikiatri — dari GCS, nervus kranialis, dan refleks patologis hingga anamnesis serta status mental psikiatri — lengkap dengan tabel banding, mnemonic, dan ${QUIZ.length} soal latihan.</p>
+      <div class="hero-stats">
+        <div class="stat"><b>${TOPICS.length}</b><span>Topik Klinis</span></div>
+        <div class="stat"><b>${QUIZ.length}</b><span>Soal Latihan</span></div>
+        <div class="stat"><b>${CATEGORIES.length}</b><span>Kategori</span></div>
+      </div>
+    </div>
+
+    <div class="algo-widget reveal">
+      <h3>Coba: Kalkulator Glasgow Coma Scale</h3>
+      <div class="sub">Pilih respons terbaik pasien pada tiap komponen untuk melihat skor total dan kategorinya.</div>
+      <div class="gcs-grid">
+        <div><label for="gcsE">Eye (E)</label><select id="gcsE">
+          <option value="4">E4 — Spontan</option><option value="3">E3 — Terhadap suara</option><option value="2">E2 — Terhadap nyeri</option><option value="1">E1 — Tidak ada</option></select></div>
+        <div><label for="gcsV">Verbal (V)</label><select id="gcsV">
+          <option value="5">V5 — Berorientasi baik</option><option value="4">V4 — Bingung</option><option value="3">V3 — Kata tidak tepat</option><option value="2">V2 — Mengerang</option><option value="1">V1 — Tidak ada</option></select></div>
+        <div><label for="gcsM">Motorik (M)</label><select id="gcsM">
+          <option value="6">M6 — Menurut perintah</option><option value="5">M5 — Melokalisasi nyeri</option><option value="4">M4 — Menghindar</option><option value="3">M3 — Fleksi abnormal (dekortikasi)</option><option value="2">M2 — Ekstensi (deserebrasi)</option><option value="1">M1 — Tidak ada</option></select></div>
+      </div>
+      <div class="algo-result" id="gcsResult"></div>
+    </div>
+
+    <div style="margin-top:52px;">
+      <h2 style="font-family:'IBM Plex Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); font-weight:600;">Jelajahi semua topik</h2>
+      <div class="home-grid">
+        ${TOPICS.map((t,i)=>`
+          <div class="home-card reveal" style="animation-delay:${Math.min(i*18,300)}ms" data-topic="${t.id}">
+            <div class="n">${esc(t.level)} · ${esc(CATEGORIES.find(c=>c.id===t.cat).label)}</div>
+            <h4>${esc(t.title)}</h4>
+            <p>${esc(t.sub||'')}</p>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+
+  function updateGcs(){
+    const e=+$('#gcsE').value, v=+$('#gcsV').value, m=+$('#gcsM').value, tot=e+v+m;
+    let cat = tot===15 ? 'Normal (sadar penuh)' : tot>=13 ? 'Cedera kepala ringan' : tot>=9 ? 'Cedera kepala sedang' : 'Cedera kepala berat / koma';
+    $('#gcsResult').innerHTML = `<div class="rlabel">Hasil</div><div class="gcs-score">${tot}<small>E${e} V${v} M${m}</small></div><div style="margin-top:6px;">${cat}</div><div class="chips"><span class="chip" data-topic="gcs">Pelajari: GCS</span></div>`;
+    $$('#gcsResult .chip').forEach(c=>c.addEventListener('click', ()=>goTopic(c.dataset.topic)));
+  }
+  ['#gcsE','#gcsV','#gcsM'].forEach(s=>$(s).addEventListener('change', updateGcs));
+  updateGcs();
+
+  $$('.home-card').forEach(c=>c.addEventListener('click', ()=>goTopic(c.dataset.topic)));
+}
+
+/* ---------- Topic view ---------- */
+function renderSectionList(items){
+  return `<ul>${items.map(li=>`<li>${li}</li>`).join('')}</ul>`;
+}
+function renderSection(sec){
+  let inner = '';
+  if(sec.list) inner += renderSectionList(sec.list);
+  if(sec.sub){
+    sec.sub.forEach(s=>{
+      inner += `<div class="sub-h">${esc(s.t)}</div>${renderSectionList(s.list)}`;
+    });
+  }
+  return `<div class="section-block reveal"><h2>${esc(sec.h)}</h2>${inner}</div>`;
+}
+function renderTable(tbl){
+  return `<div class="section-block reveal"><h2>${esc(tbl.title)}</h2>
+    <table class="data-tbl"><thead><tr>${tbl.head.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead>
+    <tbody>${tbl.rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+
+function goTopic(id, push){
+  state.view='topic'; state.topicId=id;
+  if(push!==false){ history.pushState({view:'topic', topicId:id}, '', '#'+id); }
+  setActiveModeButtons();
+  const t = findTopic(id);
+  const cat = CATEGORIES.find(c=>c.id===t.cat);
+  const idx = TOPICS.indexOf(t);
+  const prev = TOPICS[idx-1], next = TOPICS[idx+1];
+
+  viewRoot.innerHTML = `
+  <div class="content-wrap">
+    <div class="crumbs reveal">
+      <span>${esc(cat.group ? cat.group : 'Neuropsikiatri')}</span>
+      <span class="sep">/</span>
+      <span>${esc(cat.label)}</span>
+    </div>
+    <div class="topic-head reveal">
+      <h1>${esc(t.title)}</h1>
+      <span class="badge-level">${esc(t.level)}</span>
+    </div>
+    <div class="topic-sub reveal">${esc(t.sub||'')}</div>
+    <button class="mark-btn ${state.done.has(id)?'done':''}" id="markBtn">
+      <span class="dotc"></span>
+      <span id="markBtnLabel">${state.done.has(id)?'Sudah dipelajari':'Tandai sudah dipelajari'}</span>
+    </button>
+
+    ${(t.sections||[]).map(renderSection).join('')}
+    ${t.images ? `<div class="topic-images reveal">${t.images.map(im=>`
+      <div class="topic-image-card">
+        <img src="${esc(im.src)}" alt="${esc(im.alt||im.caption||'')}" loading="lazy">
+        <div class="cap">${esc(im.caption||'')}</div>
+      </div>`).join('')}</div>` : ''}
+    ${t.diagram ? `<div class="section-block reveal"><h2>${esc(t.diagram.title||'Skema / Algoritma')}</h2><div class="flowcard">${t.diagram.note?`<div class="fnote">${esc(t.diagram.note)}</div>`:''}${t.diagram.html}</div></div>` : ''}
+    ${t.mnemonic ? `<div class="callout mnemonic reveal"><div class="clabel">Mnemonic — ${esc(t.mnemonic.label)}</div>${esc(t.mnemonic.text)}</div>` : ''}
+    ${t.table ? renderTable(t.table) : ''}
+    ${t.extra ? `<div class="extra-wrap reveal">
+      <div class="extra-wrap-head"><span class="tag">+ Referensi Tambahan</span><b>Pendalaman Klinis</b></div>
+      <div class="extra-wrap-note">Wawasan tambahan di luar penuntun CSL — dari literatur kedokteran standar, untuk memperkaya pemahaman.</div>
+      ${t.extra.map(e=>`<div class="extra-block"><h3>${esc(e.h)}</h3><ul>${e.list.map(li=>`<li>${li}</li>`).join('')}</ul></div>`).join('')}
+    </div>` : ''}
+
+    <div class="topic-nav">
+      ${prev ? `<button class="tn-btn prev" data-topic="${prev.id}"><div class="lbl">← Sebelumnya</div><div class="ttl">${esc(prev.title)}</div></button>` : '<div></div>'}
+      ${next ? `<button class="tn-btn next" data-topic="${next.id}"><div class="lbl">Selanjutnya →</div><div class="ttl">${esc(next.title)}</div></button>` : '<div></div>'}
+    </div>
+  </div>`;
+
+  $('#markBtn').addEventListener('click', ()=>{
+    if(state.done.has(id)) state.done.delete(id); else state.done.add(id);
+    saveProgress();
+    goTopic(id, false);
+    renderNavTree($('#searchInput').value);
+  });
+  $$('.tn-btn[data-topic]').forEach(b=>b.addEventListener('click', ()=>goTopic(b.dataset.topic)));
+
+  renderNavTree($('#searchInput').value);
+  window.scrollTo({top:0, behavior:'instant'});
+}
+</script>
+<script>
+/* ---------- Quiz view ---------- */
+function quizScoreSoFar(){
+  return state.quizAnswers.reduce((n,a)=> n + (a && a.correct ? 1 : 0), 0);
+}
+function quizAnsweredCount(){
+  return state.quizAnswers.reduce((n,a)=> n + (a ? 1 : 0), 0);
+}
+
+function startQuiz(push, forceRestart){
+  state.view='quiz'; state.topicId=null;
+  const saved = forceRestart ? null : loadQuizProgress();
+  if(saved){
+    state.quizIdx = saved.quizIdx;
+    state.quizAnswers = saved.quizAnswers;
+  } else {
+    state.quizIdx = 0;
+    state.quizAnswers = new Array(QUIZ.length).fill(null);
+    clearQuizProgress();
+  }
+  if(push!==false){ history.pushState({view:'quiz'}, '', '#quiz'); }
+  setActiveModeButtons();
+  renderQuizQuestion();
+  renderNavTree($('#searchInput').value);
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+function renderQuizQuestion(){
+  const q = QUIZ[state.quizIdx];
+  const total = QUIZ.length;
+  const letters = ['A','B','C','D','E'];
+  const already = state.quizAnswers[state.quizIdx]; // {chosen, correct} or null
+  const isLast = state.quizIdx===total-1;
+  const allAnswered = quizAnsweredCount()===total;
+
+  viewRoot.innerHTML = `
+  <div class="quiz-shell">
+    <div class="quiz-top">
+      <span class="quiz-count mono">SOAL ${state.quizIdx+1} / ${total}</span>
+      <div class="quiz-progress-track"><div class="quiz-progress-fill" style="width:${(state.quizIdx)/total*100}%"></div></div>
+      <span class="quiz-count mono" id="quizScoreLabel">SKOR ${quizScoreSoFar()}</span>
+    </div>
+    <div class="qcard reveal">
+      <div class="vignette">${esc(q.vignette)}</div>
+      <div class="question">${esc(q.question)}</div>
+      <div id="optsWrap">
+        ${q.options.map((opt,i)=>`
+          <div class="opt${already ? ' disabled' : ''}${already && i===q.answer ? ' correct' : ''}${already && !already.correct && i===already.chosen ? ' wrong' : ''}${already && i!==q.answer && i!==already.chosen ? ' dim' : ''}" data-i="${i}">
+            <div class="lt">${letters[i]}</div>
+            <div>${esc(opt)}</div>
+          </div>`).join('')}
+      </div>
+      <div class="qexplain${already ? ' show' : ''}" id="qexplain"><b>Pembahasan.</b> ${q.explain}</div>
+      <div class="qnext-row" style="justify-content:space-between;">
+        <button class="btn-ghost" id="qPrevBtn" ${state.quizIdx===0 ? 'disabled' : ''}>← Soal Sebelumnya</button>
+        <button class="btn-primary" id="qNextBtn" ${already ? '' : 'disabled'}>${isLast ? 'Lihat Hasil' : 'Soal Berikutnya →'}</button>
+      </div>
+    </div>
+  </div>`;
+
+  if(!already){
+    $$('.opt').forEach(optEl=>{
+      optEl.addEventListener('click', ()=>{
+        if(state.quizAnswers[state.quizIdx]) return;
+        const chosen = parseInt(optEl.dataset.i,10);
+        const correct = chosen===q.answer;
+        state.quizAnswers[state.quizIdx] = {chosen, correct};
+        saveQuizProgress();
+        $$('.opt').forEach(o=>{
+          o.classList.add('disabled');
+          const i = parseInt(o.dataset.i,10);
+          if(i===q.answer) o.classList.add('correct');
+          else if(i===chosen) o.classList.add('wrong');
+          else o.classList.add('dim');
+        });
+        $('#qexplain').classList.add('show');
+        $('#qNextBtn').disabled = false;
+        $('#quizScoreLabel').textContent = `SKOR ${quizScoreSoFar()}`;
+      });
+    });
+  }
+
+  $('#qPrevBtn').addEventListener('click', ()=>{
+    if(state.quizIdx>0){
+      state.quizIdx--;
+      saveQuizProgress();
+      renderQuizQuestion();
+      window.scrollTo({top:0, behavior:'instant'});
+    }
+  });
+
+  $('#qNextBtn').addEventListener('click', ()=>{
+    if(!state.quizAnswers[state.quizIdx]) return;
+    if(!isLast){
+      state.quizIdx++;
+      saveQuizProgress();
+      renderQuizQuestion();
+      window.scrollTo({top:0, behavior:'instant'});
+    } else {
+      renderQuizResult();
+    }
+  });
+}
+
+function renderQuizResult(){
+  const total = QUIZ.length;
+  const score = quizScoreSoFar();
+  const pct = Math.round(score/total*100);
+  let msg = 'Terus berlatih, sedikit lagi!';
+  if(pct>=80) msg = 'Mantap — pemahamanmu sudah kuat.';
+  else if(pct>=60) msg = 'Bagus, tinjau ulang topik yang masih salah.';
+  clearQuizProgress();
+  viewRoot.innerHTML = `
+  <div class="quiz-shell">
+    <div class="qcard quiz-result reveal">
+      <div class="quiz-count mono">HASIL KUIS</div>
+      <div class="score">${score}<span>/${total}</span></div>
+      <p style="color:var(--muted); font-size:14px;">${msg}</p>
+      <div style="display:flex; gap:10px; justify-content:center; margin-top:22px; flex-wrap:wrap;">
+        <button class="btn-primary" id="retryBtn">Ulangi Kuis</button>
+        <button class="btn-ghost" id="homeBtn">Kembali ke Beranda</button>
+      </div>
+    </div>
+  </div>`;
+  $('#retryBtn').addEventListener('click', ()=> startQuiz(true, true));
+  $('#homeBtn').addEventListener('click', ()=> renderHome());
+}
+
+/* ---------- Mode toggle / sidebar wiring ---------- */
+function setActiveModeButtons(){
+  $('#btnModeBelajar').classList.toggle('active', state.view!=='quiz');
+  $('#btnModeQuiz').classList.toggle('active', state.view==='quiz');
+}
+$('#btnModeBelajar').addEventListener('click', ()=>{ if(state.view==='quiz') renderHome(); });
+$('#sbBrandHome').addEventListener('click', ()=>{ renderHome(); closeSidebarMobile(); });
+$('#resetProgressBtn').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  if(confirm('Reset semua progres belajar (topik yang sudah ditandai selesai)? Tindakan ini tidak bisa dibatalkan.')){
+    state.done.clear();
+    saveProgress();
+    renderNavTree($('#searchInput').value);
+    if(state.view==='topic') goTopic(state.topicId, false);
+  }
+});
+$('#btnModeQuiz').addEventListener('click', startQuiz);
+
+$('#searchInput').addEventListener('input', (e)=>{
+  renderNavTree(e.target.value);
+});
+
+/* Mobile sidebar */
+const sidebarEl = $('#sidebar'), overlayEl = $('#sbOverlay');
+function openSidebarMobile(){ sidebarEl.classList.add('open'); overlayEl.classList.add('show'); }
+function closeSidebarMobile(){ sidebarEl.classList.remove('open'); overlayEl.classList.remove('show'); }
+$('#hamburgerBtn').addEventListener('click', openSidebarMobile);
+overlayEl.addEventListener('click', closeSidebarMobile);
+
+/* Browser back/forward support */
+window.addEventListener('popstate', (e)=>{
+  const st = e.state;
+  if(!st || st.view==='home'){ renderHome(false); }
+  else if(st.view==='topic' && findTopic(st.topicId)){ goTopic(st.topicId, false); }
+  else if(st.view==='quiz'){ startQuiz(false); }
+  else { renderHome(false); }
+  closeSidebarMobile();
+});
+
+/* Init */
+loadProgress();
+$('#quizCountLabel').textContent = QUIZ.length;
+renderNavTree('');
+const initialHash = decodeURIComponent(location.hash.replace('#',''));
+if(initialHash && findTopic(initialHash)){
+  history.replaceState({view:'topic', topicId:initialHash}, '', '#'+initialHash);
+  goTopic(initialHash, false);
+} else if(initialHash === 'quiz'){
+  history.replaceState({view:'quiz'}, '', '#quiz');
+  startQuiz(false);
+} else {
+  history.replaceState({view:'home'}, '', '#');
+  renderHome(false);
+}
+</script>
+</body>
+</html>
